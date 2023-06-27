@@ -8,7 +8,6 @@ import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import androidx.annotation.RequiresApi
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -47,8 +46,9 @@ class QSTileService : TileService() {
         }
         if (!isPermissionGranted) {
             qsTile.state = Tile.STATE_INACTIVE
-            @RequiresApi(Build.VERSION_CODES.Q)
-            qsTile.subtitle = getString(R.string.grant_permission)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                qsTile.subtitle = getString(R.string.grant_permission)
+            }
         } else if (screenTimeout == 2147483647) {
             disabled()
         } else {
@@ -76,17 +76,19 @@ class QSTileService : TileService() {
 
     private fun disabled() {
         qsTile.state = Tile.STATE_INACTIVE
-        @RequiresApi(Build.VERSION_CODES.Q)
-        qsTile.subtitle = getString(R.string.disabled)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            qsTile.subtitle = getString(R.string.disabled)
+        }
     }
 
     private fun enabled() {
         qsTile.state = Tile.STATE_ACTIVE
-        @RequiresApi(Build.VERSION_CODES.Q)
-        if (screenTimeout < 60000) {
-            qsTile.subtitle = resources.getQuantityString(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
-        } else {
-            qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (screenTimeout < 60000) {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
+            } else {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
+            }
         }
     }
 
