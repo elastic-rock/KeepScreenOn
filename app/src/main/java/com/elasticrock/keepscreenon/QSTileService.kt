@@ -40,6 +40,7 @@ class QSTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
         isPermissionGranted = false
+        qsTile.label = getString(R.string.screen_timeout)
         if (Settings.System.canWrite(applicationContext)) {
             isPermissionGranted = true
             screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
