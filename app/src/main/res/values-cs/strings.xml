@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Nevypínat obrazovku</string>
+    <string name="screen_timeout">Interval vypnutí obrazovky</string>
+    <string name="grant_permission">Udělit oprávnění</string>
+    <string name="permission_granted">Oprávnění uděleno</string>
+    <string name="permission_description">Aby bylo možné nastavit interval vypnutí obrazovky, je třeba aplikaci udělit oprávnění ke změně nastavení systému. Na další stránce vyberte aplikaci a povolte aplikaci měnit nastavení systému.</string>
+    <string name="permission_not_granted">Oprávnění nebylo uděleno</string>
+    <string name="disabled">Vypnuto</string>
+    <plurals name="second" tools:ignore="MissingQuantity">
+        <item quantity="one">%d sekunda</item>
+        <item quantity="few">%d sekundy</item>
+        <item quantity="other">%d sekund</item>
+    </plurals>
+    <plurals name="minute" tools:ignore="MissingQuantity">
+        <item quantity="one">%d minuta</item>
+        <item quantity="few">%d minuty</item>
+        <item quantity="other">%d minut</item>
+    </plurals>
+</resources>
