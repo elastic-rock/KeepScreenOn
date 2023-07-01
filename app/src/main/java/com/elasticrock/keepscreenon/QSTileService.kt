@@ -110,6 +110,7 @@ class QSTileService : TileService() {
         runBlocking {
             val previousScreenTimeout = screenTimeoutPreferenceFlow.first()
             Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, previousScreenTimeout)
+            screenTimeout = previousScreenTimeout
         }
     }
 }
