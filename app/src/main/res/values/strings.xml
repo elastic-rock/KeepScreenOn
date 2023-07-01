@@ -4,7 +4,6 @@
     <string name="grant_permission">Grant Permission</string>
     <string name="permission_granted">Permission Granted</string>
     <string name="permission_description">To be able to set the screen timeout, the modify system settings permission must be granted to the app. On the next screen, select the app and allow it to modify system settings.</string>
-    <string name="permission_not_granted">Permission Not Granted</string>
     <string name="disabled">Disabled</string>
     <plurals name="second">
         <item quantity="one">%d second</item>
@@ -14,4 +13,5 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
+    <string name="add_tile_instructions">To add the quick settings tile, \n 1) Navigate to the quick settings panel, \n 2) Tap edit, \n 3) Find the Screen Timeout tile, \n 4) Touch and hold the tile, then drag it where you want it.</string>
 </resources>

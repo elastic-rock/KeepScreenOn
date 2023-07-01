@@ -5,7 +5,6 @@
     <string name="grant_permission">Udělit oprávnění</string>
     <string name="permission_granted">Oprávnění uděleno</string>
     <string name="permission_description">Aby bylo možné nastavit interval vypnutí obrazovky, je třeba aplikaci udělit oprávnění ke změně nastavení systému. Na další stránce vyberte aplikaci a povolte aplikaci měnit nastavení systému.</string>
-    <string name="permission_not_granted">Oprávnění nebylo uděleno</string>
     <string name="disabled">Vypnuto</string>
     <plurals name="second" tools:ignore="MissingQuantity">
         <item quantity="one">%d sekunda</item>
@@ -17,4 +16,5 @@
         <item quantity="few">%d minuty</item>
         <item quantity="other">%d minut</item>
     </plurals>
+    <string name="add_tile_instructions">Chcete-li přidat dlaždici do panelu rychlého nastavení, \n 1) otevřete rychlé nastavení, \n 2) klepněte na tlačítko upravit, \n 3) najdětě dlaždici Inteval vypnutí obrazovky, \n 4) podržte ji a přetáhněte na libovolné místo.</string>
 </resources>
