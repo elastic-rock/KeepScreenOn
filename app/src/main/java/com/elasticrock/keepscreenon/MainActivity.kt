@@ -1,6 +1,10 @@
 package com.elasticrock.keepscreenon
 
+import android.app.StatusBarManager
+import android.content.ComponentName
 import android.content.Intent
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -33,7 +37,7 @@ class MainActivity : ComponentActivity() {
             KeepScreenOnTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    KeepScreenOnAppCompact()
+                    KeepScreenOnApp()
                 }
             }
         }
@@ -41,11 +45,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun KeepScreenOnAppCompact() {
+fun KeepScreenOnApp() {
     val context = LocalContext.current
     Column(
-        Modifier.padding(all = 8.dp)
-        .fillMaxSize(),
+        Modifier.padding(all = 8.dp).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = stringResource(R.string.app_name),
@@ -70,15 +73,28 @@ fun KeepScreenOnAppCompact() {
             }
         }
         Spacer(Modifier.height(32.dp))
-        Text(text = stringResource(R.string.add_tile_instructions),
-            textAlign = TextAlign.Center)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Button(onClick = {
+                val statusBarService = context.getSystemService(StatusBarManager::class.java)
+                statusBarService.requestAddTileService(
+                    ComponentName(context, QSTileService::class.java.name),
+                    context.getString(R.string.screen_timeout),
+                    Icon.createWithResource(context,R.drawable.outline_lock_clock_qs),
+                    {}) {}
+            }) {
+                Text(text = stringResource(id = (R.string.add_qs_tile)))
+            }
+        } else {
+            Text(text = stringResource(R.string.add_tile_instructions),
+                textAlign = TextAlign.Center)
+        }
     }
 }
 
 @Preview
 @Composable
-fun KeepScreenOnAppCompactPreview() {
+fun KeepScreenOnAppPreview() {
     KeepScreenOnTheme {
-        KeepScreenOnAppCompact()
+        KeepScreenOnApp()
     }
 }
