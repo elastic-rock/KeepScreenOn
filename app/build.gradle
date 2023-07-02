@@ -12,7 +12,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.0"
         resourceConfigurations += ["cs", "en-rGB"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
