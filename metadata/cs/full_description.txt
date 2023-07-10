@@ -1,0 +1,1 @@
+Nevypínat obrazovku umožňuje přidat dlaždici rychlého nastavení, pomocí které lze snadno vypnout automatické vypínání obrazovky a následně obnovit předchozí interval.
