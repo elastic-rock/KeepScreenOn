@@ -40,7 +40,7 @@ class QSTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
         isPermissionGranted = false
-        qsTile.label = getString(R.string.screen_timeout)
+        qsTile.label = getString(R.string.keep_screen_on)
         if (Settings.System.canWrite(applicationContext)) {
             isPermissionGranted = true
             screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
@@ -51,9 +51,9 @@ class QSTileService : TileService() {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
         } else if (screenTimeout == 2147483647) {
-            disabled()
-        } else {
             enabled()
+        } else {
+            disabled()
         }
         qsTile.updateTile()
     }
@@ -66,10 +66,10 @@ class QSTileService : TileService() {
             grantPermission.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
             startActivityAndCollapse(grantPermission)
         } else if (qsTile.state == Tile.STATE_INACTIVE) {
-            enableScreenTimeout()
+            disableScreenTimeout()
             enabled()
         } else {
-            disableScreenTimeout()
+            enableScreenTimeout()
             disabled()
         }
         qsTile.updateTile()
@@ -78,18 +78,14 @@ class QSTileService : TileService() {
     private fun disabled() {
         qsTile.state = Tile.STATE_INACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            qsTile.subtitle = getString(R.string.disabled)
+            qsTile.subtitle = getString(androidx.compose.ui.R.string.off)
         }
     }
 
     private fun enabled() {
         qsTile.state = Tile.STATE_ACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (screenTimeout < 60000) {
-                qsTile.subtitle = resources.getQuantityString(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
-            } else {
-                qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
-            }
+            qsTile.subtitle = getString(androidx.compose.ui.R.string.on)
         }
     }
 
