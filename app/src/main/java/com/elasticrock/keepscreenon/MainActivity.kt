@@ -59,7 +59,7 @@ fun KeepScreenOnApp() {
     Scaffold(Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(stringResource(R.string.app_name)) }
+                title = { Text(stringResource(R.string.keep_screen_on)) }
             )
         }
     ) {padding ->
@@ -75,7 +75,7 @@ fun KeepScreenOnApp() {
                     val statusBarService = context.getSystemService(StatusBarManager::class.java)
                     statusBarService.requestAddTileService(
                         ComponentName(context, QSTileService::class.java.name),
-                        context.getString(R.string.screen_timeout),
+                        context.getString(R.string.keep_screen_on),
                         Icon.createWithResource(context,R.drawable.outline_lock_clock_qs),
                         {}) {}
                 }) {
