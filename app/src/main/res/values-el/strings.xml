@@ -1,0 +1,8 @@
+<resources>
+    <string name="keep_screen_on">Ενεργή Οθόνη</string>
+    <string name="grant_permission">Εκχώρηση άδειας</string>
+    <string name="permission_description">Για να μπορέσετε να ορίσετε το χρονικό όριο της οθόνης, πρέπει να εκχωρηθεί η άδεια τροποποίησης ρυθμίσεων συστήματος στην εφαρμογή.</string>
+    <string name="add_tile_instructions">Για να προσθέσετε το πλακίδιο γρήγορων ρυθμίσεων, \n 1) Μεταβείτε στον πίνακα γρήγορων ρυθμίσεων, \n 2) Πατήστε τροποποιήση \n 3) Βρείτε το πλακίδιο της Ενεργής Οθόνης, \n 4) Σύρετε το πλακίδιο στη θέση που επιθυμείτε.</string>
+    <string name="add_qs_tile">Προσθήκη πλακιδίου γρήγορων ρυθμίσεων</string>
+    <string name="dismiss">Κλείσιμο</string>
+</resources>
