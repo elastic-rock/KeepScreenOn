@@ -27,7 +27,7 @@ class QSTileService : TileService() {
 
     private lateinit var dataStore: DataStore<Preferences>
 
-    private val screenTimeoutPreferenceFlow by lazy { dataStore.data.map { preferences -> preferences[PreferencesKeys.PREVIOUS_SCREEN_TIMEOUT] ?: 0 } }
+    private val screenTimeoutPreferenceFlow by lazy { dataStore.data.map { preferences -> preferences[PreferencesKeys.PREVIOUS_SCREEN_TIMEOUT] ?: 120000 } }
 
     override fun onCreate() {
         super.onCreate()
