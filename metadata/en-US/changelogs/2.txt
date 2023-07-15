@@ -1,0 +1,3 @@
+ - Change tile activation indication (tile is no longer active when screen timeout is set from settings but is active when screen timeout is set to never by the app)
+ - Fix bug that would cause an issue if the app didn't have a previous value to restore
+ - Greek translation (thanks to VasilisKos)
