@@ -1,0 +1,3 @@
+ - Bring back screen timeout values in the tile subtitle
+ - Improve the architecture of storing screen timeout values for restoring
+ - Reduce apk size to hopefully fix the app size bug
