@@ -13,26 +13,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
 
 class QSTileService : TileService() {
 
-    object PreferencesKeys {
-        val PREVIOUS_SCREEN_TIMEOUT = intPreferencesKey("previous_screen_timeout")
-    }
-
-    private lateinit var dataStore: DataStore<Preferences>
-
-    private val screenTimeoutPreferenceFlow by lazy { dataStore.data.map { preferences -> preferences[PreferencesKeys.PREVIOUS_SCREEN_TIMEOUT] ?: 120000 } }
-
-    override fun onCreate() {
-        super.onCreate()
-        dataStore = applicationContext.dataStore
-    }
+    private val previousScreenTimeout = intPreferencesKey("previous_screen_timeout")
 
     private var isPermissionGranted = false
     private var screenTimeout = 0
@@ -92,21 +82,20 @@ class QSTileService : TileService() {
     private fun disableScreenTimeout() {
         runBlocking {
             dataStore.edit { preferences ->
-                preferences[PreferencesKeys.PREVIOUS_SCREEN_TIMEOUT] = screenTimeout
+                preferences[previousScreenTimeout] = screenTimeout
             }
         }
-        Settings.System.putInt(
-            contentResolver,
-            Settings.System.SCREEN_OFF_TIMEOUT,
-            2147483647
-        )
+        Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647)
     }
 
     private fun enableScreenTimeout() {
         runBlocking {
-            val previousScreenTimeout = screenTimeoutPreferenceFlow.first()
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, previousScreenTimeout)
-            screenTimeout = previousScreenTimeout
+            val restoredScreenTimeout: Flow<Int> = dataStore.data
+                .map { preferences ->
+                    preferences[previousScreenTimeout] ?: 120000
+                }
+            Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, restoredScreenTimeout.first())
+            screenTimeout = restoredScreenTimeout.first()
         }
     }
 }
