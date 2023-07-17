@@ -68,14 +68,18 @@ class QSTileService : TileService() {
     private fun disabled() {
         qsTile.state = Tile.STATE_INACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            qsTile.subtitle = getString(androidx.compose.ui.R.string.off)
+            if (screenTimeout < 60000) {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
+            } else {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
+            }
         }
     }
 
     private fun enabled() {
         qsTile.state = Tile.STATE_ACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            qsTile.subtitle = getString(androidx.compose.ui.R.string.on)
+            qsTile.subtitle = getString(R.string.never)
         }
     }
 
