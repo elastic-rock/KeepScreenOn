@@ -16,5 +16,5 @@
         <item quantity="few">%d minuty</item>
         <item quantity="other">%d minut</item>
     </plurals>
-    <string name="never">Nikdy</string>
+    <string name="always">Vždy</string>
 </resources>

@@ -13,5 +13,5 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
-    <string name="never">Never</string>
+    <string name="always">Always</string>
 </resources>

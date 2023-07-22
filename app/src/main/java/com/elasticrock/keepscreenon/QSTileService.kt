@@ -79,7 +79,7 @@ class QSTileService : TileService() {
     private fun enabled() {
         qsTile.state = Tile.STATE_ACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            qsTile.subtitle = getString(R.string.never)
+            qsTile.subtitle = getString(R.string.always)
         }
     }
 
