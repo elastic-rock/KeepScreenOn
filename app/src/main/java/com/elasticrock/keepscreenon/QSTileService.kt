@@ -29,20 +29,18 @@ class QSTileService : TileService() {
 
     override fun onStartListening() {
         super.onStartListening()
-        isPermissionGranted = false
+        isPermissionGranted = Settings.System.canWrite(applicationContext)
         qsTile.label = getString(R.string.keep_screen_on)
-        if (Settings.System.canWrite(applicationContext)) {
-            isPermissionGranted = true
-            screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
-        }
         if (!isPermissionGranted) {
             qsTile.state = Tile.STATE_INACTIVE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
-        } else if (screenTimeout == 2147483647) {
+        } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
+            screenTimeout = 2147483647
             enabled()
         } else {
+            screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
             disabled()
         }
         qsTile.updateTile()
@@ -55,12 +53,12 @@ class QSTileService : TileService() {
             grantPermission.addFlags(FLAG_ACTIVITY_NEW_TASK)
             grantPermission.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
             startActivityAndCollapse(grantPermission)
-        } else if (qsTile.state == Tile.STATE_INACTIVE) {
-            disableScreenTimeout()
-            enabled()
-        } else {
-            enableScreenTimeout()
+        } else if (screenTimeout == 2147483647) {
+            restoreScreenTimeout()
             disabled()
+        } else {
+            setScreenTimeoutToNever()
+            enabled()
         }
         qsTile.updateTile()
     }
@@ -83,16 +81,17 @@ class QSTileService : TileService() {
         }
     }
 
-    private fun disableScreenTimeout() {
+    private fun setScreenTimeoutToNever() {
         runBlocking {
             dataStore.edit { preferences ->
                 preferences[previousScreenTimeout] = screenTimeout
             }
         }
         Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647)
+        screenTimeout = 2147483647
     }
 
-    private fun enableScreenTimeout() {
+    private fun restoreScreenTimeout() {
         runBlocking {
             val restoredScreenTimeout: Flow<Int> = dataStore.data
                 .map { preferences ->
