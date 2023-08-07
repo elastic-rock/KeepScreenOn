@@ -13,7 +13,7 @@ android {
         targetSdk 33
         versionCode 5
         versionName "1.4.0"
-        resourceConfigurations += ["cs", "en-rUS", "el-rGR"]
+        resourceConfigurations += ["cs", "en-rUS", "el-rGR", "fr-rFR"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
