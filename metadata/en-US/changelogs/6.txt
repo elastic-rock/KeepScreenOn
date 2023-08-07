@@ -1,0 +1,4 @@
+ - Update dependencies
+ - Improved code structure for TileService
+ - French translation
+ - Screenshots in F-Droid for all supported languages
