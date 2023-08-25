@@ -1,5 +1,9 @@
 package com.elasticrock.keepscreenon
 
+import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -24,36 +28,36 @@ class QSTileService : TileService() {
 
     private val previousScreenTimeout = intPreferencesKey("previous_screen_timeout")
 
-    private var isPermissionGranted = false
-    private var screenTimeout = 0
-
     override fun onStartListening() {
         super.onStartListening()
-        isPermissionGranted = Settings.System.canWrite(applicationContext)
         qsTile.label = getString(R.string.keep_screen_on)
-        if (!isPermissionGranted) {
+        if (!Settings.System.canWrite(applicationContext)) {
             qsTile.state = Tile.STATE_INACTIVE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
-            screenTimeout = 2147483647
             enabled()
         } else {
-            screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
             disabled()
         }
         qsTile.updateTile()
     }
 
+    @SuppressLint("StartActivityAndCollapseDeprecated")
     override fun onClick() {
         super.onClick()
-        if (!isPermissionGranted) {
-            val grantPermission = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-            grantPermission.addFlags(FLAG_ACTIVITY_NEW_TASK)
-            grantPermission.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-            startActivityAndCollapse(grantPermission)
-        } else if (screenTimeout == 2147483647) {
+        if (!Settings.System.canWrite(applicationContext)) {
+            val grantPermissionIntent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, grantPermissionIntent, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
+            } else {
+                grantPermissionIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                grantPermissionIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
+                @Suppress("DEPRECATION")
+                startActivityAndCollapse(grantPermissionIntent)
+            }
+        } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
             restoreScreenTimeout()
             disabled()
         } else {
@@ -65,6 +69,7 @@ class QSTileService : TileService() {
 
     private fun disabled() {
         qsTile.state = Tile.STATE_INACTIVE
+        val screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (screenTimeout < 60000) {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
@@ -84,11 +89,10 @@ class QSTileService : TileService() {
     private fun setScreenTimeoutToNever() {
         runBlocking {
             dataStore.edit { preferences ->
-                preferences[previousScreenTimeout] = screenTimeout
+                preferences[previousScreenTimeout] = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
             }
         }
         Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647)
-        screenTimeout = 2147483647
     }
 
     private fun restoreScreenTimeout() {
@@ -98,7 +102,6 @@ class QSTileService : TileService() {
                     preferences[previousScreenTimeout] ?: 120000
                 }
             Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, restoredScreenTimeout.first())
-            screenTimeout = restoredScreenTimeout.first()
         }
     }
 }
