@@ -62,7 +62,6 @@ class QSTileService : TileService() {
             }
             qsTile.updateTile()
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
-            startService(Intent(this, BroadcastReceiverService::class.java))
             runBlocking {
                 launch { restoreScreenTimeout() }
                 inactiveState()
@@ -71,6 +70,9 @@ class QSTileService : TileService() {
             runBlocking { 
                 launch { setScreenTimeoutToNever() }
                 activeState()
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                applicationContext.startForegroundService(Intent(this, BroadcastReceiverService::class.java))
             }
         }
     }
