@@ -16,11 +16,14 @@ import androidx.lifecycle.LifecycleService
 
 class BroadcastReceiverService : LifecycleService() {
 
+    private val batteryLowReceiver = BatteryLowReceiver()
+    private val screenOffReceiver = ScreenOffReceiver()
+
     override fun onCreate() {
         super.onCreate()
         Log.d("BroadcastReceiverService","onCreate")
-        ContextCompat.registerReceiver(applicationContext, BatteryLowReceiver(), IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
-        ContextCompat.registerReceiver(applicationContext, ScreenOffReceiver(), IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -31,7 +34,7 @@ class BroadcastReceiverService : LifecycleService() {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
 
-            val notification: Notification = Notification.Builder(this, "test")
+            val notification: Notification = Notification.Builder(this, "foreground_service")
                 .setContentTitle(getString(R.string.listening_for_battery_low_action))
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)
                 .build()
@@ -67,7 +70,7 @@ class BroadcastReceiverService : LifecycleService() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d("BroadcastReceiverService","onDestroy")
-//        unregisterReceiver(BatteryLowReceiver())
-//        unregisterReceiver(ScreenOffReceiver())
+        unregisterReceiver(batteryLowReceiver)
+        unregisterReceiver(screenOffReceiver)
     }
 }
