@@ -12,6 +12,7 @@ import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -20,7 +21,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.IOException
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
 
@@ -36,12 +39,12 @@ class QSTileService : TileService() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
+            qsTile.updateTile()
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
-            enabled()
+            activeState()
         } else {
-            disabled()
+            inactiveState()
         }
-        qsTile.updateTile()
     }
 
     @SuppressLint("StartActivityAndCollapseDeprecated")
@@ -57,17 +60,19 @@ class QSTileService : TileService() {
                 @Suppress("DEPRECATION")
                 startActivityAndCollapse(grantPermissionIntent)
             }
+            qsTile.updateTile()
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
-            restoreScreenTimeout()
-            disabled()
+            runBlocking { restoreScreenTimeout() }
+            inactiveState()
         } else {
-            setScreenTimeoutToNever()
-            enabled()
+            runBlocking { 
+                launch { setScreenTimeoutToNever() }
+                activeState()
+            }
         }
-        qsTile.updateTile()
     }
 
-    private fun disabled() {
+    private fun inactiveState() {
         qsTile.state = Tile.STATE_INACTIVE
         val screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -77,31 +82,33 @@ class QSTileService : TileService() {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
             }
         }
+        qsTile.updateTile()
     }
 
-    private fun enabled() {
+    private fun activeState() {
         qsTile.state = Tile.STATE_ACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             qsTile.subtitle = getString(R.string.always)
         }
+        qsTile.updateTile()
     }
 
-    private fun setScreenTimeoutToNever() {
-        runBlocking {
+    private suspend fun setScreenTimeoutToNever() {
+        try {
             dataStore.edit { preferences ->
                 preferences[previousScreenTimeout] = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
             }
+            Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647)
+        } catch (e: IOException) {
+            Log.e("QS","Error writing screen timeout value")
         }
-        Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647)
     }
 
-    private fun restoreScreenTimeout() {
-        runBlocking {
-            val restoredScreenTimeout: Flow<Int> = dataStore.data
-                .map { preferences ->
-                    preferences[previousScreenTimeout] ?: 120000
-                }
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, restoredScreenTimeout.first())
-        }
+    private suspend fun restoreScreenTimeout() {
+        val restoredScreenTimeout: Flow<Int> = dataStore.data
+            .map { preferences ->
+                preferences[previousScreenTimeout] ?: 120000
+            }
+        Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, restoredScreenTimeout.first())
     }
 }
