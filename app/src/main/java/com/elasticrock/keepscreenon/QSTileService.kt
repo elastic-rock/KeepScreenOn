@@ -64,10 +64,14 @@ class QSTileService : TileService() {
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
             runBlocking { restoreScreenTimeout() }
             inactiveState()
+            stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
             runBlocking { 
                 launch { setScreenTimeoutToNever() }
                 activeState()
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                applicationContext.startForegroundService(Intent(this, BroadcastReceiverService::class.java))
             }
         }
     }

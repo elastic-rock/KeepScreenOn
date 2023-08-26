@@ -3,7 +3,6 @@ package com.elasticrock.keepscreenon
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -22,17 +21,10 @@ class BroadcastReceiverService : LifecycleService() {
         Log.d("BroadcastReceiverService","onCreate")
         ContextCompat.registerReceiver(applicationContext, BatteryLowReceiver(), IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
         ContextCompat.registerReceiver(applicationContext, ScreenOffReceiver(), IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val pendingIntent: PendingIntent =
-                Intent(this, BroadcastReceiverService::class.java).let { notificationIntent ->
-                    PendingIntent.getActivity(this, 0, notificationIntent,
-                        PendingIntent.FLAG_IMMUTABLE)
-                }
-
             val name = getString(R.string.foreground_service)
             val importance = NotificationManager.IMPORTANCE_LOW
             val mChannel = NotificationChannel("foreground_service", name, importance)
@@ -40,10 +32,8 @@ class BroadcastReceiverService : LifecycleService() {
             notificationManager.createNotificationChannel(mChannel)
 
             val notification: Notification = Notification.Builder(this, "test")
-                .setContentTitle("Title")
-                .setContentText("Text")
+                .setContentTitle(getString(R.string.listening_for_battery_low_action))
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)
-                .setContentIntent(pendingIntent)
                 .build()
 
             startForeground(1, notification)
@@ -51,15 +41,11 @@ class BroadcastReceiverService : LifecycleService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(BatteryLowReceiver())
-        unregisterReceiver(ScreenOffReceiver())
-    }
     private inner class BatteryLowReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_BATTERY_LOW) {
                 Log.d("BroadcastReceiverService","ACTION_BATTERY_LOW")
+                stopForegroundService()
             }
         }
     }
@@ -68,7 +54,20 @@ class BroadcastReceiverService : LifecycleService() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_SCREEN_OFF) {
                 Log.d("BroadcastReceiverService","ACTION_SCREEN_OFF")
+                stopForegroundService()
             }
         }
+    }
+
+    private fun stopForegroundService() {
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("BroadcastReceiverService","onDestroy")
+//        unregisterReceiver(BatteryLowReceiver())
+//        unregisterReceiver(ScreenOffReceiver())
     }
 }
