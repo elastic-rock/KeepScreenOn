@@ -54,7 +54,15 @@ class BroadcastReceiverService : LifecycleService() {
             notificationManager.createNotificationChannel(mChannel)
 
             val notification: Notification = Notification.Builder(this, "foreground_service")
-                .setContentTitle(getString(R.string.listening_for_battery_low_action))
+                .setContentTitle(
+                    if (monitorBatteryLow) {
+                        getString(R.string.listening_for_battery_low_action)
+                    } else if (monitorScreenOff){
+                        getString(R.string.listening_for_screen_off_action)
+                    } else {
+                        getString(R.string.listening_for_battery_low_and_screen_off_actions)
+                    }
+                )
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)
                 .build()
             startForeground(1, notification)

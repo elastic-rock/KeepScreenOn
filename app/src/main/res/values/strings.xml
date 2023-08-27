@@ -17,4 +17,5 @@
     <string name="foreground_service">Foreground service</string>
     <string name="listening_for_battery_low_action">Listening for battery low action</string>
     <string name="listening_for_screen_off_action">Listening for screen off action</string>
+    <string name="listening_for_battery_low_and_screen_off_actions">Listening for battery low and screen off actions</string>
 </resources>
