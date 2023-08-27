@@ -38,7 +38,12 @@ class BroadcastReceiverService : LifecycleService() {
                 .setContentTitle(getString(R.string.listening_for_battery_low_action))
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)
                 .build()
-
+            startForeground(1, notification)
+        } else {
+            @Suppress("DEPRECATION") val notification: Notification = Notification.Builder(this)
+                .setContentTitle(getString(R.string.listening_for_battery_low_action))
+                .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                .build()
             startForeground(1, notification)
         }
         return super.onStartCommand(intent, flags, startId)

@@ -72,6 +72,8 @@ class QSTileService : TileService() {
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 applicationContext.startForegroundService(Intent(this, BroadcastReceiverService::class.java))
+            } else {
+                startService(Intent(this, BroadcastReceiverService::class.java))
             }
         }
     }
