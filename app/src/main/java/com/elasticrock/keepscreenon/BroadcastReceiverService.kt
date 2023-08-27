@@ -27,9 +27,11 @@ class BroadcastReceiverService : LifecycleService() {
     private val batteryLowReceiver = BatteryLowReceiver()
     private val screenOffReceiver = ScreenOffReceiver()
 
+    private val tag = "BroadcastReceiverService"
+
     override fun onCreate() {
         super.onCreate()
-        Log.d("BroadcastReceiverService","onCreate")
+        Log.d(tag,"onCreate")
         ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
         ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
     }
@@ -60,7 +62,7 @@ class BroadcastReceiverService : LifecycleService() {
     private inner class BatteryLowReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_BATTERY_LOW) {
-                Log.d("BroadcastReceiverService","ACTION_BATTERY_LOW")
+                Log.d(tag,"ACTION_BATTERY_LOW")
                 runBlocking { restoreScreenTimeout() }
                 stopForegroundService()
             }
@@ -70,7 +72,7 @@ class BroadcastReceiverService : LifecycleService() {
     private inner class ScreenOffReceiver: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_SCREEN_OFF) {
-                Log.d("BroadcastReceiverService","ACTION_SCREEN_OFF")
+                Log.d(tag,"ACTION_SCREEN_OFF")
                 runBlocking { restoreScreenTimeout() }
                 stopForegroundService()
             }
@@ -88,7 +90,7 @@ class BroadcastReceiverService : LifecycleService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("BroadcastReceiverService","onDestroy")
+        Log.d(tag,"onDestroy")
         unregisterReceiver(batteryLowReceiver)
         unregisterReceiver(screenOffReceiver)
     }

@@ -23,7 +23,6 @@ class QSTileService : TileService() {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
 
-
     override fun onStartListening() {
         super.onStartListening()
         qsTile.label = getString(R.string.keep_screen_on)
