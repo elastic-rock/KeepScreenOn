@@ -12,24 +12,17 @@ import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.io.IOException
-
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
 
 class QSTileService : TileService() {
 
-    private val previousScreenTimeout = intPreferencesKey("previous_screen_timeout")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
+
 
     override fun onStartListening() {
         super.onStartListening()
@@ -62,13 +55,15 @@ class QSTileService : TileService() {
             }
             qsTile.updateTile()
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
-            runBlocking { restoreScreenTimeout() }
+            runBlocking { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, UserPreferencesRepository(dataStore).readScreenTimeout.first()) }
             inactiveState()
             stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
-            runBlocking { 
-                launch { setScreenTimeoutToNever() }
-                activeState()
+            runBlocking {
+                val screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
+                launch { activeState() }
+                launch { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647) }
+                launch { UserPreferencesRepository(dataStore).saveScreenTimeout(screenTimeout) }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 applicationContext.startForegroundService(Intent(this, BroadcastReceiverService::class.java))
@@ -97,24 +92,5 @@ class QSTileService : TileService() {
             qsTile.subtitle = getString(R.string.always)
         }
         qsTile.updateTile()
-    }
-
-    private suspend fun setScreenTimeoutToNever() {
-        try {
-            dataStore.edit { preferences ->
-                preferences[previousScreenTimeout] = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
-            }
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647)
-        } catch (e: IOException) {
-            Log.e("QS","Error writing screen timeout value")
-        }
-    }
-
-    private suspend fun restoreScreenTimeout() {
-        val restoredScreenTimeout: Flow<Int> = dataStore.data
-            .map { preferences ->
-                preferences[previousScreenTimeout] ?: 120000
-            }
-        Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, restoredScreenTimeout.first())
     }
 }
