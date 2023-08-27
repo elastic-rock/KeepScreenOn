@@ -22,16 +22,14 @@ import kotlinx.coroutines.runBlocking
 class QSTileService : TileService() {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
-    private val userPreferencesRepository = UserPreferencesRepository(dataStore)
-
     override fun onTileAdded() {
         super.onTileAdded()
-        runBlocking { userPreferencesRepository.saveIsTileAdded(true) }
+        runBlocking { UserPreferencesRepository(dataStore).saveIsTileAdded(true) }
     }
 
     override fun onTileRemoved() {
         super.onTileRemoved()
-        runBlocking { userPreferencesRepository.saveIsTileAdded(false) }
+        runBlocking { UserPreferencesRepository(dataStore).saveIsTileAdded(false) }
     }
     override fun onStartListening() {
         super.onStartListening()
@@ -64,7 +62,7 @@ class QSTileService : TileService() {
             }
             qsTile.updateTile()
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
-            runBlocking { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, userPreferencesRepository.readScreenTimeout.first()) }
+            runBlocking { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, UserPreferencesRepository(dataStore).readScreenTimeout.first()) }
             inactiveState()
             stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
@@ -72,10 +70,10 @@ class QSTileService : TileService() {
                 val screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
                 launch { activeState() }
                 launch { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647) }
-                launch { userPreferencesRepository.saveScreenTimeout(screenTimeout) }
+                launch { UserPreferencesRepository(dataStore).saveScreenTimeout(screenTimeout) }
             }
-            val listenForBatteryLow = runBlocking { userPreferencesRepository.readListenForBatteryLow.first() }
-            val listenForScreenOff = runBlocking { userPreferencesRepository.readListenForScreenOff.first() }
+            val listenForBatteryLow = runBlocking { UserPreferencesRepository(dataStore).readListenForBatteryLow.first() }
+            val listenForScreenOff = runBlocking { UserPreferencesRepository(dataStore).readListenForScreenOff.first() }
             if (listenForBatteryLow && listenForScreenOff) {
                 val intent = Intent()
                     .setClass(this, BroadcastReceiverService::class.java)
