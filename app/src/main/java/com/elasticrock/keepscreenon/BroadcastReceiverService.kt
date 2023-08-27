@@ -36,11 +36,20 @@ class BroadcastReceiverService : LifecycleService() {
 
         Log.d(tag,"onStartCommand")
 
+        if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF") {
+            Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF")
+            monitorBatteryLow = true
+            monitorScreenOff = true
+            ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
+            ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
+        }
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW") {
+            Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
             monitorBatteryLow = true
             ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
         }
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF") {
+            Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
             monitorScreenOff = true
             ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
         }
@@ -54,12 +63,12 @@ class BroadcastReceiverService : LifecycleService() {
 
             val notification: Notification = Notification.Builder(this, "foreground_service")
                 .setContentTitle(
-                    if (monitorBatteryLow) {
-                        getString(R.string.listening_for_battery_low_action)
-                    } else if (monitorScreenOff){
-                        getString(R.string.listening_for_screen_off_action)
-                    } else {
+                    if (monitorBatteryLow && monitorScreenOff) {
                         getString(R.string.listening_for_battery_low_and_screen_off_actions)
+                    } else if (monitorBatteryLow){
+                        getString(R.string.listening_for_battery_low_action)
+                    } else {
+                        getString(R.string.listening_for_screen_off_action)
                     }
                 )
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)

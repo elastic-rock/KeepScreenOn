@@ -66,12 +66,12 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
 
     val readListenForBatteryLow: Flow<Boolean> = dataStore.data
         .map { preferences ->
-            preferences[listenForBatteryLowKey] ?: false
+            preferences[listenForBatteryLowKey] ?: true
         }
 
     val readListenForScreenOff: Flow<Boolean> = dataStore.data
         .map { preferences ->
-            preferences[listenForScreenOffKey] ?: false
+            preferences[listenForScreenOffKey] ?: true
         }
 
     val readIsTileAdded: Flow<Boolean> = dataStore.data

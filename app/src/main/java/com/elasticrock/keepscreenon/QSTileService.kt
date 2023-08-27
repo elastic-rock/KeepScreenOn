@@ -12,6 +12,7 @@ import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -22,6 +23,8 @@ import kotlinx.coroutines.runBlocking
 class QSTileService : TileService() {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
+
+    private val tag = "QSTileService"
     override fun onTileAdded() {
         super.onTileAdded()
         runBlocking { UserPreferencesRepository(dataStore).saveIsTileAdded(true) }
@@ -33,6 +36,7 @@ class QSTileService : TileService() {
     }
     override fun onStartListening() {
         super.onStartListening()
+        Log.d(tag,"onStartListening")
         qsTile.label = getString(R.string.keep_screen_on)
         if (!Settings.System.canWrite(applicationContext)) {
             qsTile.state = Tile.STATE_INACTIVE
@@ -50,6 +54,7 @@ class QSTileService : TileService() {
     @SuppressLint("StartActivityAndCollapseDeprecated")
     override fun onClick() {
         super.onClick()
+        Log.d(tag,"onClick")
         if (!Settings.System.canWrite(applicationContext)) {
             val grantPermissionIntent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -75,22 +80,10 @@ class QSTileService : TileService() {
             val listenForBatteryLow = runBlocking { UserPreferencesRepository(dataStore).readListenForBatteryLow.first() }
             val listenForScreenOff = runBlocking { UserPreferencesRepository(dataStore).readListenForScreenOff.first() }
             if (listenForBatteryLow && listenForScreenOff) {
+                Log.d(tag,"listenForBatteryLow && listenForScreenOff")
                 val intent = Intent()
                     .setClass(this, BroadcastReceiverService::class.java)
-                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
-                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
-                startBroadcastReceiverService(intent)
-            }
-            if (listenForBatteryLow) {
-                val intent = Intent()
-                    .setClass(this, BroadcastReceiverService::class.java)
-                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
-                startBroadcastReceiverService(intent)
-            }
-            if (listenForScreenOff) {
-                val intent = Intent()
-                    .setClass(this, BroadcastReceiverService::class.java)
-                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
+                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF")
                 startBroadcastReceiverService(intent)
             }
         }
