@@ -23,6 +23,7 @@ import kotlinx.coroutines.runBlocking
 class BroadcastReceiverService : LifecycleService() {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
+    private val userPreferencesRepository = UserPreferencesRepository(dataStore)
 
     private val batteryLowReceiver = BatteryLowReceiver()
     private val screenOffReceiver = ScreenOffReceiver()
@@ -80,7 +81,7 @@ class BroadcastReceiverService : LifecycleService() {
     }
 
     private suspend fun restoreScreenTimeout() {
-        Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, UserPreferencesRepository(dataStore).readScreenTimeout.first())
+        Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, userPreferencesRepository.readScreenTimeout.first())
     }
 
     private fun stopForegroundService() {

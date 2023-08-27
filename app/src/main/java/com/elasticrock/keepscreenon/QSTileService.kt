@@ -22,7 +22,17 @@ import kotlinx.coroutines.runBlocking
 class QSTileService : TileService() {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
+    private val userPreferencesRepository = UserPreferencesRepository(dataStore)
 
+    override fun onTileAdded() {
+        super.onTileAdded()
+        runBlocking { userPreferencesRepository.saveIsTileAdded(true) }
+    }
+
+    override fun onTileRemoved() {
+        super.onTileRemoved()
+        runBlocking { userPreferencesRepository.saveIsTileAdded(false) }
+    }
     override fun onStartListening() {
         super.onStartListening()
         qsTile.label = getString(R.string.keep_screen_on)
@@ -54,7 +64,7 @@ class QSTileService : TileService() {
             }
             qsTile.updateTile()
         } else if (Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT) == 2147483647) {
-            runBlocking { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, UserPreferencesRepository(dataStore).readScreenTimeout.first()) }
+            runBlocking { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, userPreferencesRepository.readScreenTimeout.first()) }
             inactiveState()
             stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
@@ -62,7 +72,7 @@ class QSTileService : TileService() {
                 val screenTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
                 launch { activeState() }
                 launch { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647) }
-                launch { UserPreferencesRepository(dataStore).saveScreenTimeout(screenTimeout) }
+                launch { userPreferencesRepository.saveScreenTimeout(screenTimeout) }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 applicationContext.startForegroundService(Intent(this, BroadcastReceiverService::class.java))
