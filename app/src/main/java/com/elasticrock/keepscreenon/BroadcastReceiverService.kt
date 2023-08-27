@@ -30,14 +30,22 @@ class BroadcastReceiverService : LifecycleService() {
 
     private val tag = "BroadcastReceiverService"
 
-    override fun onCreate() {
-        super.onCreate()
-        Log.d(tag,"onCreate")
-        ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
-        ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
-    }
+    private var monitorBatteryLow = false
+    private var monitorScreenOff = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        Log.d(tag,"onStartCommand")
+
+        if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW") {
+            monitorBatteryLow = true
+            ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
+        }
+        if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF") {
+            monitorScreenOff = true
+            ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.foreground_service)
             val importance = NotificationManager.IMPORTANCE_LOW
@@ -92,7 +100,11 @@ class BroadcastReceiverService : LifecycleService() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(tag,"onDestroy")
-        unregisterReceiver(batteryLowReceiver)
-        unregisterReceiver(screenOffReceiver)
+        if (monitorBatteryLow) {
+            unregisterReceiver(batteryLowReceiver)
+        }
+        if (monitorScreenOff) {
+            unregisterReceiver(screenOffReceiver)
+        }
     }
 }

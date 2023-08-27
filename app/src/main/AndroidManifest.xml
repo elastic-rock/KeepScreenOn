@@ -39,10 +39,15 @@
 
         <service
             android:name=".BroadcastReceiverService"
-            android:foregroundServiceType="specialUse" >
+            android:foregroundServiceType="specialUse"
+            android:exported="false">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Listen for ACTION_SCREEN_OFF and ACTION_BATTERY_LOW" />
+            <intent-filter>
+                <action android:name="com.elasticrock.keepscreenon.BroadcastReceiverService.ACTION_MONITOR_BATTERY_LOW" />
+                <action android:name="com.elasticrock.keepscreenon.BroadcastReceiverService.ACTION_MONITOR_SCREEN_OFF" />
+            </intent-filter>
         </service>
     </application>
 

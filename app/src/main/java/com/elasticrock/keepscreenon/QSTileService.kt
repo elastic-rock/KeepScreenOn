@@ -74,10 +74,26 @@ class QSTileService : TileService() {
                 launch { Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 2147483647) }
                 launch { userPreferencesRepository.saveScreenTimeout(screenTimeout) }
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                applicationContext.startForegroundService(Intent(this, BroadcastReceiverService::class.java))
-            } else {
-                startService(Intent(this, BroadcastReceiverService::class.java))
+            val listenForBatteryLow = runBlocking { userPreferencesRepository.readListenForBatteryLow.first() }
+            val listenForScreenOff = runBlocking { userPreferencesRepository.readListenForScreenOff.first() }
+            if (listenForBatteryLow && listenForScreenOff) {
+                val intent = Intent()
+                    .setClass(this, BroadcastReceiverService::class.java)
+                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
+                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
+                startBroadcastReceiverService(intent)
+            }
+            if (listenForBatteryLow) {
+                val intent = Intent()
+                    .setClass(this, BroadcastReceiverService::class.java)
+                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
+                startBroadcastReceiverService(intent)
+            }
+            if (listenForScreenOff) {
+                val intent = Intent()
+                    .setClass(this, BroadcastReceiverService::class.java)
+                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
+                startBroadcastReceiverService(intent)
             }
         }
     }
@@ -101,5 +117,13 @@ class QSTileService : TileService() {
             qsTile.subtitle = getString(R.string.always)
         }
         qsTile.updateTile()
+    }
+
+    private fun startBroadcastReceiverService(intent: Intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            applicationContext.startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
     }
 }
