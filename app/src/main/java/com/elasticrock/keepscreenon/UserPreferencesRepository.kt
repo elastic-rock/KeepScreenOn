@@ -20,6 +20,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
     private val tag = "UserPreferencesRepository"
 
     suspend fun saveListenForBatteryLow(listenForBatteryLow: Boolean) {
+        Log.d(tag, "saveListenForBatteryLow $listenForBatteryLow")
         try {
             dataStore.edit { preferences ->
                 preferences[listenForBatteryLowKey] = listenForBatteryLow
@@ -30,6 +31,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
     }
 
     suspend fun saveListenForScreenOff(listenForScreenOff: Boolean) {
+        Log.d(tag, "saveListenForScreenOff $listenForScreenOff")
         try {
             dataStore.edit { preferences ->
                 preferences[listenForScreenOffKey] = listenForScreenOff

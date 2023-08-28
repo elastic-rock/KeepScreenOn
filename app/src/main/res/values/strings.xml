@@ -18,4 +18,7 @@
     <string name="listening_for_battery_low_action">Listening for battery low action</string>
     <string name="listening_for_screen_off_action">Listening for screen off action</string>
     <string name="listening_for_battery_low_and_screen_off_actions">Listening for battery low and screen off actions</string>
+    <string name="tile_already_added">Tile already added</string>
+    <string name="restrore_timeout_when_battery_low">Restore timeout when battery low</string>
+    <string name="restore_timeout_when_screen_is_turned_off">Restore timeout when screen is turned off</string>
 </resources>
