@@ -20,9 +20,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class QSTileService : TileService() {
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
+class QSTileService : TileService() {
 
     private val tag = "QSTileService"
     override fun onTileAdded() {

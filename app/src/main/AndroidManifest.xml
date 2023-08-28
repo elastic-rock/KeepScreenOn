@@ -15,6 +15,7 @@
         tools:targetApi="33" >
         <activity
             android:name=".MainActivity"
+            android:process=":mainactivity"
             android:exported="true"
             android:theme="@style/Theme.KeepScreenOn" >
             <intent-filter>
@@ -25,6 +26,7 @@
 
         <service
             android:name=".QSTileService"
+            android:process=":qstileservice"
             android:exported="true"
             android:icon="@drawable/outline_lock_clock_qs"
             android:label="@string/keep_screen_on"
@@ -39,6 +41,7 @@
 
         <service
             android:name=".BroadcastReceiverService"
+            android:process=":broadcastreceiverservice"
             android:foregroundServiceType="specialUse"
             android:exported="false">
             <property

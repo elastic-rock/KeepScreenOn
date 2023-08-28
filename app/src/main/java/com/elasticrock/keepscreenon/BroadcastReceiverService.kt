@@ -20,9 +20,9 @@ import androidx.lifecycle.LifecycleService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
-class BroadcastReceiverService : LifecycleService() {
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
+class BroadcastReceiverService : LifecycleService() {
 
     private val batteryLowReceiver = BatteryLowReceiver()
     private val screenOffReceiver = ScreenOffReceiver()
