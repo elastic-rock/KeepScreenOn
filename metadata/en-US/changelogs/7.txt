@@ -1,0 +1,2 @@
+ - Target API 34 (Android 14)
+ - Fix bug that would sometimes cause the tile to open the grant permission screen even though the permission was granted
