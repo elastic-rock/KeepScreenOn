@@ -43,6 +43,7 @@ class QSTileService : TileService() {
         } else {
             inactiveState(ScreenTimeoutUtils().readScreenTimeout(contentResolver))
         }
+        UserPreferencesRepository().saveIsTileAdded(applicationContext, true)
     }
 
 
