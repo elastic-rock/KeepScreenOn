@@ -10,17 +10,9 @@ import android.content.Intent.ACTION_BATTERY_LOW
 import android.content.Intent.ACTION_SCREEN_OFF
 import android.content.IntentFilter
 import android.os.Build
-import android.provider.Settings
 import android.util.Log
 import androidx.core.content.ContextCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LifecycleService
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
 
 class BroadcastReceiverService : LifecycleService() {
 
@@ -88,7 +80,7 @@ class BroadcastReceiverService : LifecycleService() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_BATTERY_LOW) {
                 Log.d(tag,"ACTION_BATTERY_LOW")
-                runBlocking { restoreScreenTimeout() }
+                restoreScreenTimeout()
                 stopForegroundService()
             }
         }
@@ -98,14 +90,14 @@ class BroadcastReceiverService : LifecycleService() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_SCREEN_OFF) {
                 Log.d(tag,"ACTION_SCREEN_OFF")
-                runBlocking { restoreScreenTimeout() }
+                restoreScreenTimeout()
                 stopForegroundService()
             }
         }
     }
 
-    private suspend fun restoreScreenTimeout() {
-        Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, UserPreferencesRepository(dataStore).readScreenTimeout.first())
+    private fun restoreScreenTimeout() {
+        ScreenTimeoutUtils().restoreScreenTimeout(applicationContext, contentResolver)
     }
 
     private fun stopForegroundService() {

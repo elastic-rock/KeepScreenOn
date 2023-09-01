@@ -2,7 +2,6 @@ package com.elasticrock.keepscreenon
 
 import android.app.StatusBarManager
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Build
@@ -36,15 +35,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "screen_timeout")
-val tag = "MainActivity"
+const val tag = "MainActivity"
 
 class MainActivity : ComponentActivity() {
 
@@ -54,7 +47,7 @@ class MainActivity : ComponentActivity() {
             KeepScreenOnTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    KeepScreenOnApp(dataStore)
+                    KeepScreenOnApp()
                     if (!Settings.System.canWrite(applicationContext)) {
                         GrantPermissionDialog()
                     }
@@ -66,7 +59,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
+fun KeepScreenOnApp() {
     val context = LocalContext.current
     Scaffold(Modifier.fillMaxSize(),
         topBar = {
@@ -82,7 +75,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (runBlocking { UserPreferencesRepository(dataStore).readIsTileAdded.first() }) {
+            if (UserPreferencesRepository().readIsTileAdded(context)) {
                 Text(text = stringResource(id = (R.string.tile_already_added)))
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -103,27 +96,25 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
             }
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                var checked by remember { mutableStateOf(runBlocking { UserPreferencesRepository(dataStore).readListenForBatteryLow.first() }) }
-
+                var checked by remember { mutableStateOf(UserPreferencesRepository().readListenForBatteryLow(context)) }
                 Text(text = stringResource(id = (R.string.restrore_timeout_when_battery_low)))
                 Switch(
                     checked = checked,
                     onCheckedChange = {
                         checked = it
-                        runBlocking { UserPreferencesRepository(dataStore).saveListenForBatteryLow(checked) }
+                        UserPreferencesRepository().saveListenForBatteryLow(context, checked)
                     }
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                var checked by remember { mutableStateOf(runBlocking { UserPreferencesRepository(dataStore).readListenForScreenOff.first() }) }
-
+                var checked by remember { mutableStateOf(UserPreferencesRepository().readListenForScreenOff(context)) }
                 Text(text = stringResource(id = (R.string.restore_timeout_when_screen_is_turned_off)))
                 Switch(
                     checked = checked,
                     onCheckedChange = {
                         checked = it
-                        runBlocking { UserPreferencesRepository(dataStore).saveListenForScreenOff(checked) }
+                        UserPreferencesRepository().saveListenForScreenOff(context, checked)
                     }
                 )
             }

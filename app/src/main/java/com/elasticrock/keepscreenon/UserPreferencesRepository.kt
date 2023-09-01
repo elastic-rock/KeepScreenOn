@@ -1,83 +1,67 @@
 package com.elasticrock.keepscreenon
 
+import android.content.Context
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import java.io.IOException
+import com.google.gson.Gson
+import java.io.File
+import java.lang.Exception
 
-class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
+data class ListenForBatteryLow(val listenForBatteryLow: Boolean)
+data class ListenForScreenOff(val listenForScreenOff: Boolean)
+data class IsTileAdded(val isTileAdded: Boolean)
 
-    private val previousScreenTimeoutKey = intPreferencesKey("previous_screen_timeout")
-    private val listenForBatteryLowKey = booleanPreferencesKey("listen_for_battery_low")
-    private val listenForScreenOffKey = booleanPreferencesKey("listen_for_screen_off")
-    private val isTileAddedKey = booleanPreferencesKey("is_tile_added")
+class UserPreferencesRepository {
 
     private val tag = "UserPreferencesRepository"
+    private val batteryFileName = "listenforbatterylow.json"
+    private val screenFileName = "listenforscreenoff.json"
+    private val tileFileName = "istileadded.json"
 
-    suspend fun saveListenForBatteryLow(listenForBatteryLow: Boolean) {
-        Log.d(tag, "saveListenForBatteryLow $listenForBatteryLow")
-        try {
-            dataStore.edit { preferences ->
-                preferences[listenForBatteryLowKey] = listenForBatteryLow
-            }
-        } catch (e: IOException) {
-            Log.e(tag,"Error writing listenForBatteryLow user preference")
+    fun saveListenForBatteryLow(context: Context, listenForBatteryLow: Boolean) {
+        val json = Gson().toJson(ListenForBatteryLow(listenForBatteryLow))
+        File(context.filesDir, batteryFileName).writeText(json)
+    }
+
+    fun readListenForBatteryLow(context: Context) : Boolean {
+        return try {
+            val json = File(context.filesDir, batteryFileName).readText()
+            val output = Gson().fromJson(json, ListenForBatteryLow::class.java)
+            output.listenForBatteryLow
+        } catch (e: Exception) {
+            Log.e(tag, "Error reading listenForBatteryLow property")
+            false
         }
     }
 
-    suspend fun saveListenForScreenOff(listenForScreenOff: Boolean) {
-        Log.d(tag, "saveListenForScreenOff $listenForScreenOff")
-        try {
-            dataStore.edit { preferences ->
-                preferences[listenForScreenOffKey] = listenForScreenOff
-            }
-        } catch (e: IOException) {
-            Log.e(tag,"Error writing listenForScreenOff user preference")
+    fun saveListenForScreenOff(context: Context, listenForScreenOff: Boolean) {
+        val json = Gson().toJson(ListenForScreenOff(listenForScreenOff))
+        File(context.filesDir, screenFileName).writeText(json)
+    }
+
+    fun readListenForScreenOff(context: Context) : Boolean {
+        return try {
+            val json = File(context.filesDir, screenFileName).readText()
+            val output = Gson().fromJson(json, ListenForScreenOff::class.java)
+            output.listenForScreenOff
+        } catch (e: Exception) {
+            Log.e(tag, "Error reading listenForScreenOff property")
+            false
         }
     }
 
-    suspend fun saveIsTileAdded(isTileAdded: Boolean) {
-        try {
-            dataStore.edit { preferences ->
-                preferences[isTileAddedKey] = isTileAdded
-            }
-        } catch (e: IOException) {
-            Log.e(tag,"Error writing isTileAdded")
-        }
+    fun saveIsTileAdded(context: Context, isTileAdded: Boolean) {
+        val json = Gson().toJson(IsTileAdded(isTileAdded))
+        File(context.filesDir, tileFileName).writeText(json)
     }
 
-    suspend fun saveScreenTimeout(screenTimeout: Int) {
-        try {
-            dataStore.edit { preferences ->
-                preferences[previousScreenTimeoutKey] = screenTimeout
-            }
-        } catch (e: IOException) {
-            Log.e(tag,"Error writing screen timeout value")
+    fun readIsTileAdded(context: Context) : Boolean {
+        return try {
+            val json = File(context.filesDir, tileFileName).readText()
+            val output = Gson().fromJson(json, IsTileAdded::class.java)
+            output.isTileAdded
+        } catch (e: Exception) {
+            Log.e(tag, "Error reading isTileAdded property")
+            false
         }
     }
-
-    val readScreenTimeout: Flow<Int> = dataStore.data
-        .map { preferences ->
-            preferences[previousScreenTimeoutKey] ?: 120000
-        }
-
-    val readListenForBatteryLow: Flow<Boolean> = dataStore.data
-        .map { preferences ->
-            preferences[listenForBatteryLowKey] ?: false
-        }
-
-    val readListenForScreenOff: Flow<Boolean> = dataStore.data
-        .map { preferences ->
-            preferences[listenForScreenOffKey] ?: false
-        }
-
-    val readIsTileAdded: Flow<Boolean> = dataStore.data
-        .map { preferences ->
-            preferences[isTileAddedKey] ?: false
-        }
 }
