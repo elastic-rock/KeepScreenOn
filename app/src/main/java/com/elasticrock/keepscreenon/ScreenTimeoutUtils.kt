@@ -8,8 +8,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import android.util.Log
-import java.io.FileNotFoundException
-import java.io.IOException
 import java.lang.Exception
 
 data class ScreenTimeout(val screenTimeout: Int)
