@@ -1,6 +1,5 @@
 package com.elasticrock.keepscreenon
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
@@ -21,16 +20,19 @@ class QSTileService : TileService() {
 
     override fun onTileAdded() {
         super.onTileAdded()
+        Log.d(tag,"Lifecycle: onTileAdded")
         UserPreferencesRepository().saveIsTileAdded(applicationContext, true)
     }
 
     override fun onTileRemoved() {
         super.onTileRemoved()
+        Log.d(tag,"Lifecycle: onTileRemoved")
         UserPreferencesRepository().saveIsTileAdded(applicationContext, false)
     }
     override fun onStartListening() {
         super.onStartListening()
         Log.d(tag,"onStartListening")
+        val screenTimeout = ScreenTimeoutUtils().readScreenTimeout(contentResolver)
         qsTile.label = getString(R.string.keep_screen_on)
         if (!Settings.System.canWrite(applicationContext)) {
             qsTile.state = Tile.STATE_INACTIVE
@@ -38,10 +40,10 @@ class QSTileService : TileService() {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
             qsTile.updateTile()
-        } else if (ScreenTimeoutUtils().isScreenTimeoutDisabled(contentResolver)) {
+        } else if (screenTimeout == 2147483647) {
             activeState()
         } else {
-            inactiveState(ScreenTimeoutUtils().readScreenTimeout(contentResolver))
+            inactiveState(screenTimeout)
         }
         UserPreferencesRepository().saveIsTileAdded(applicationContext, true)
     }
@@ -50,21 +52,23 @@ class QSTileService : TileService() {
     override fun onClick() {
         super.onClick()
         Log.d(tag,"onClick")
+        val screenTimeout = ScreenTimeoutUtils().readScreenTimeout(contentResolver)
         if (!Settings.System.canWrite(applicationContext)) {
             val grantPermissionIntent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-            @SuppressLint("StartActivityAndCollapseDeprecated")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, grantPermissionIntent, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
             } else {
                 grantPermissionIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                 grantPermissionIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-                @Suppress("DEPRECATION")
                 startActivityAndCollapse(grantPermissionIntent)
             }
             qsTile.updateTile()
-        } else if (ScreenTimeoutUtils().isScreenTimeoutDisabled(contentResolver)) {
-            ScreenTimeoutUtils().restoreScreenTimeout(applicationContext, contentResolver)
-            inactiveState(ScreenTimeoutUtils().readScreenTimeout(contentResolver))
+        } else if (screenTimeout == 2147483647) {
+            val previousScreenTimeout = ScreenTimeoutUtils().readPreviousScreenTimeout(applicationContext)
+            runBlocking {
+                launch { ScreenTimeoutUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
+                launch { inactiveState(previousScreenTimeout) }
+            }
             stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
             runBlocking {

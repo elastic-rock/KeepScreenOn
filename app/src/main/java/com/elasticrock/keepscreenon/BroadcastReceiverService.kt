@@ -30,20 +30,16 @@ class BroadcastReceiverService : LifecycleService() {
 
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF") {
             Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF")
-            monitorBatteryLow = true
-            monitorScreenOff = true
-            ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
-            ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
+            registerBatteryLowReceiver()
+            registerScreenOffReceiver()
         }
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW") {
             Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
-            monitorBatteryLow = true
-            ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
+            registerBatteryLowReceiver()
         }
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF") {
             Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
-            monitorScreenOff = true
-            ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
+            registerScreenOffReceiver()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -69,7 +65,7 @@ class BroadcastReceiverService : LifecycleService() {
                 .build()
             startForeground(1, notification)
         } else {
-            @Suppress("DEPRECATION") val notification: Notification = Notification.Builder(this)
+            val notification: Notification = Notification.Builder(this)
                 .setContentTitle(getString(R.string.listening_for_battery_low_action))
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)
                 .build()
@@ -98,6 +94,15 @@ class BroadcastReceiverService : LifecycleService() {
         }
     }
 
+    private fun registerBatteryLowReceiver() {
+        ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
+        monitorBatteryLow = true
+    }
+
+    private fun registerScreenOffReceiver() {
+        ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
+        monitorScreenOff = true
+    }
     private fun restoreScreenTimeout() {
         ScreenTimeoutUtils().restoreScreenTimeout(applicationContext, contentResolver)
     }

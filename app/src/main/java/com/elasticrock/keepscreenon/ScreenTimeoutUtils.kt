@@ -16,10 +16,6 @@ class ScreenTimeoutUtils {
     private val tag = "ScreenTimeoutUtils"
     private val fileName = "screentimeout.json"
 
-    fun isScreenTimeoutDisabled(contentResolver: ContentResolver) : Boolean {
-        return readScreenTimeout(contentResolver) == 2147483647
-    }
-
     fun readScreenTimeout(contentResolver: ContentResolver) : Int {
         return Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
     }
@@ -36,9 +32,7 @@ class ScreenTimeoutUtils {
         }
     }
 
-
-
-    private fun setScreenTimeout(contentResolver: ContentResolver, screenTimeout: Int) {
+    fun setScreenTimeout(contentResolver: ContentResolver, screenTimeout: Int) {
         Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, screenTimeout)
     }
 
@@ -47,7 +41,7 @@ class ScreenTimeoutUtils {
         File(context.filesDir,fileName).writeText(json)
     }
 
-    private fun readPreviousScreenTimeout(context: Context) : Int {
+    fun readPreviousScreenTimeout(context: Context) : Int {
         return try {
             val json = File(context.filesDir,fileName).readText()
             val output = Gson().fromJson(json, ScreenTimeout::class.java)
