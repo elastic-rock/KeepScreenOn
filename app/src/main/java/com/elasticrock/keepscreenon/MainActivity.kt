@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,14 +67,65 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun KeepScreenOnApp() {
     val context = LocalContext.current
+
+    var showInfoDialog by remember { mutableStateOf(false) }
+    if (showInfoDialog) {
+        InfoDialog(
+            onDismiss = { showInfoDialog = false }
+        )
+    }
+
     Scaffold(Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(R.string.keep_screen_on), style = MaterialTheme.typography.titleLarge) },
-                actions = { IconButton(onClick = { /*TODO*/ }) { Icon(imageVector = Icons.Filled.Info, contentDescription = null)}}
+                title = {
+                    Text(
+                        text = stringResource(R.string.keep_screen_on),
+                        style = MaterialTheme.typography.titleLarge)
+                        },
+                actions = {
+                    IconButton(
+                        onClick = { showInfoDialog = true })
+                    { Icon(imageVector = Icons.Filled.Info, contentDescription = null)}}
             )
         }, content = {
             LazyColumn(Modifier.padding(it)) {
+
+                item {
+                    PreferenceSubtitle(text = stringResource(id = R.string.qs_tile))
+                }
+
+                item {
+                    if (UserPreferencesRepository().readIsTileAdded(context)) {
+                        PreferencesHintCard(
+                            title = stringResource(id = (R.string.tile_already_added)),
+                            description = stringResource(id = R.string.qs_tile_hidden),
+                            enabled = false
+                        )
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            PreferencesHintCard(
+                                title = stringResource(id = (R.string.add_qs_tile)),
+                                description = stringResource(id = R.string.add_qs_tile_alternate),
+                                icon = Icons.Filled.Add,
+                                onClick = {
+                                    val statusBarService = context.getSystemService(StatusBarManager::class.java)
+                                    statusBarService.requestAddTileService(
+                                        ComponentName(context, QSTileService::class.java.name),
+                                        context.getString(R.string.keep_screen_on),
+                                        Icon.createWithResource(context,R.drawable.outline_lock_clock_qs),
+                                        {}) {}
+                                }
+                            )
+                        } else {
+                            PreferencesHintCard(
+                                title = stringResource(id = (R.string.add_qs_tile)),
+                                description = stringResource(R.string.add_tile_instructions),
+                                enabled = false
+                            )
+                        }
+                    }
+                }
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.permissions))
@@ -141,42 +194,6 @@ fun KeepScreenOnApp() {
                         )
                     }
                 }
-
-                item {
-                    PreferenceSubtitle(text = stringResource(id = R.string.qs_tile))
-                }
-
-                item {
-                    if (UserPreferencesRepository().readIsTileAdded(context)) {
-                        PreferencesHintCard(
-                            title = stringResource(id = (R.string.tile_already_added)),
-                            description = stringResource(id = R.string.qs_tile_hidden),
-                            enabled = false
-                        )
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            PreferencesHintCard(
-                                title = stringResource(id = (R.string.add_qs_tile)),
-                                description = stringResource(id = R.string.add_qs_tile_alternate),
-                                icon = Icons.Filled.Add,
-                                onClick = {
-                                    val statusBarService = context.getSystemService(StatusBarManager::class.java)
-                                    statusBarService.requestAddTileService(
-                                        ComponentName(context, QSTileService::class.java.name),
-                                        context.getString(R.string.keep_screen_on),
-                                        Icon.createWithResource(context,R.drawable.outline_lock_clock_qs),
-                                        {}) {}
-                                }
-                            )
-                        } else {
-                            PreferencesHintCard(
-                                title = stringResource(id = (R.string.add_qs_tile)),
-                                description = stringResource(R.string.add_tile_instructions),
-                                enabled = false
-                            )
-                        }
-                    }
-                }
                 
                 item { 
                     PreferenceSubtitle(text = stringResource(id = R.string.options))
@@ -207,6 +224,20 @@ fun KeepScreenOnApp() {
                         }
                     )
                 }
+            }
+        }
+    )
+}
+
+@Composable
+fun InfoDialog(onDismiss: () -> Unit) {
+    /*TODO*/
+    AlertDialog(onDismissRequest = { onDismiss() },
+        title = { Text(text = stringResource(R.string.grant_permission)) },
+        text = { Text(text = stringResource(R.string.permission_description))},
+        confirmButton = {
+            TextButton(onClick = { onDismiss() }) {
+                Text(text = stringResource(R.string.exit))
             }
         }
     )
