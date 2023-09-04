@@ -17,13 +17,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BatteryAlert
 import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
@@ -149,24 +148,30 @@ fun KeepScreenOnApp() {
 
                 item {
                     if (UserPreferencesRepository().readIsTileAdded(context)) {
-                        Text(text = stringResource(id = (R.string.tile_already_added)))
+                        PreferencesHintCard(
+                            title = stringResource(id = (R.string.tile_already_added)),
+                            description = stringResource(id = R.string.qs_tile_hidden)
+                        )
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            Button(
+                            PreferencesHintCard(
+                                title = stringResource(id = (R.string.add_qs_tile)),
+                                description = stringResource(id = R.string.add_qs_tile_alternate),
+                                icon = Icons.Filled.Add,
                                 onClick = {
                                     val statusBarService = context.getSystemService(StatusBarManager::class.java)
                                     statusBarService.requestAddTileService(
-                                    ComponentName(context, QSTileService::class.java.name),
-                                    context.getString(R.string.keep_screen_on),
-                                    Icon.createWithResource(context,R.drawable.outline_lock_clock_qs),
-                                    {}) {}
+                                        ComponentName(context, QSTileService::class.java.name),
+                                        context.getString(R.string.keep_screen_on),
+                                        Icon.createWithResource(context,R.drawable.outline_lock_clock_qs),
+                                        {}) {}
                                 }
-                            ) {
-                                Text(text = stringResource(id = (R.string.add_qs_tile)))
-                            }
+                            )
                         } else {
-                            Text(text = stringResource(R.string.add_tile_instructions),
-                                textAlign = TextAlign.Center)
+                            PreferencesHintCard(
+                                title = stringResource(id = (R.string.add_qs_tile)),
+                                description = stringResource(R.string.add_tile_instructions)
+                            )
                         }
                     }
                 }
