@@ -2,7 +2,7 @@
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="grant_permission">Grant permission</string>
     <string name="permission_description">To be able to set the screen timeout, the modify system settings permission must be granted to the app.</string>
-    <string name="add_tile_instructions">To add the quick settings tile, \n 1) Navigate to the quick settings panel, \n 2) Tap edit, \n 3) Find the Screen Timeout tile, \n 4) Touch and hold the tile, then drag it where you want it.</string>
+    <string name="add_tile_instructions">Tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="add_qs_tile">Add quick settings tile</string>
     <string name="dismiss">Dismiss</string>
     <plurals name="second">
@@ -33,5 +33,5 @@
     <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
     <string name="allow_if_you_encounter_issues">Allow if you encounter issues</string>
     <string name="qs_tile_hidden">If you can\'t find the tile, it may be on another page</string>
-    <string name="add_qs_tile_alternate">Alternatively, you can \n 1) Navigate to the quick settings panel, \n 2) Tap edit, \n 3) Find the Screen Timeout tile, \n 4) Touch and hold the tile, then drag it where you want it.</string>
+    <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
 </resources>

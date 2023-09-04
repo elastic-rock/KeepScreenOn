@@ -150,7 +150,8 @@ fun KeepScreenOnApp() {
                     if (UserPreferencesRepository().readIsTileAdded(context)) {
                         PreferencesHintCard(
                             title = stringResource(id = (R.string.tile_already_added)),
-                            description = stringResource(id = R.string.qs_tile_hidden)
+                            description = stringResource(id = R.string.qs_tile_hidden),
+                            enabled = false
                         )
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -170,7 +171,8 @@ fun KeepScreenOnApp() {
                         } else {
                             PreferencesHintCard(
                                 title = stringResource(id = (R.string.add_qs_tile)),
-                                description = stringResource(R.string.add_tile_instructions)
+                                description = stringResource(R.string.add_tile_instructions),
+                                enabled = false
                             )
                         }
                     }

@@ -40,9 +40,10 @@ fun PreferencesHintCard(
     title: String = "Title ".repeat(2),
     description: String? = "Description text ".repeat(3),
     icon: ImageVector? = Icons.Outlined.Info,
-    containerColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onSecondary,
+    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     onClick: () -> Unit = {},
+    enabled: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -50,7 +51,7 @@ fun PreferencesHintCard(
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .clip(MaterialTheme.shapes.extraLarge)
             .background(containerColor)
-            .clickable { onClick() }
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -79,7 +80,7 @@ fun PreferencesHintCard(
                 if (description != null) Text(
                     text = description,
                     color = contentColor,
-//                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis,
                     style = typography.bodyMedium,
                 )
             }
@@ -122,10 +123,9 @@ fun PreferenceItem(
                     .padding(horizontal = if (icon == null) 12.dp else 0.dp)
                     .padding(end = 8.dp)
             ) {
-                PreferenceItemTitle(text = title, enabled = enabled)
+                PreferenceItemTitle(text = title)
                 if (!description.isNullOrEmpty()) PreferenceItemDescription(
-                    text = description,
-                    enabled = enabled
+                    text = description
                 )
             }
         }
@@ -180,10 +180,10 @@ fun PreferenceSwitch(
                 modifier = Modifier.weight(1f)
             ) {
                 PreferenceItemTitle(
-                    text = title, enabled = enabled
+                    text = title
                 )
                 if (!description.isNullOrEmpty()) PreferenceItemDescription(
-                    text = description, enabled = enabled
+                    text = description
                 )
             }
             Switch(
@@ -203,7 +203,6 @@ fun PreferenceItemTitle(
     text: String,
     maxLines: Int = 2,
     style: TextStyle = MaterialTheme.typography.bodyLarge,
-    enabled: Boolean,
     color: Color = MaterialTheme.colorScheme.onBackground,
     overflow: TextOverflow = TextOverflow.Ellipsis
 ) {
@@ -212,6 +211,7 @@ fun PreferenceItemTitle(
         text = text,
         maxLines = maxLines,
         style = style,
+        color = color,
         overflow = overflow
     )
 }
@@ -222,7 +222,6 @@ fun PreferenceItemDescription(
     text: String,
     maxLines: Int = Int.MAX_VALUE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    enabled: Boolean,
     color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     overflow: TextOverflow = TextOverflow.Ellipsis
 ) {
@@ -231,7 +230,7 @@ fun PreferenceItemDescription(
         text = text,
         maxLines = maxLines,
         style = style,
-//        color = color.applyOpacity(enabled),
+        color = color,
         overflow = overflow
     )
 }
@@ -261,6 +260,6 @@ fun PreferenceSwitchPreview() {
 
 @Preview
 @Composable
-fun PrefernceItemPreview() {
+fun PreferenceItemPreview() {
     PreferenceItem(title = "Title", description = "Description", icon = Icons.Filled.Info)
 }
