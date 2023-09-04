@@ -80,7 +80,7 @@ fun KeepScreenOnApp() {
                 }
                 
                 item {
-                    if (!Settings.System.canWrite(context)) {
+                    if (Settings.System.canWrite(context)) {
                         PreferenceItem(
                             title = stringResource(id = R.string.modify_system_settings),
                             description = stringResource(id = R.string.permission_granted),
