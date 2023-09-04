@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.elasticrock.keepscreenon.ui.theme.applyOpacity
 
 
 private const val horizontal = 8
@@ -115,6 +116,7 @@ fun PreferenceItem(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 16.dp)
                         .size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
                 )
             }
             Column(
@@ -123,9 +125,10 @@ fun PreferenceItem(
                     .padding(horizontal = if (icon == null) 12.dp else 0.dp)
                     .padding(end = 8.dp)
             ) {
-                PreferenceItemTitle(text = title)
+                PreferenceItemTitle(text = title, enabled = enabled)
                 if (!description.isNullOrEmpty()) PreferenceItemDescription(
-                    text = description
+                    text = description,
+                    enabled = enabled
                 )
             }
         }
@@ -174,16 +177,19 @@ fun PreferenceSwitch(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 16.dp)
                         .size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
                 )
             }
             Column(
                 modifier = Modifier.weight(1f)
             ) {
                 PreferenceItemTitle(
-                    text = title
+                    text = title,
+                    enabled = enabled
                 )
                 if (!description.isNullOrEmpty()) PreferenceItemDescription(
-                    text = description
+                    text = description,
+                    enabled = enabled
                 )
             }
             Switch(
@@ -203,7 +209,8 @@ fun PreferenceItemTitle(
     text: String,
     maxLines: Int = 2,
     style: TextStyle = MaterialTheme.typography.bodyLarge,
-    color: Color = MaterialTheme.colorScheme.onBackground,
+    enabled: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.onBackground.applyOpacity(enabled),
     overflow: TextOverflow = TextOverflow.Ellipsis
 ) {
     Text(
@@ -222,8 +229,9 @@ fun PreferenceItemDescription(
     text: String,
     maxLines: Int = Int.MAX_VALUE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    overflow: TextOverflow = TextOverflow.Ellipsis
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    enabled: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
 ) {
     Text(
         modifier = modifier.padding(top = 2.dp),
@@ -240,7 +248,7 @@ fun PreferenceSubtitle(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(start = 18.dp, top = 24.dp, bottom = 12.dp),
     text: String,
-    color: Color = MaterialTheme.colorScheme.primary,
+    color: Color = MaterialTheme.colorScheme.primary
 ) {
     Text(
         text = text,
