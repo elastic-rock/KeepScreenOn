@@ -189,7 +189,6 @@ fun KeepScreenOnApp() {
                             onClick = {
                                 val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply { data = Uri.parse("package:${context.packageName}") }
                                 context.startActivity(intent)
-                                /*TODO*/ //Darken background
                             }
                         )
                     }
@@ -200,27 +199,27 @@ fun KeepScreenOnApp() {
                 }
 
                 item {
-                    var batteryChecked by remember { mutableStateOf(UserPreferencesRepository().readListenForBatteryLow(context)) }
+                    var checked by remember { mutableStateOf(UserPreferencesRepository().readListenForBatteryLow(context)) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restrore_timeout_when_battery_low)),
                         icon = Icons.Filled.BatteryAlert,
-                        isChecked = batteryChecked,
+                        isChecked = checked,
                         onClick = {
-                            batteryChecked = !batteryChecked
-                            UserPreferencesRepository().saveListenForBatteryLow(context, batteryChecked)
+                            checked = !checked
+                            UserPreferencesRepository().saveListenForBatteryLow(context, checked)
                         }
                     )
                 }
 
                 item {
-                    var screenChecked by remember { mutableStateOf(UserPreferencesRepository().readListenForScreenOff(context)) }
+                    var checked by remember { mutableStateOf(UserPreferencesRepository().readListenForScreenOff(context)) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_screen_is_turned_off)),
                         icon = Icons.Filled.Lock,
-                        isChecked = screenChecked,
+                        isChecked = checked,
                         onClick = {
-                            screenChecked = !screenChecked
-                            UserPreferencesRepository().saveListenForBatteryLow(context, screenChecked)
+                            checked = !checked
+                            UserPreferencesRepository().saveListenForScreenOff(context, checked)
                         }
                     )
                 }
@@ -233,7 +232,7 @@ fun KeepScreenOnApp() {
 fun InfoDialog(onDismiss: () -> Unit) {
     /*TODO*/
     AlertDialog(onDismissRequest = { onDismiss() },
-        title = { Text(text = stringResource(R.string.grant_permission)) },
+        title = { Text(text = stringResource(R.string.about)) },
         text = { Text(text = stringResource(R.string.permission_description))},
         confirmButton = {
             TextButton(onClick = { onDismiss() }) {

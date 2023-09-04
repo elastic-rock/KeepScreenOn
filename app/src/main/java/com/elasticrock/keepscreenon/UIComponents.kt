@@ -41,8 +41,8 @@ fun PreferencesHintCard(
     title: String = "Title ".repeat(2),
     description: String? = "Description text ".repeat(3),
     icon: ImageVector? = Icons.Outlined.Info,
-    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     onClick: () -> Unit = {},
     enabled: Boolean = true
 ) {
