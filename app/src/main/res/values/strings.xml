@@ -22,4 +22,14 @@
     <string name="restrore_timeout_when_battery_low">Restore timeout when battery low</string>
     <string name="restore_timeout_when_screen_is_turned_off">Restore timeout when screen is turned off</string>
     <string name="foreground_service_channel_description">Screen off and/or battery low actions</string>
+    <string name="options">Options</string>
+    <string name="permissions">Permissions</string>
+    <string name="qs_tile">Quick settings tile</string>
+    <string name="modify_system_settings">Modify system settings</string>
+    <string name="this_permission_is_required">This permission is required</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="notifications">Notifications</string>
+    <string name="posted_when_keep_screen_on_is_active">Posted when Keep Screen On is active</string>
+    <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
+    <string name="allow_if_you_encounter_issues">Allow if you encounter issues</string>
 </resources>
