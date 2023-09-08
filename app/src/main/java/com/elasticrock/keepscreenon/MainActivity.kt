@@ -13,6 +13,8 @@ import android.os.PowerManager
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,27 +38,36 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 
 const val tag = "MainActivity"
+const val notificationPermission = "android.permission.POST_NOTIFICATIONS"
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var isNotificationPermissionGranted = checkSelfPermission(applicationContext, notificationPermission)
+        val requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    isNotificationPermissionGranted = PERMISSION_GRANTED
+                }
+            }
         setContent {
             KeepScreenOnTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    KeepScreenOnApp()
+                    KeepScreenOnApp(requestPermissionLauncher, isNotificationPermissionGranted)
                 }
             }
         }
@@ -65,7 +76,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KeepScreenOnApp() {
+fun KeepScreenOnApp(requestPermissionLauncher: ActivityResultLauncher<String>, isNotificationPermissionGranted: Int) {
     val context = LocalContext.current
 
     var showInfoDialog by remember { mutableStateOf(false) }
@@ -152,7 +163,9 @@ fun KeepScreenOnApp() {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     item {
-                        if (checkSelfPermission(context, "android.permission.POST_NOTIFICATIONS") == PERMISSION_GRANTED) {
+                        val isPermissionGranted by remember { mutableIntStateOf(isNotificationPermissionGranted) }
+                        requestPermissionLauncher.
+                        if (isPermissionGranted == PERMISSION_GRANTED) {
                             PreferenceItem(
                                 title = stringResource(id = R.string.notifications),
                                 description = stringResource(id = R.string.permission_granted),
@@ -165,7 +178,7 @@ fun KeepScreenOnApp() {
                                 description = stringResource(id = R.string.posted_when_keep_screen_on_is_active),
                                 enabled = true,
                                 icon = Icons.Filled.Notifications,
-                                onClick = { /*TODO*/ }
+                                onClick = { requestPermissionLauncher.launch(notificationPermission) }
                             )
                         }
                     }
@@ -233,17 +246,11 @@ fun InfoDialog(onDismiss: () -> Unit) {
     /*TODO*/
     AlertDialog(onDismissRequest = { onDismiss() },
         title = { Text(text = stringResource(R.string.about)) },
-        text = { Text(text = stringResource(R.string.permission_description))},
+        text = { Text(text = stringResource(R.string.about_dialog_description))},
         confirmButton = {
             TextButton(onClick = { onDismiss() }) {
                 Text(text = stringResource(R.string.exit))
             }
         }
     )
-}
-
-@Preview
-@Composable
-fun KeepScreenOnAppPreview() {
-    KeepScreenOnApp()
 }

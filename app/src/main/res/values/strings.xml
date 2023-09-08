@@ -36,4 +36,5 @@
     <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="exit">Exit</string>
     <string name="about">About</string>
+    <string name="about_dialog_description">Dialog Description</string>
 </resources>
