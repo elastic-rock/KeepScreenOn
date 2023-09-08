@@ -4,6 +4,7 @@ import android.app.StatusBarManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Icon
 import android.net.Uri
@@ -12,8 +13,8 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -54,20 +55,11 @@ const val notificationPermission = "android.permission.POST_NOTIFICATIONS"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var isNotificationPermissionGranted = checkSelfPermission(applicationContext, notificationPermission)
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted) {
-                    isNotificationPermissionGranted = PERMISSION_GRANTED
-                }
-            }
         setContent {
             KeepScreenOnTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    KeepScreenOnApp(requestPermissionLauncher, isNotificationPermissionGranted)
+                    KeepScreenOnApp()
                 }
             }
         }
@@ -76,7 +68,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KeepScreenOnApp(requestPermissionLauncher: ActivityResultLauncher<String>, isNotificationPermissionGranted: Int) {
+fun KeepScreenOnApp() {
     val context = LocalContext.current
 
     var showInfoDialog by remember { mutableStateOf(false) }
@@ -163,8 +155,17 @@ fun KeepScreenOnApp(requestPermissionLauncher: ActivityResultLauncher<String>, i
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     item {
-                        val isPermissionGranted by remember { mutableIntStateOf(isNotificationPermissionGranted) }
-                        requestPermissionLauncher.
+                        var isPermissionGranted by remember { mutableIntStateOf(checkSelfPermission(context, notificationPermission)) }
+                        val requestPermissionLauncher = rememberLauncherForActivityResult(
+                            ActivityResultContracts.RequestPermission()
+                        ) { isGranted: Boolean ->
+                            isPermissionGranted = if (isGranted) {
+                                PERMISSION_GRANTED
+
+                            } else {
+                                PERMISSION_DENIED
+                            }
+                        }
                         if (isPermissionGranted == PERMISSION_GRANTED) {
                             PreferenceItem(
                                 title = stringResource(id = R.string.notifications),
