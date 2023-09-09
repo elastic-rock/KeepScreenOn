@@ -64,6 +64,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        /*TODO*/
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,7 +140,8 @@ fun KeepScreenOnApp() {
                 }
                 
                 item {
-                    if (Settings.System.canWrite(context)) {
+                    val isPermissionGranted by remember { mutableStateOf(Settings.System.canWrite(context)) }
+                    if (isPermissionGranted) {
                         PreferenceItem(
                             title = stringResource(id = R.string.modify_system_settings),
                             description = stringResource(id = R.string.permission_granted),
@@ -148,7 +154,7 @@ fun KeepScreenOnApp() {
                             description = stringResource(id = R.string.this_permission_is_required),
                             enabled = true,
                             icon = Icons.Filled.Settings,
-                            onClick = { context.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)) }
+                            onClick = { context.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = Uri.parse("package:${context.packageName}") } ) }
                         )
                     }
                 }
@@ -200,10 +206,7 @@ fun KeepScreenOnApp() {
                             description = stringResource(id = R.string.allow_if_you_encounter_issues),
                             enabled = true,
                             icon = Icons.Filled.EnergySavingsLeaf,
-                            onClick = {
-                                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply { data = Uri.parse("package:${context.packageName}") }
-                                context.startActivity(intent)
-                            }
+                            onClick = { context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) }
                         )
                     }
                 }
