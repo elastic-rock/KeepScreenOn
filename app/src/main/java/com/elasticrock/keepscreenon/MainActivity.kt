@@ -49,19 +49,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.MutableLiveData
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 
-const val tag = "MainActivity"
-const val notificationPermission = "android.permission.POST_NOTIFICATIONS"
 val canWriteSettingsState = MutableLiveData(false)
 val isIgnoringBatteryOptimizationState = MutableLiveData(false)
 val isTileAddedState = MutableLiveData(false)
 
 class MainActivity : ComponentActivity() {
+    private val tag = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(tag, "Lifecycle: onCreate()")
         super.onCreate(savedInstanceState)
+        Log.d(tag, "Lifecycle: onCreate()")
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             KeepScreenOnTheme {
                 // A surface container using the 'background' color from the theme
@@ -104,6 +105,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KeepScreenOnApp() {
+    val tag = "MainActivity"
+    val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
 
     var showInfoDialog by remember { mutableStateOf(false) }
@@ -169,7 +172,7 @@ fun KeepScreenOnApp() {
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.permissions))
                 }
-                
+
                 item {
                     val canWriteSettings by canWriteSettingsState.observeAsState(false)
                     if (canWriteSettings) {
@@ -241,8 +244,8 @@ fun KeepScreenOnApp() {
                         )
                     }
                 }
-                
-                item { 
+
+                item {
                     PreferenceSubtitle(text = stringResource(id = R.string.options))
                 }
 
