@@ -1,10 +1,8 @@
 <resources>
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="grant_permission">Grant permission</string>
-    <string name="permission_description">To be able to set the screen timeout, the modify system settings permission must be granted to the app.</string>
     <string name="add_tile_instructions">Tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="add_qs_tile">Add quick settings tile</string>
-    <string name="dismiss">Dismiss</string>
     <plurals name="second">
         <item quantity="one">%d second</item>
         <item quantity="other">%d seconds</item>
@@ -19,7 +17,7 @@
     <string name="listening_for_screen_off_action">Listening for screen off action</string>
     <string name="listening_for_battery_low_and_screen_off_actions">Listening for battery low and screen off actions</string>
     <string name="tile_already_added">Tile already added</string>
-    <string name="restrore_timeout_when_battery_low">Restore timeout when battery low</string>
+    <string name="restore_timeout_when_battery_low">Restore timeout when battery low</string>
     <string name="restore_timeout_when_screen_is_turned_off">Restore timeout when screen is turned off</string>
     <string name="foreground_service_channel_description">Screen off and/or battery low actions</string>
     <string name="options">Options</string>
@@ -34,7 +32,4 @@
     <string name="allow_if_you_encounter_issues">Allow if you encounter issues</string>
     <string name="qs_tile_hidden">If you can\'t find the tile, it may be on another page</string>
     <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
-    <string name="exit">Exit</string>
-    <string name="about">About</string>
-    <string name="about_dialog_description">Dialog Description</string>
 </resources>

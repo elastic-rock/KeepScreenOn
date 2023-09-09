@@ -237,7 +237,7 @@ fun KeepScreenOnApp() {
                 item {
                     var checked by remember { mutableStateOf(UserPreferencesRepository().readListenForBatteryLow(context)) }
                     PreferenceSwitch(
-                        title = stringResource(id = (R.string.restrore_timeout_when_battery_low)),
+                        title = stringResource(id = (R.string.restore_timeout_when_battery_low)),
                         icon = Icons.Filled.BatteryAlert,
                         isChecked = checked,
                         onClick = {

@@ -2,10 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="keep_screen_on">Maintenir l\'écran allumé</string>
     <string name="grant_permission">Autoriser</string>
-    <string name="permission_description">Pour pouvoir régler le délai de mise en veille de l\'écran, l\'application doit être autoriser à modifier les paramètres système.</string>
     <string name="add_tile_instructions">Pour ajouter le bloc aux réglages rapides, \n 1) Ouvrez la fenêtre des réglages rapides, \n 2) Appuyez sur Modifier, \n 3) Trouvez le bloc Maintenir l\'écran allumé, \n 4) Appuyez de manière prolongée sur le bloc, puis faites-le glisser à l\'emplacement de votre choix.</string>
     <string name="add_qs_tile">Ajouter le bloc aux réglages rapides</string>
-    <string name="dismiss">Ne pas autoriser</string>
     <string name="always">Toujours</string>
     <plurals name="second" tools:ignore="MissingQuantity">
         <item quantity="one">%d seconde</item>
