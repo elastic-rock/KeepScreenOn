@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -39,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,10 +49,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 
 const val tag = "MainActivity"
 const val notificationPermission = "android.permission.POST_NOTIFICATIONS"
+val canWriteSettingsState = MutableLiveData<Boolean>(false)
+val isIgnoringBatteryOptimizationState = MutableLiveData<Boolean>(false)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,9 +72,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        /*TODO*/
+    override fun onStart() {
+        super.onStart()
+        val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        canWriteSettingsState.value = Settings.System.canWrite(applicationContext)
+        isIgnoringBatteryOptimizationState.value = pm.isIgnoringBatteryOptimizations(applicationContext.packageName)
     }
 }
 
@@ -140,8 +149,8 @@ fun KeepScreenOnApp() {
                 }
                 
                 item {
-                    val isPermissionGranted by remember { mutableStateOf(Settings.System.canWrite(context)) }
-                    if (isPermissionGranted) {
+                    val canWriteSettings by canWriteSettingsState.observeAsState(false)
+                    if (canWriteSettings) {
                         PreferenceItem(
                             title = stringResource(id = R.string.modify_system_settings),
                             description = stringResource(id = R.string.permission_granted),
@@ -192,8 +201,8 @@ fun KeepScreenOnApp() {
                 }
 
                 item {
-                    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-                    if (pm.isIgnoringBatteryOptimizations(context.packageName)) {
+                    val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
+                    if (isIgnoringBatteryOptimization) {
                         PreferenceItem(
                             title = stringResource(id = R.string.ignore_battery_optimizations),
                             description = stringResource(id = R.string.permission_granted),
