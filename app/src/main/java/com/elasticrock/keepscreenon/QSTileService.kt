@@ -21,17 +21,17 @@ class QSTileService : TileService() {
     override fun onTileAdded() {
         super.onTileAdded()
         Log.d(tag,"Lifecycle: onTileAdded")
-        UserPreferencesRepository().saveIsTileAdded(applicationContext, true)
+        isTileAddedState.value = true
     }
 
     override fun onTileRemoved() {
         super.onTileRemoved()
         Log.d(tag,"Lifecycle: onTileRemoved")
-        UserPreferencesRepository().saveIsTileAdded(applicationContext, false)
+        isTileAddedState.value = false
     }
     override fun onStartListening() {
         super.onStartListening()
-        Log.d(tag,"onStartListening")
+        Log.d(tag,"Lifecycle: onStartListening")
         val screenTimeout = ScreenTimeoutUtils().readScreenTimeout(contentResolver)
         qsTile.label = getString(R.string.keep_screen_on)
         if (!Settings.System.canWrite(applicationContext)) {
@@ -45,7 +45,7 @@ class QSTileService : TileService() {
         } else {
             inactiveState(screenTimeout)
         }
-        UserPreferencesRepository().saveIsTileAdded(applicationContext, true)
+        isTileAddedState.value = true
     }
 
 

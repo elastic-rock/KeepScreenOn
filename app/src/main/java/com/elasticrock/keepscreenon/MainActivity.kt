@@ -58,9 +58,11 @@ const val tag = "MainActivity"
 const val notificationPermission = "android.permission.POST_NOTIFICATIONS"
 val canWriteSettingsState = MutableLiveData<Boolean>(false)
 val isIgnoringBatteryOptimizationState = MutableLiveData<Boolean>(false)
+val isTileAddedState = MutableLiveData<Boolean>(false)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(tag, "Lifecycle: onCreate()")
         super.onCreate(savedInstanceState)
         setContent {
             KeepScreenOnTheme {
@@ -74,9 +76,30 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        Log.d(tag, "Lifecycle: onStart()")
         val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         canWriteSettingsState.value = Settings.System.canWrite(applicationContext)
         isIgnoringBatteryOptimizationState.value = pm.isIgnoringBatteryOptimizations(applicationContext.packageName)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(tag, "Lifecycle: onRestart()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(tag, "Lifecycle: onResume()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(tag, "Lifecycle: onStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(tag, "Lifecycle: onDestroy()")
     }
 }
 
@@ -113,7 +136,8 @@ fun KeepScreenOnApp() {
                 }
 
                 item {
-                    if (UserPreferencesRepository().readIsTileAdded(context)) {
+                    val isTileAdded by isTileAddedState.observeAsState(false)
+                    if (isTileAdded) {
                         PreferencesHintCard(
                             title = stringResource(id = (R.string.tile_already_added)),
                             description = stringResource(id = R.string.qs_tile_hidden),

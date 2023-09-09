@@ -8,14 +8,12 @@ import java.lang.Exception
 
 data class ListenForBatteryLow(val listenForBatteryLow: Boolean)
 data class ListenForScreenOff(val listenForScreenOff: Boolean)
-data class IsTileAdded(val isTileAdded: Boolean)
 
 class UserPreferencesRepository {
 
     private val tag = "UserPreferencesRepository"
     private val batteryFileName = "listenforbatterylow.json"
     private val screenFileName = "listenforscreenoff.json"
-    private val tileFileName = "istileadded.json"
 
     fun saveListenForBatteryLow(context: Context, listenForBatteryLow: Boolean) {
         val json = Gson().toJson(ListenForBatteryLow(listenForBatteryLow))
@@ -45,22 +43,6 @@ class UserPreferencesRepository {
             output.listenForScreenOff
         } catch (e: Exception) {
             Log.e(tag, "Error reading listenForScreenOff property")
-            false
-        }
-    }
-
-    fun saveIsTileAdded(context: Context, isTileAdded: Boolean) {
-        val json = Gson().toJson(IsTileAdded(isTileAdded))
-        File(context.filesDir, tileFileName).writeText(json)
-    }
-
-    fun readIsTileAdded(context: Context) : Boolean {
-        return try {
-            val json = File(context.filesDir, tileFileName).readText()
-            val output = Gson().fromJson(json, IsTileAdded::class.java)
-            output.isTileAdded
-        } catch (e: Exception) {
-            Log.e(tag, "Error reading isTileAdded property")
             false
         }
     }
