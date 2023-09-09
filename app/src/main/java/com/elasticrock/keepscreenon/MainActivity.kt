@@ -49,16 +49,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 
 const val tag = "MainActivity"
 const val notificationPermission = "android.permission.POST_NOTIFICATIONS"
-val canWriteSettingsState = MutableLiveData<Boolean>(false)
-val isIgnoringBatteryOptimizationState = MutableLiveData<Boolean>(false)
-val isTileAddedState = MutableLiveData<Boolean>(false)
+val canWriteSettingsState = MutableLiveData(false)
+val isIgnoringBatteryOptimizationState = MutableLiveData(false)
+val isTileAddedState = MutableLiveData(false)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

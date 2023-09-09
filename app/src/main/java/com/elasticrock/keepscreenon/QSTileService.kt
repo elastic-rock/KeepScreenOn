@@ -60,6 +60,7 @@ class QSTileService : TileService() {
             } else {
                 grantPermissionIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                 grantPermissionIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
+                @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
                 startActivityAndCollapse(grantPermissionIntent)
             }
             qsTile.updateTile()
