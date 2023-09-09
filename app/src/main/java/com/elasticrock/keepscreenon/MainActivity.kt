@@ -24,20 +24,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BatteryAlert
 import androidx.compose.material.icons.filled.EnergySavingsLeaf
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -109,25 +104,15 @@ fun KeepScreenOnApp() {
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
 
-    var showInfoDialog by remember { mutableStateOf(false) }
-    if (showInfoDialog) {
-        InfoDialog(
-            onDismiss = { showInfoDialog = false }
-        )
-    }
-
     Scaffold(Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.keep_screen_on),
-                        style = MaterialTheme.typography.titleLarge)
-                        },
-                actions = {
-                    IconButton(
-                        onClick = { showInfoDialog = true })
-                    { Icon(imageVector = Icons.Filled.Info, contentDescription = null)}}
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
             )
         }, content = {
             LazyColumn(Modifier.padding(it)) {
@@ -274,20 +259,6 @@ fun KeepScreenOnApp() {
                         }
                     )
                 }
-            }
-        }
-    )
-}
-
-@Composable
-fun InfoDialog(onDismiss: () -> Unit) {
-    /*TODO*/
-    AlertDialog(onDismissRequest = { onDismiss() },
-        title = { Text(text = stringResource(R.string.about)) },
-        text = { Text(text = stringResource(R.string.about_dialog_description))},
-        confirmButton = {
-            TextButton(onClick = { onDismiss() }) {
-                Text(text = stringResource(R.string.exit))
             }
         }
     )
