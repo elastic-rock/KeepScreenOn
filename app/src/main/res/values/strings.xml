@@ -1,10 +1,8 @@
 <resources>
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="grant_permission">Grant permission</string>
-    <string name="permission_description">To be able to set the screen timeout, the modify system settings permission must be granted to the app.</string>
-    <string name="add_tile_instructions">To add the quick settings tile, \n 1) Navigate to the quick settings panel, \n 2) Tap edit, \n 3) Find the Screen Timeout tile, \n 4) Touch and hold the tile, then drag it where you want it.</string>
+    <string name="add_tile_instructions">Tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="add_qs_tile">Add quick settings tile</string>
-    <string name="dismiss">Dismiss</string>
     <plurals name="second">
         <item quantity="one">%d second</item>
         <item quantity="other">%d seconds</item>
@@ -14,4 +12,23 @@
         <item quantity="other">%d minutes</item>
     </plurals>
     <string name="always">Always</string>
+    <string name="active_in_the_background">Active in the background</string>
+    <string name="listening_for_battery_low_action">Listening for battery low action</string>
+    <string name="listening_for_screen_off_action">Listening for screen off action</string>
+    <string name="listening_for_battery_low_and_screen_off_actions">Listening for battery low and screen off actions</string>
+    <string name="tile_already_added">Tile already added</string>
+    <string name="restore_timeout_when_battery_low">Restore timeout when battery low</string>
+    <string name="restore_timeout_when_screen_is_turned_off">Restore timeout when screen is turned off</string>
+    <string name="options">Options</string>
+    <string name="permissions">Permissions</string>
+    <string name="qs_tile">Quick settings tile</string>
+    <string name="modify_system_settings">Modify system settings</string>
+    <string name="this_permission_is_required">This permission is required</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="notifications">Notifications</string>
+    <string name="posted_when_keep_screen_on_is_active">Posted when Keep Screen On is active</string>
+    <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
+    <string name="allow_if_you_encounter_issues">Allow if you encounter issues</string>
+    <string name="qs_tile_hidden">If you can\'t find the tile, it may be on another page</string>
+    <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
 </resources>

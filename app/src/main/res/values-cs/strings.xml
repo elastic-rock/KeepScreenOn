@@ -2,10 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="keep_screen_on">Nevypínat obrazovku</string>
     <string name="grant_permission">Udělit oprávnění</string>
-    <string name="permission_description">Aby bylo možné nastavit interval vypnutí obrazovky, je třeba aplikaci udělit oprávnění ke změně nastavení systému.</string>
     <string name="add_tile_instructions">Chcete-li přidat dlaždici do panelu rychlého nastavení, \n 1) otevřete rychlé nastavení, \n 2) klepněte na tlačítko upravit, \n 3) najdětě dlaždici Inteval vypnutí obrazovky, \n 4) podržte ji a přetáhněte na libovolné místo.</string>
     <string name="add_qs_tile">Přidat dlaždici rychlého nastavení</string>
-    <string name="dismiss">Zavřít</string>
     <plurals name="second" tools:ignore="MissingQuantity">
         <item quantity="one">%d sekunda</item>
         <item quantity="few">%d sekundy</item>
@@ -17,4 +15,23 @@
         <item quantity="other">%d minut</item>
     </plurals>
     <string name="always">Vždy</string>
+    <string name="listening_for_battery_low_action">Kontrola nízkého stavu baterie</string>
+    <string name="listening_for_screen_off_action">Kontrola vypnutí obrazovky</string>
+    <string name="listening_for_battery_low_and_screen_off_actions">Kontrola nízkého stavu baterie a vypnutí obrazovky</string>
+    <string name="tile_already_added">Dlaždice již přidána</string>
+    <string name="restore_timeout_when_battery_low">Obnovit interval při nízkém stavu baterie</string>
+    <string name="restore_timeout_when_screen_is_turned_off">Obnovit interval při vypnutí obrazovky</string>
+    <string name="options">Možnosti</string>
+    <string name="permissions">Oprávnění</string>
+    <string name="qs_tile">Dlaždice rychlého nastavení</string>
+    <string name="modify_system_settings">Změny nastavení systému</string>
+    <string name="this_permission_is_required">Toto oprávnění je vyžadované</string>
+    <string name="permission_granted">Oprávnění uděleno</string>
+    <string name="notifications">Notifikace</string>
+    <string name="posted_when_keep_screen_on_is_active">Zobrazeny když je Nevypínat obrazovku aktivní</string>
+    <string name="ignore_battery_optimizations">Vyloučit z optimalizace baterie</string>
+    <string name="allow_if_you_encounter_issues">Povolte pokud se setkáte s problémy</string>
+    <string name="qs_tile_hidden">Pokud nemůžete najít dlaždici, může být na další stránce</string>
+    <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
+    <string name="active_in_the_background">Aktivita na pozadí</string>
 </resources>
