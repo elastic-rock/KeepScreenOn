@@ -12,14 +12,13 @@
         <item quantity="other">%d minutes</item>
     </plurals>
     <string name="always">Always</string>
-    <string name="foreground_service">Foreground service</string>
+    <string name="active_in_the_background">Active in the background</string>
     <string name="listening_for_battery_low_action">Listening for battery low action</string>
     <string name="listening_for_screen_off_action">Listening for screen off action</string>
     <string name="listening_for_battery_low_and_screen_off_actions">Listening for battery low and screen off actions</string>
     <string name="tile_already_added">Tile already added</string>
     <string name="restore_timeout_when_battery_low">Restore timeout when battery low</string>
     <string name="restore_timeout_when_screen_is_turned_off">Restore timeout when screen is turned off</string>
-    <string name="foreground_service_channel_description">Screen off and/or battery low actions</string>
     <string name="options">Options</string>
     <string name="permissions">Permissions</string>
     <string name="qs_tile">Quick settings tile</string>

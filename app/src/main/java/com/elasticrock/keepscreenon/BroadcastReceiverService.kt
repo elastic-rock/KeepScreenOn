@@ -43,11 +43,9 @@ class BroadcastReceiverService : LifecycleService() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.foreground_service)
-            val descriptionText = getString(R.string.foreground_service_channel_description)
+            val name = getString(R.string.active_in_the_background)
             val importance = NotificationManager.IMPORTANCE_LOW
             val mChannel = NotificationChannel("foreground_service", name, importance)
-            mChannel.description = descriptionText
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
 

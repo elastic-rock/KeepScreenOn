@@ -13,4 +13,23 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
+    <string name="active_in_the_background">Active en arrière-plan</string>
+    <string name="listening_for_battery_low_action">Contrôle de l\'état de la batterie</string>
+    <string name="listening_for_screen_off_action">Contrôle de l\'arrêt de l\'écran</string>
+    <string name="listening_for_battery_low_and_screen_off_actions">contrôle de l\'état de la batterie et de l\'arrêt de l\'écran</string>
+    <string name="tile_already_added">Bloc déjà ajouté</string>
+    <string name="restore_timeout_when_battery_low">Renouveler le délai lorsque la batterie est faible</string>
+    <string name="restore_timeout_when_screen_is_turned_off">Renouveler le délai lorsque l\'écran est éteint</string>
+    <string name="options">Options</string>
+    <string name="permissions">Autorisations</string>
+    <string name="qs_tile">Bloc de réglages rapides</string>
+    <string name="modify_system_settings">Modifier les paramètres système</string>
+    <string name="this_permission_is_required">Autorisation nécessaire</string>
+    <string name="permission_granted">Autorisation accordée</string>
+    <string name="notifications">Notifications</string>
+    <string name="posted_when_keep_screen_on_is_active">Affiché lorsque Maintenir l\'écran allumé est actif</string>
+    <string name="ignore_battery_optimizations">Exclure de l\'optimisation de la batterie</string>
+    <string name="allow_if_you_encounter_issues">Autoriser en cas de problèmes</string>
+    <string name="qs_tile_hidden">Si vous ne trouvez pas le bloc, il se peut qu\'il se trouve sur une autre page</string>
+    <string name="add_qs_tile_alternate">Vous pouvez également appuyer sur le bouton de modification dans le panneau des paramètres rapides et ajouter le bloc Maintenir l\'écran allumé</string>
 </resources>
