@@ -1,0 +1,2 @@
+ - Added the option to restore timeout when battery is low or/and the screen is turned off
+ - App UI redesign (Credits to JunkFood02/Seal)
