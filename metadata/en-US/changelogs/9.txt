@@ -1,0 +1,3 @@
+ - When granting the modify system settings permission from the QS tile, the settings page is opened directly on the page of the app, rather than on a selection of apps
+ - Separated each case, for which the foreground service is running, into different notification channels
+ - Added a splash screen that doesn't burn your eyeballs in dark mode :)
