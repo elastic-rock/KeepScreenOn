@@ -54,14 +54,13 @@ class QSTileService : TileService() {
         Log.d(tag,"onClick")
         val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
         if (!Settings.System.canWrite(applicationContext)) {
-            val grantPermissionIntent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, grantPermissionIntent, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
+                startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, CommonUtils().modifySystemSettingsIntent, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
             } else {
-                grantPermissionIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                grantPermissionIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
+                CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
                 @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
-                startActivityAndCollapse(grantPermissionIntent)
+                startActivityAndCollapse(CommonUtils().modifySystemSettingsIntent)
             }
             qsTile.updateTile()
         } else if (screenTimeout == CommonUtils().timeoutDisabled) {

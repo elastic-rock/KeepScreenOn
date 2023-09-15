@@ -178,7 +178,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                             description = stringResource(id = R.string.this_permission_is_required),
                             enabled = true,
                             icon = Icons.Filled.Settings,
-                            onClick = { context.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = Uri.parse("package:${context.packageName}") } ) }
+                            onClick = { context.startActivity(CommonUtils().modifySystemSettingsIntent) }
                         )
                     }
                 }
