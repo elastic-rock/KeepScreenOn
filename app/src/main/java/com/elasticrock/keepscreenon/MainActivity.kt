@@ -45,12 +45,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.view.WindowCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.MutableLiveData
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
+import kotlinx.coroutines.runBlocking
 
 val canWriteSettingsState = MutableLiveData(false)
 val isIgnoringBatteryOptimizationState = MutableLiveData(false)
 val isTileAddedState = MutableLiveData(false)
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "preferences")
 
 class MainActivity : ComponentActivity() {
     private val tag = "MainActivity"
@@ -62,7 +67,7 @@ class MainActivity : ComponentActivity() {
             KeepScreenOnTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    KeepScreenOnApp()
+                    KeepScreenOnApp(dataStore)
                 }
             }
         }
@@ -99,7 +104,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KeepScreenOnApp() {
+fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
     val tag = "MainActivity"
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
@@ -235,27 +240,27 @@ fun KeepScreenOnApp() {
                 }
 
                 item {
-                    var checked by remember { mutableStateOf(UserPreferencesRepository().readListenForBatteryLow(context)) }
+                    var checked by remember { mutableStateOf(runBlocking { DataStore(dataStore).readListenForBatteryLow() } ) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_battery_low)),
                         icon = Icons.Filled.BatteryAlert,
                         isChecked = checked,
                         onClick = {
                             checked = !checked
-                            UserPreferencesRepository().saveListenForBatteryLow(context, checked)
+                            runBlocking { DataStore(dataStore).saveListenForBatteryLow(checked) }
                         }
                     )
                 }
 
                 item {
-                    var checked by remember { mutableStateOf(UserPreferencesRepository().readListenForScreenOff(context)) }
+                    var checked by remember { mutableStateOf(runBlocking { DataStore(dataStore).readListenForScreenOff() }) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_screen_is_turned_off)),
                         icon = Icons.Filled.Lock,
                         isChecked = checked,
                         onClick = {
                             checked = !checked
-                            UserPreferencesRepository().saveListenForScreenOff(context, checked)
+                            runBlocking { DataStore(dataStore).saveListenForScreenOff(checked) }
                         }
                     )
                 }

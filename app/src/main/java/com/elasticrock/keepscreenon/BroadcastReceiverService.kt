@@ -13,6 +13,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class BroadcastReceiverService : LifecycleService() {
 
@@ -102,8 +104,10 @@ class BroadcastReceiverService : LifecycleService() {
         monitorScreenOff = true
     }
     private fun restoreScreenTimeout() {
-        ScreenTimeoutUtils().restoreScreenTimeout(applicationContext, contentResolver)
-    }
+        runBlocking {
+            val previousScreenTimeout = DataStore(dataStore).readPreviousScreenTimeout()
+            launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
+        }    }
 
     private fun stopForegroundService() {
         stopForeground(STOP_FOREGROUND_REMOVE)

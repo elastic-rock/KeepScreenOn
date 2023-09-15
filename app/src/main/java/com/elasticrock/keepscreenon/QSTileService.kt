@@ -32,7 +32,7 @@ class QSTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
         Log.d(tag,"Lifecycle: onStartListening")
-        val screenTimeout = ScreenTimeoutUtils().readScreenTimeout(contentResolver)
+        val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
         qsTile.label = getString(R.string.keep_screen_on)
         if (!Settings.System.canWrite(applicationContext)) {
             qsTile.state = Tile.STATE_INACTIVE
@@ -40,7 +40,7 @@ class QSTileService : TileService() {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
             qsTile.updateTile()
-        } else if (screenTimeout == 2147483647) {
+        } else if (screenTimeout == CommonUtils().timeoutDisabled) {
             activeState()
         } else {
             inactiveState(screenTimeout)
@@ -52,7 +52,7 @@ class QSTileService : TileService() {
     override fun onClick() {
         super.onClick()
         Log.d(tag,"onClick")
-        val screenTimeout = ScreenTimeoutUtils().readScreenTimeout(contentResolver)
+        val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
         if (!Settings.System.canWrite(applicationContext)) {
             val grantPermissionIntent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -64,20 +64,21 @@ class QSTileService : TileService() {
                 startActivityAndCollapse(grantPermissionIntent)
             }
             qsTile.updateTile()
-        } else if (screenTimeout == 2147483647) {
-            val previousScreenTimeout = ScreenTimeoutUtils().readPreviousScreenTimeout(applicationContext)
+        } else if (screenTimeout == CommonUtils().timeoutDisabled) {
             runBlocking {
-                launch { ScreenTimeoutUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
+                val previousScreenTimeout = DataStore(dataStore).readPreviousScreenTimeout()
+                launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
                 launch { inactiveState(previousScreenTimeout) }
             }
             stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
             runBlocking {
                 launch { activeState() }
-                launch { ScreenTimeoutUtils().disableScreenTimeout(applicationContext, contentResolver) }
+                launch { CommonUtils().setScreenTimeout(contentResolver, CommonUtils().timeoutDisabled) }
+                launch { DataStore(dataStore).savePreviousScreenTimeout(screenTimeout) }
             }
-            val listenForBatteryLow = UserPreferencesRepository().readListenForBatteryLow(applicationContext)
-            val listenForScreenOff = UserPreferencesRepository().readListenForScreenOff(applicationContext)
+            val listenForBatteryLow = runBlocking { DataStore(dataStore).readListenForBatteryLow() }
+            val listenForScreenOff = runBlocking { DataStore(dataStore).readListenForScreenOff() }
             if (listenForBatteryLow && listenForScreenOff) {
                 Log.d(tag,"listenForBatteryLow && listenForScreenOff")
                 val intent = Intent()
