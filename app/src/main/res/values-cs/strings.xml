@@ -33,5 +33,5 @@
     <string name="allow_if_you_encounter_issues">Povolte pokud se setkáte s problémy</string>
     <string name="qs_tile_hidden">Pokud nemůžete najít dlaždici, může být na další stránce</string>
     <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
-    <string name="active_in_the_background">Aktivita na pozadí</string>
+    <string name="background_service">Služba na pozadí</string>
 </resources>

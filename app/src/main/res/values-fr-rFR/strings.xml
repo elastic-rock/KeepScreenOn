@@ -13,7 +13,6 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
-    <string name="active_in_the_background">Active en arrière-plan</string>
     <string name="listening_for_battery_low_action">Contrôle de l\'état de la batterie</string>
     <string name="listening_for_screen_off_action">Contrôle de l\'arrêt de l\'écran</string>
     <string name="listening_for_battery_low_and_screen_off_actions">contrôle de l\'état de la batterie et de l\'arrêt de l\'écran</string>
@@ -32,4 +31,5 @@
     <string name="allow_if_you_encounter_issues">Autoriser en cas de problèmes</string>
     <string name="qs_tile_hidden">Si vous ne trouvez pas le bloc, il se peut qu\'il se trouve sur une autre page</string>
     <string name="add_qs_tile_alternate">Vous pouvez également appuyer sur le bouton de modification dans le panneau des paramètres rapides et ajouter le bloc Maintenir l\'écran allumé</string>
+    <string name="background_service">Service d\'arrière-plan</string>
 </resources>

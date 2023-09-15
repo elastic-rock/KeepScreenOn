@@ -78,20 +78,13 @@ class QSTileService : TileService() {
             }
             val listenForBatteryLow = runBlocking { DataStore(dataStore).readListenForBatteryLow() }
             val listenForScreenOff = runBlocking { DataStore(dataStore).readListenForScreenOff() }
-            if (listenForBatteryLow && listenForScreenOff) {
-                Log.d(tag,"listenForBatteryLow && listenForScreenOff")
-                val intent = Intent()
-                    .setClass(this, BroadcastReceiverService::class.java)
-                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF")
-                startBroadcastReceiverService(intent)
-            } else if (listenForBatteryLow) {
-                Log.d(tag,"listenForBatteryLow")
+            if (listenForBatteryLow) {
                 val intent = Intent()
                     .setClass(this, BroadcastReceiverService::class.java)
                     .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
                 startBroadcastReceiverService(intent)
-            } else if (listenForScreenOff) {
-                Log.d(tag,"listenForScreenOff")
+            }
+            if (listenForScreenOff) {
                 val intent = Intent()
                     .setClass(this, BroadcastReceiverService::class.java)
                     .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")

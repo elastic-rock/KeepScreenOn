@@ -2,6 +2,7 @@ package com.elasticrock.keepscreenon
 
 import android.app.Notification
 import android.app.NotificationChannel
+import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -30,11 +31,6 @@ class BroadcastReceiverService : LifecycleService() {
 
         Log.d(tag,"onStartCommand")
 
-        if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF") {
-            Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW_AND_SCREEN_OFF")
-            registerBatteryLowReceiver()
-            registerScreenOffReceiver()
-        }
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW") {
             Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
             registerBatteryLowReceiver()
@@ -45,38 +41,77 @@ class BroadcastReceiverService : LifecycleService() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.active_in_the_background)
             val importance = NotificationManager.IMPORTANCE_LOW
-            val mChannel = NotificationChannel("foreground_service", name, importance)
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(mChannel)
+            val groupId = "background_service"
+            val groupName = getString(R.string.background_service)
+            notificationManager.createNotificationChannelGroup(NotificationChannelGroup(groupId, groupName))
+            notificationManager.deleteNotificationChannel("foreground_service") // Delete old notification channel
+            if (monitorBatteryLow && monitorScreenOff) {
+                val name = getString(R.string.listening_for_battery_low_and_screen_off_actions)
+                val mChannel = NotificationChannel("battery_low_and_screen_off_monitor", name, importance)
+                mChannel.group = groupId
+                notificationManager.createNotificationChannel(mChannel)
+                val notification: Notification = Notification.Builder(this, "battery_low_and_screen_off_monitor")
+                    .setContentTitle(name)
+                    .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                    .build()
+                startForeground(1, notification)
+            } else if (monitorBatteryLow){
+                val name = getString(R.string.listening_for_battery_low_action)
+                val mChannel = NotificationChannel("battery_low_monitor", name, importance)
+                mChannel.group = groupId
+                notificationManager.createNotificationChannel(mChannel)
+                val notification: Notification = Notification.Builder(this, "battery_low_monitor")
+                    .setContentTitle(name)
+                    .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                    .build()
+                startForeground(1, notification)
+            } else if (monitorScreenOff) {
+                val name = getString(R.string.listening_for_screen_off_action)
+                val mChannel = NotificationChannel("screen_off_monitor", name, importance)
+                mChannel.group = groupId
+                notificationManager.createNotificationChannel(mChannel)
+                val notification: Notification = Notification.Builder(this, "screen_off_monitor")
+                    .setContentTitle(name)
+                    .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                    .build()
+                startForeground(1, notification)
 
-            val notification: Notification = Notification.Builder(this, "foreground_service")
-                .setContentTitle(
-                    if (monitorBatteryLow && monitorScreenOff) {
-                        getString(R.string.listening_for_battery_low_and_screen_off_actions)
-                    } else if (monitorBatteryLow){
-                        getString(R.string.listening_for_battery_low_action)
-                    } else {
-                        getString(R.string.listening_for_screen_off_action)
-                    }
-                )
-                .setSmallIcon(R.drawable.outline_lock_clock_qs)
-                .build()
-            startForeground(1, notification)
+            }
         } else {
-            val notification: Notification = Notification.Builder(this)
-                .setContentTitle(getString(R.string.listening_for_battery_low_action))
-                .setSmallIcon(R.drawable.outline_lock_clock_qs)
-                .build()
-            startForeground(1, notification)
+            @Suppress("DEPRECATION")
+            if (monitorBatteryLow && monitorScreenOff) {
+                val name = getString(R.string.listening_for_battery_low_and_screen_off_actions)
+                val notification: Notification = Notification.Builder(this)
+                    .setContentTitle(name)
+                    .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                    .build()
+                startForeground(1, notification)
+            } else if (monitorBatteryLow){
+                val name = getString(R.string.listening_for_battery_low_action)
+                val notification: Notification = Notification.Builder(this)
+                    .setContentTitle(name)
+                    .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                    .build()
+                startForeground(1, notification)
+            } else if (monitorScreenOff) {
+                val name = getString(R.string.listening_for_screen_off_action)
+                val notification: Notification = Notification.Builder(this)
+                    .setContentTitle(name)
+                    .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                    .build()
+                startForeground(1, notification)
+
+            }
         }
+
         return super.onStartCommand(intent, flags, startId)
     }
 
     private inner class BatteryLowReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == ACTION_BATTERY_LOW) {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ACTION_BATTERY_LOW) {
                 Log.d(tag,"ACTION_BATTERY_LOW")
                 restoreScreenTimeout()
                 stopForegroundService()
@@ -103,6 +138,7 @@ class BroadcastReceiverService : LifecycleService() {
         ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
         monitorScreenOff = true
     }
+
     private fun restoreScreenTimeout() {
         runBlocking {
             val previousScreenTimeout = DataStore(dataStore).readPreviousScreenTimeout()

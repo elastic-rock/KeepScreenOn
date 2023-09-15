@@ -16,7 +16,7 @@ class DataStore(private val dataStore: DataStore<Preferences>) {
 
     private val tag = "UserPreferencesRepository"
     private val batteryLowKey = booleanPreferencesKey("listen_for_battery_low")
-    private val screenOffKey = booleanPreferencesKey("listen_for_battery_low")
+    private val screenOffKey = booleanPreferencesKey("listen_for_screen_off")
     private val previousScreenTimeoutKey = intPreferencesKey("previous_screen_timeout")
 
     suspend fun saveListenForBatteryLow(listenForBatteryLow: Boolean) {
@@ -34,6 +34,7 @@ class DataStore(private val dataStore: DataStore<Preferences>) {
             .map { preferences ->
                 preferences[batteryLowKey] ?: false
             }
+        Log.d(tag, "listenForBatteryLow == ${listenForBatteryLow.first()}")
         return listenForBatteryLow.first()
     }
 
@@ -52,6 +53,7 @@ class DataStore(private val dataStore: DataStore<Preferences>) {
             .map { preferences ->
                 preferences[screenOffKey] ?: false
             }
+        Log.d(tag, "listenForScreenOff == ${listenForScreenOff.first()}")
         return listenForScreenOff.first()
     }
 
