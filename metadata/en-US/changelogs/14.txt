@@ -1,0 +1,1 @@
+ - Show current screen timeout in the app for debugging purposes
