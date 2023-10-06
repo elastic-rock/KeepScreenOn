@@ -31,4 +31,5 @@
     <string name="qs_tile_hidden">If you can\'t find the tile, it may be on another page</string>
     <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="background_service">Background service</string>
+    <string name="current_screen_timeout">Current screen timeout: %d</string>
 </resources>

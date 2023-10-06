@@ -32,4 +32,5 @@
     <string name="qs_tile_hidden">Si vous ne trouvez pas le bloc, il se peut qu\'il se trouve sur une autre page</string>
     <string name="add_qs_tile_alternate">Vous pouvez également appuyer sur le bouton de modification dans le panneau des paramètres rapides et ajouter le bloc Maintenir l\'écran allumé</string>
     <string name="background_service">Service d\'arrière-plan</string>
+    <string name="current_screen_timeout">Délai de mise en veille de l\'écran actuel: %d</string>
 </resources>

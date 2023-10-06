@@ -17,6 +17,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -42,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
@@ -54,6 +56,7 @@ import kotlinx.coroutines.runBlocking
 val canWriteSettingsState = MutableLiveData(false)
 val isIgnoringBatteryOptimizationState = MutableLiveData(false)
 val isTileAddedState = MutableLiveData(false)
+val screenTimeoutState = MutableLiveData(0)
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "preferences")
 
 class MainActivity : ComponentActivity() {
@@ -78,6 +81,7 @@ class MainActivity : ComponentActivity() {
         val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         canWriteSettingsState.value = Settings.System.canWrite(applicationContext)
         isIgnoringBatteryOptimizationState.value = pm.isIgnoringBatteryOptimizations(applicationContext.packageName)
+        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
     }
 
     override fun onRestart() {
@@ -261,6 +265,17 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                             checked = !checked
                             runBlocking { DataStore(dataStore).saveListenForScreenOff(checked) }
                         }
+                    )
+                }
+
+                item {
+                    val screenTimeout by screenTimeoutState.observeAsState(0)
+                    Text(
+                        text = stringResource(R.string.current_screen_timeout, screenTimeout),
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 18.dp, top = 24.dp, bottom = 12.dp),
                     )
                 }
             }

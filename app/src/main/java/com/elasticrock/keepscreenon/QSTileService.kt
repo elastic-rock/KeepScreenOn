@@ -46,6 +46,7 @@ class QSTileService : TileService() {
             inactiveState(screenTimeout)
         }
         isTileAddedState.value = true
+        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
     }
 
 
@@ -91,6 +92,7 @@ class QSTileService : TileService() {
                 startBroadcastReceiverService(intent)
             }
         }
+        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
     }
 
     private fun inactiveState(screenTimeout: Int) {
