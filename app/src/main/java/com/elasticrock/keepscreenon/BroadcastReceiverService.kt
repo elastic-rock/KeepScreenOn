@@ -141,7 +141,7 @@ class BroadcastReceiverService : LifecycleService() {
 
     private fun restoreScreenTimeout() {
         runBlocking {
-            val previousScreenTimeout = DataStore(dataStore).readPreviousScreenTimeout()
+            val previousScreenTimeout = DataStoreRepository(dataStore).readPreviousScreenTimeout()
             launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
         }    }
 

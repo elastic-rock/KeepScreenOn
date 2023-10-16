@@ -16,34 +16,65 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BatteryAlert
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
@@ -51,6 +82,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.MutableLiveData
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
+import com.elasticrock.keepscreenon.ui.theme.applyOpacity
 import kotlinx.coroutines.runBlocking
 
 val canWriteSettingsState = MutableLiveData(false)
@@ -111,6 +143,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
     val tag = "MainActivity"
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     Scaffold(Modifier.fillMaxSize(),
         topBar = {
@@ -122,8 +155,8 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                     )
                 }
             )
-        }, content = {
-            LazyColumn(Modifier.padding(it)) {
+        }, content = { padding ->
+            LazyColumn(Modifier.padding(padding)) {
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.qs_tile))
@@ -243,29 +276,73 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                 }
 
                 item {
-                    var checked by remember { mutableStateOf(runBlocking { DataStore(dataStore).readListenForBatteryLow() } ) }
+                    var checked by remember { mutableStateOf(runBlocking { DataStoreRepository(dataStore).readListenForBatteryLow() } ) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_battery_low)),
                         icon = Icons.Filled.BatteryAlert,
                         isChecked = checked,
                         onClick = {
                             checked = !checked
-                            runBlocking { DataStore(dataStore).saveListenForBatteryLow(checked) }
+                            runBlocking { DataStoreRepository(dataStore).saveListenForBatteryLow(checked) }
                         }
                     )
                 }
 
                 item {
-                    var checked by remember { mutableStateOf(runBlocking { DataStore(dataStore).readListenForScreenOff() }) }
+                    var checked by remember { mutableStateOf(runBlocking { DataStoreRepository(dataStore).readListenForScreenOff() }) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_screen_is_turned_off)),
                         icon = Icons.Filled.Lock,
                         isChecked = checked,
                         onClick = {
                             checked = !checked
-                            runBlocking { DataStore(dataStore).saveListenForScreenOff(checked) }
+                            runBlocking { DataStoreRepository(dataStore).saveListenForScreenOff(checked) }
                         }
                     )
+                }
+
+                item {
+                    PreferenceSubtitle(text = stringResource(id = R.string.advanced))
+                }
+
+                item {
+                    var openDialog by remember { mutableStateOf(false) }
+                    var currentMaxTimeout by rememberSaveable { mutableStateOf("") }
+                    PreferenceItem(
+                        title = stringResource(id = R.string.maximum_timeout_value),
+                        description = stringResource(id = R.string.maximum_description),
+                        icon = Icons.Filled.Build,
+                        onClick = { openDialog = true }
+                    )
+
+                    if (openDialog) {
+                        AlertDialog(
+                            onDismissRequest = { openDialog = false }
+                        ) {
+                            Surface(
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .wrapContentHeight(),
+                                shape = MaterialTheme.shapes.large,
+                                tonalElevation = AlertDialogDefaults.TonalElevation
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Text(text = stringResource(id = R.string.maximum_explenation))
+                                    OutlinedTextField(
+                                        value = currentMaxTimeout,
+                                        onValueChange = { currentMaxTimeout = it },
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                    )
+                                    TextButton(
+                                        onClick = { openDialog = false },
+                                        modifier = Modifier.align(Alignment.End)
+                                    ) {
+                                        Text(text = stringResource(id = R.string.confirm))
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 item {
@@ -280,5 +357,232 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                 }
             }
         }
+    )
+}
+
+private const val horizontal = 8
+private const val vertical = 16
+
+@Composable
+fun PreferencesHintCard(
+    title: String = "Title ".repeat(2),
+    description: String? = "Description text ".repeat(3),
+    icon: ImageVector? = Icons.Outlined.Info,
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    onClick: () -> Unit = {},
+    enabled: Boolean = true
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .clip(MaterialTheme.shapes.extraLarge)
+            .background(containerColor)
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        icon?.let {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 16.dp)
+                    .size(24.dp),
+                tint = contentColor
+            )
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = if (icon == null) 12.dp else 0.dp, end = 12.dp)
+        ) {
+            with(MaterialTheme) {
+                Text(
+                    text = title,
+                    maxLines = 1,
+                    style = typography.titleLarge.copy(fontSize = 20.sp),
+                    color = contentColor
+                )
+                if (description != null) Text(
+                    text = description,
+                    color = contentColor,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    style = typography.bodyMedium,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PreferenceItem(
+    title: String,
+    description: String? = null,
+    icon: ImageVector? = null,
+    enabled: Boolean = true,
+    onClick: () -> Unit = {},
+) {
+    Surface(
+        modifier = Modifier.clickable(
+            onClick = onClick,
+            enabled = enabled,
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal.dp, vertical.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            icon?.let {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 16.dp)
+                        .size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = if (icon == null) 12.dp else 0.dp)
+                    .padding(end = 8.dp)
+            ) {
+                PreferenceItemTitle(text = title, enabled = enabled)
+                if (!description.isNullOrEmpty()) PreferenceItemDescription(
+                    text = description,
+                    enabled = enabled
+                )
+            }
+        }
+    }
+
+}
+
+
+@Composable
+fun PreferenceSwitch(
+    title: String,
+    description: String? = null,
+    icon: ImageVector? = null,
+    enabled: Boolean = true,
+    isChecked: Boolean = true,
+    checkedIcon: ImageVector = Icons.Outlined.Check,
+    onClick: (() -> Unit) = {},
+) {
+    val thumbContent: (@Composable () -> Unit)? = if (isChecked) {
+        {
+            Icon(
+                imageVector = checkedIcon,
+                contentDescription = null,
+                modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        }
+    } else {
+        null
+    }
+    Surface(
+        modifier = Modifier.toggleable(value = isChecked,
+            enabled = enabled,
+            onValueChange = { onClick() })
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal.dp, vertical.dp)
+                .padding(start = if (icon == null) 12.dp else 0.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            icon?.let {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 16.dp)
+                        .size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                PreferenceItemTitle(
+                    text = title,
+                    enabled = enabled
+                )
+                if (!description.isNullOrEmpty()) PreferenceItemDescription(
+                    text = description,
+                    enabled = enabled
+                )
+            }
+            Switch(
+                checked = isChecked,
+                onCheckedChange = null,
+                modifier = Modifier.padding(start = 20.dp, end = 6.dp),
+                enabled = enabled,
+                thumbContent = thumbContent
+            )
+        }
+    }
+}
+
+@Composable
+fun PreferenceItemTitle(
+    modifier: Modifier = Modifier,
+    text: String,
+    maxLines: Int = 2,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    enabled: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.onBackground.applyOpacity(enabled),
+    overflow: TextOverflow = TextOverflow.Ellipsis
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        maxLines = maxLines,
+        style = style,
+        color = color,
+        overflow = overflow
+    )
+}
+
+@Composable
+fun PreferenceItemDescription(
+    modifier: Modifier = Modifier,
+    text: String,
+    maxLines: Int = Int.MAX_VALUE,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    enabled: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+) {
+    Text(
+        modifier = modifier.padding(top = 2.dp),
+        text = text,
+        maxLines = maxLines,
+        style = style,
+        color = color,
+        overflow = overflow
+    )
+}
+
+@Composable
+fun PreferenceSubtitle(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(start = 18.dp, top = 24.dp, bottom = 12.dp),
+    text: String,
+    color: Color = MaterialTheme.colorScheme.primary
+) {
+    Text(
+        text = text,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(contentPadding),
+        color = color,
+        style = MaterialTheme.typography.labelLarge
     )
 }

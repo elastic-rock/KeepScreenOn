@@ -40,7 +40,7 @@ class QSTileService : TileService() {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
             qsTile.updateTile()
-        } else if (screenTimeout == CommonUtils().timeoutDisabled) {
+        } else if (screenTimeout == runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }) {
             activeState()
         } else {
             inactiveState(screenTimeout)
@@ -64,9 +64,9 @@ class QSTileService : TileService() {
                 startActivityAndCollapse(CommonUtils().modifySystemSettingsIntent)
             }
             qsTile.updateTile()
-        } else if (screenTimeout == CommonUtils().timeoutDisabled) {
+        } else if (screenTimeout == runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }) {
             runBlocking {
-                val previousScreenTimeout = DataStore(dataStore).readPreviousScreenTimeout()
+                val previousScreenTimeout = DataStoreRepository(dataStore).readPreviousScreenTimeout()
                 launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
                 launch { inactiveState(previousScreenTimeout) }
             }
@@ -74,11 +74,11 @@ class QSTileService : TileService() {
         } else {
             runBlocking {
                 launch { activeState() }
-                launch { CommonUtils().setScreenTimeout(contentResolver, CommonUtils().timeoutDisabled) }
-                launch { DataStore(dataStore).savePreviousScreenTimeout(screenTimeout) }
+                launch { CommonUtils().setScreenTimeout(contentResolver, runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }) }
+                launch { DataStoreRepository(dataStore).savePreviousScreenTimeout(screenTimeout) }
             }
-            val listenForBatteryLow = runBlocking { DataStore(dataStore).readListenForBatteryLow() }
-            val listenForScreenOff = runBlocking { DataStore(dataStore).readListenForScreenOff() }
+            val listenForBatteryLow = runBlocking { DataStoreRepository(dataStore).readListenForBatteryLow() }
+            val listenForScreenOff = runBlocking { DataStoreRepository(dataStore).readListenForScreenOff() }
             if (listenForBatteryLow) {
                 val intent = Intent()
                     .setClass(this, BroadcastReceiverService::class.java)

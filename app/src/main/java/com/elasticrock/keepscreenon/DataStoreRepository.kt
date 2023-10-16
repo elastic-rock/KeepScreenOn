@@ -12,12 +12,13 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 
-class DataStore(private val dataStore: DataStore<Preferences>) {
+class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
 
     private val tag = "UserPreferencesRepository"
     private val batteryLowKey = booleanPreferencesKey("listen_for_battery_low")
     private val screenOffKey = booleanPreferencesKey("listen_for_screen_off")
     private val previousScreenTimeoutKey = intPreferencesKey("previous_screen_timeout")
+    private val maximumTimeoutKey = intPreferencesKey("maximum_timeout")
 
     suspend fun saveListenForBatteryLow(listenForBatteryLow: Boolean) {
         try {
@@ -73,5 +74,23 @@ class DataStore(private val dataStore: DataStore<Preferences>) {
                 preferences[previousScreenTimeoutKey] ?: 120000
             }
         return previousScreenTimeout.first()
+    }
+
+    suspend fun saveMaximumTimeout(maximumTimeout: Int) {
+        try {
+            dataStore.edit { preferences ->
+                preferences[maximumTimeoutKey] = maximumTimeout
+            }
+        } catch (e: IOException) {
+            Log.e(tag,"Error writing maximum timeout")
+        }
+    }
+
+    suspend fun readMaximumTimeout() : Int {
+        val maximumTimeout: Flow<Int> = dataStore.data
+            .map { preferences ->
+                preferences[maximumTimeoutKey] ?: defaultMaxTimeout
+            }
+        return maximumTimeout.first()
     }
 }
