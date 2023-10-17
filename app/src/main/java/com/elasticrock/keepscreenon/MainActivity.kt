@@ -320,7 +320,10 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
 
                     if (openDialog) {
                         AlertDialog(
-                            onDismissRequest = { openDialog = false }
+                            onDismissRequest = {
+                                openDialog = false
+                                scope.launch { currentMaxTimeout = DataStoreRepository(dataStore).readMaximumTimeout().toString() }
+                            }
                         ) {
                             Surface(
                                 modifier = Modifier
