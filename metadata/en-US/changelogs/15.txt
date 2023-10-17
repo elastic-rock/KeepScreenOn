@@ -1,0 +1,1 @@
+ - Add the option to set the timeout value interpreted as maximum in order to allow functioning on devices that do not accept maximum integer value
