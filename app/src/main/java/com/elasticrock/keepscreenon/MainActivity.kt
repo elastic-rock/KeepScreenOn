@@ -18,11 +18,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -71,7 +74,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,6 +85,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.MutableLiveData
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 import com.elasticrock.keepscreenon.ui.theme.applyOpacity
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 val canWriteSettingsState = MutableLiveData(false)
@@ -307,7 +310,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
 
                 item {
                     var openDialog by remember { mutableStateOf(false) }
-                    var currentMaxTimeout by rememberSaveable { mutableStateOf("") }
+                    var currentMaxTimeout by rememberSaveable { mutableStateOf(runBlocking { DataStoreRepository(dataStore).readMaximumTimeout().toString() }) }
                     PreferenceItem(
                         title = stringResource(id = R.string.maximum_timeout_value),
                         description = stringResource(id = R.string.maximum_description),
@@ -327,17 +330,44 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                                 tonalElevation = AlertDialogDefaults.TonalElevation
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    Text(text = stringResource(id = R.string.maximum_explenation))
+                                    Text(text = stringResource(id = R.string.maximum_timeout_value), style = MaterialTheme.typography.titleLarge)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(text = stringResource(id = R.string.maximum_explenation), style = MaterialTheme.typography.bodyMedium)
+                                    Spacer(modifier = Modifier.height(24.dp))
                                     OutlinedTextField(
                                         value = currentMaxTimeout,
                                         onValueChange = { currentMaxTimeout = it },
-                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                        isError = if (currentMaxTimeout.toLongOrNull() == null) { true } else currentMaxTimeout.toLong() > Int.MAX_VALUE,
+                                        supportingText = {
+                                            if (currentMaxTimeout.toLongOrNull() == null) {
+                                                null
+                                            } else if (currentMaxTimeout.toLong() > Int.MAX_VALUE) {
+                                                Text(text = stringResource(id = R.string.int_max_value_warning))
+                                            } else {
+                                                null
+                                            }
+                                        }
                                     )
-                                    TextButton(
-                                        onClick = { openDialog = false },
-                                        modifier = Modifier.align(Alignment.End)
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Row(
+                                        horizontalArrangement = Arrangement.End,
+                                        modifier = Modifier.fillMaxWidth()
                                     ) {
-                                        Text(text = stringResource(id = R.string.confirm))
+                                        TextButton(
+                                            onClick = { currentMaxTimeout = Int.MAX_VALUE.toString() }
+                                        ) {
+                                            Text(text = stringResource(id = R.string.reset))
+                                        }
+                                        TextButton(
+                                            onClick = {
+                                                openDialog = false
+                                                scope.launch { DataStoreRepository(dataStore).saveMaximumTimeout(currentMaxTimeout.toInt()) }
+                                            },
+                                            enabled = if (currentMaxTimeout.toLongOrNull() == null) { false } else currentMaxTimeout.toLong() <= Int.MAX_VALUE
+                                        ) {
+                                            Text(text = stringResource(id = R.string.confirm))
+                                        }
                                     }
                                 }
                             }

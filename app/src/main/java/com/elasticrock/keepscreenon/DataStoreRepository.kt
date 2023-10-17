@@ -89,7 +89,7 @@ class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
     suspend fun readMaximumTimeout() : Int {
         val maximumTimeout: Flow<Int> = dataStore.data
             .map { preferences ->
-                preferences[maximumTimeoutKey] ?: defaultMaxTimeout
+                preferences[maximumTimeoutKey] ?: Int.MAX_VALUE
             }
         return maximumTimeout.first()
     }

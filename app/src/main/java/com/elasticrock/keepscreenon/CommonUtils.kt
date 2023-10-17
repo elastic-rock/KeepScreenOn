@@ -5,8 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 
-val defaultMaxTimeout = Int.MAX_VALUE
-
 class CommonUtils {
 
     private val tag = "ScreenTimeoutUtils"
