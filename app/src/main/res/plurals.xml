@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<plurals name="minute"><item quantity="other">%d دقائق</item><item quantity="one">%d دقيقة</item></plurals>
+<plurals name="second"><item quantity="other">%d ثوان</item><item quantity="one">%d ثانية</item></plurals>
+</resources>
