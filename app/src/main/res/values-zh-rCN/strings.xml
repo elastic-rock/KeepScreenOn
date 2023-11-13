@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="keep_screen_on">屏幕常亮</string>
+    <string name="grant_permission">获取权限</string>
+    <string name="add_tile_instructions">在控制中心中编辑按钮并添加磁贴</string>
+    <string name="add_qs_tile">添加控制中心磁贴</string>
+    <string name="always">始终</string>
+    <string name="listening_for_battery_low_action">监听电量低事件</string>
+    <string name="listening_for_screen_off_action">监听关屏事件</string>
+    <string name="listening_for_battery_low_and_screen_off_actions">监听电量低与关屏事件</string>
+    <string name="tile_already_added">磁贴已经加上了</string>
+    <string name="restore_timeout_when_battery_low">在电量低时关闭屏幕常亮</string>
+    <string name="restore_timeout_when_screen_is_turned_off">用户主动息屏后关闭屏幕常亮</string>
+    <string name="options">选项</string>
+    <string name="permissions">权限</string>
+    <string name="qs_tile">控制中心磁贴</string>
+    <string name="modify_system_settings">修改系统设置权限</string>
+    <string name="this_permission_is_required">这个权限是必要的</string>
+    <string name="permission_granted">权限已获取</string>
+    <string name="notifications">通知</string>
+    <string name="posted_when_keep_screen_on_is_active">在通知栏显示一条“屏幕常亮”已激活的通知</string>
+    <string name="ignore_battery_optimizations">忽略电池优化（MIUI \"应用智能省电\"）</string>
+    <string name="allow_if_you_encounter_issues">如果出问题了就打开这项吧</string>
+    <string name="qs_tile_hidden">若找不到磁贴，也许它到另一页去了</string>
+    <string name="add_qs_tile_alternate">或者在控制中心自行添加磁贴</string>
+    <string name="background_service">后台服务</string>
+    <string name="current_screen_timeout">当前的自动息屏时间设置为：</string>
+    <string name="maximum_timeout_value">最大自动息屏时间值</string>
+    <string name="advanced">其实自动息屏并没有被设置为“从不”（毕竟这么做真不太可能）。因此已经设置了可以设置的最大值。但部分手机不允许自动息屏被设置为比系统自带设置允许的选项更高的值。因此当你尝试了多个不同超时值仍在出问题时，请选一个系统自带息屏设置中存在的超时值在此处设置即可</string>
+    <string name="maximum_description">当“屏幕常亮”激活时设置的屏幕超时时间</string>
+    <string name="maximum_explenation">自动息屏的时间实际上并没有设为“从不”（因为这并不可能）——因此只是设置了最大的可能值。但部分手机并不允许用户设置一个比自带设置的息屏选项更大的超时值。如果在设置不同屏幕超时值时均遇到问题，那么尝试在此处设置一个系统自带息屏设置允许的值</string>
+    <string name="confirm">确认</string>
+    <string name="reset">重置</string>
+</resources>
