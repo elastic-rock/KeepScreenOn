@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -33,6 +34,7 @@ class QSTileService : TileService() {
         super.onStartListening()
         Log.d(tag,"Lifecycle: onStartListening")
         val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
+        val maxTimeout = runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }
         qsTile.label = getString(R.string.keep_screen_on)
         if (!Settings.System.canWrite(applicationContext)) {
             qsTile.state = Tile.STATE_INACTIVE
@@ -40,8 +42,8 @@ class QSTileService : TileService() {
                 qsTile.subtitle = getString(R.string.grant_permission)
             }
             qsTile.updateTile()
-        } else if (screenTimeout == runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }) {
-            activeState()
+        } else if (screenTimeout == maxTimeout) {
+            activeState(maxTimeout)
         } else {
             inactiveState(screenTimeout)
         }
@@ -73,23 +75,11 @@ class QSTileService : TileService() {
             stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
             runBlocking {
-                launch { activeState() }
-                launch { CommonUtils().setScreenTimeout(contentResolver, runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }) }
+                val maxTimeout = async { DataStoreRepository(dataStore).readMaximumTimeout() }
+                launch { activeState(maxTimeout.await()) }
+                launch { CommonUtils().setScreenTimeout(contentResolver, maxTimeout.await()) }
                 launch { DataStoreRepository(dataStore).savePreviousScreenTimeout(screenTimeout) }
-            }
-            val listenForBatteryLow = runBlocking { DataStoreRepository(dataStore).readListenForBatteryLow() }
-            val listenForScreenOff = runBlocking { DataStoreRepository(dataStore).readListenForScreenOff() }
-            if (listenForBatteryLow) {
-                val intent = Intent()
-                    .setClass(this, BroadcastReceiverService::class.java)
-                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
-                startBroadcastReceiverService(intent)
-            }
-            if (listenForScreenOff) {
-                val intent = Intent()
-                    .setClass(this, BroadcastReceiverService::class.java)
-                    .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
-                startBroadcastReceiverService(intent)
+                launch { startBroadcastReceiverService() }
             }
         }
         screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
@@ -100,25 +90,56 @@ class QSTileService : TileService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (screenTimeout < 60000) {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
-            } else {
+            } else if (screenTimeout < 3600000) {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
+            } else if (screenTimeout < 86400000) {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.hour, screenTimeout/3600000, screenTimeout/3600000)
+            } else {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.day, screenTimeout/86400000, screenTimeout/86400000)
             }
         }
         qsTile.updateTile()
     }
 
-    private fun activeState() {
+    private fun activeState(screenTimeout: Int) {
         qsTile.state = Tile.STATE_ACTIVE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            qsTile.subtitle = getString(R.string.always)
+            if (screenTimeout < 60000) {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
+            } else if (screenTimeout < 3600000) {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
+            } else if (screenTimeout < 86400000) {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.hour, screenTimeout/3600000, screenTimeout/3600000)
+            } else {
+                qsTile.subtitle = resources.getQuantityString(R.plurals.day, screenTimeout/86400000, screenTimeout/86400000)
+            }
         }
         qsTile.updateTile()
     }
 
-    private fun startBroadcastReceiverService(intent: Intent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            applicationContext.startForegroundService(intent)
-        } else {
+    private fun startBroadcastReceiverService() {
+
+        val listenForBatteryLow = runBlocking { DataStoreRepository(dataStore).readListenForBatteryLow() }
+        val listenForScreenOff = runBlocking { DataStoreRepository(dataStore).readListenForScreenOff() }
+
+        fun startService(intent: Intent) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                applicationContext.startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
+        }
+
+        if (listenForBatteryLow) {
+            val intent = Intent()
+                .setClass(this, BroadcastReceiverService::class.java)
+                .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
+            startService(intent)
+        }
+        if (listenForScreenOff) {
+            val intent = Intent()
+                .setClass(this, BroadcastReceiverService::class.java)
+                .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
             startService(intent)
         }
     }

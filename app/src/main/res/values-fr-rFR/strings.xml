@@ -13,6 +13,14 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
+    <plurals name="hour" tools:ignore="MissingQuantity">
+        <item quantity="one">%d heure</item>
+        <item quantity="other">%d heures</item>
+    </plurals>
+    <plurals name="day" tools:ignore="MissingQuantity">
+        <item quantity="one">%d jour</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
     <string name="listening_for_battery_low_action">Contrôle de l\'état de la batterie</string>
     <string name="listening_for_screen_off_action">Contrôle de l\'arrêt de l\'écran</string>
     <string name="listening_for_battery_low_and_screen_off_actions">Contrôle de l\'état de la batterie et de l\'arrêt de l\'écran</string>
