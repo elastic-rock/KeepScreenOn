@@ -11,6 +11,14 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
+    <plurals name="hour">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
     <string name="always">Always</string>
     <string name="listening_for_battery_low_action">Listening for battery low action</string>
     <string name="listening_for_screen_off_action">Listening for screen off action</string>
@@ -35,7 +43,7 @@
     <string name="maximum_timeout_value">Maximum timeout value</string>
     <string name="advanced">Advanced</string>
     <string name="maximum_description">Timeout value set when Keep Screen On is active</string>
-    <string name="maximum_explenation">The screen timeout is actually not set to never, as it is not possible. The highest possible value is set. However, some phones do not allow users to set a value higher than the settings allow. Therefore, If you encounter an issue where everytime you enable Keep Screen On a different value is set then the value here, modify it to correspond to the value set by the system.</string>
+    <string name="maximum_explenation">The screen timeout is actually not set to never, as it is not possible. The highest possible value is set. However, some phones do not allow users to set a value higher than the settings allow. Therefore, if you encounter an issue where every time you enable Keep Screen On a different value is set then the value here, modify it to correspond to the value set by the system.</string>
     <string name="confirm">Confirm</string>
     <string name="reset">Reset</string>
     <string name="int_max_value_warning">Max. 2147483647</string>

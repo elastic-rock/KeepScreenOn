@@ -14,6 +14,16 @@
         <item quantity="few">%d minuty</item>
         <item quantity="other">%d minut</item>
     </plurals>
+    <plurals name="hour" tools:ignore="MissingQuantity">
+        <item quantity="one">%d hodina</item>
+        <item quantity="few">%d hodiny</item>
+        <item quantity="other">%d hodin</item>
+    </plurals>
+    <plurals name="day" tools:ignore="MissingQuantity">
+        <item quantity="one">%d den</item>
+        <item quantity="few">%d dny</item>
+        <item quantity="other">%d dní</item>
+    </plurals>
     <string name="always">Vždy</string>
     <string name="listening_for_battery_low_action">Kontrola nízkého stavu baterie</string>
     <string name="listening_for_screen_off_action">Kontrola vypnutí obrazovky</string>
@@ -35,4 +45,11 @@
     <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
     <string name="background_service">Služba na pozadí</string>
     <string name="current_screen_timeout">Aktuální interval vypnutí obrazovky: %d</string>
+    <string name="maximum_timeout_value">Maximální interval</string>
+    <string name="advanced">Pokročilé</string>
+    <string name="maximum_description">Nastavená hodnota intervalu, když je Nevypínat obrazovku aktivní</string>
+    <string name="maximum_explenation">Časový limit obrazovky ve skutečnosti není nastaven na nikdy, protože to není možné. Je nastavena nejvyšší možná hodnota. Některé telefony však neumožňují uživatelům nastavit hodnotu vyšší, než jakou dovoluje nastavení. Pokud se tedy setkáte s problémem, kdy je při každém zapnutí funkce Nevypínat obrazovku nastavena jiná hodnota, než je hodnota zde, upravte ji tak, aby odpovídala hodnotě nastavené systémem.</string>
+    <string name="confirm">Potvrdit</string>
+    <string name="reset">Resetovat</string>
+    <string name="int_max_value_warning">Max. 2147483647</string>
 </resources>

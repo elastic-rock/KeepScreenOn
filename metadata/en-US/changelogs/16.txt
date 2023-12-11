@@ -1,0 +1,3 @@
+ - Add missing translations for Czech and French
+ - Fix some English translations
+ - Follow Material3 design guidelines for maximum timeout dialog

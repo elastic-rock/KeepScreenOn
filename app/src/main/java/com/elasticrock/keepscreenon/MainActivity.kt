@@ -332,9 +332,9 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                                 shape = MaterialTheme.shapes.large,
                                 tonalElevation = AlertDialogDefaults.TonalElevation
                             ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
+                                Column(modifier = Modifier.padding(24.dp)) {
                                     Text(text = stringResource(id = R.string.maximum_timeout_value), style = MaterialTheme.typography.titleLarge)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(16.dp))
                                     Text(text = stringResource(id = R.string.maximum_explenation), style = MaterialTheme.typography.bodyMedium)
                                     Spacer(modifier = Modifier.height(24.dp))
                                     OutlinedTextField(
