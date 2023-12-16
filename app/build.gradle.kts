@@ -11,9 +11,9 @@ android {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
         targetSdk = 34
-        versionCode = 19
-        versionName = "1.14.0"
-        resourceConfigurations.addAll(listOf("cs", "en-rUS", "en-rGB","el-rGR", "fr-rFR", "zh-rCN"))
+        versionCode = 20
+        versionName = "1.15.0"
+        resourceConfigurations.addAll(listOf("cs", "en-rUS", "en-rGB","el-rGR", "fr-rFR", "zh-rCN", "ar"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
