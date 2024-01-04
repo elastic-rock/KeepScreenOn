@@ -1,0 +1,46 @@
+<resources>
+    <plurals name="second">
+        <item quantity="other">%d 秒</item>
+    </plurals>
+    <plurals name="minute">
+        <item quantity="other">%d 分</item>
+    </plurals>
+    <plurals name="hour">
+        <item quantity="other">%d 時間</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="other">%d 日</item>
+    </plurals>
+    <string name="keep_screen_on">Keep Screen On</string>
+    <string name="grant_permission">権限の許可</string>
+    <string name="add_tile_instructions">クイック設定パネルの編集ボタンをタップし、Keep Screen Onのタイルを追加してください</string>
+    <string name="add_qs_tile">クイック設定タイルの追加</string>
+    <string name="always">常時</string>
+    <string name="listening_for_battery_low_action">バッテリー残量低下検出のための常駐サービス</string>
+    <string name="listening_for_screen_off_action">画面オフ操作検出のための常駐サービス</string>
+    <string name="listening_for_battery_low_and_screen_off_actions">バッテリー残量低下、画面オフ操作検出    のための常駐サービス</string>
+    <string name="tile_already_added">タイルは追加済みです</string>
+    <string name="restore_timeout_when_battery_low">バッテリー残量低下時にタイムアウトを元の値に戻す</string>
+    <string name="restore_timeout_when_screen_is_turned_off">画面オフの操作時にタイムアウトを元の値に戻す</string>
+    <string name="options">オプション</string>
+    <string name="permissions">権限</string>
+    <string name="qs_tile">クイック設定タイル</string>
+    <string name="modify_system_settings">システム設定の変更</string>
+    <string name="this_permission_is_required">権限が必要です</string>
+    <string name="permission_granted">権限が許可されています</string>
+    <string name="notifications">通知</string>
+    <string name="posted_when_keep_screen_on_is_active">Keep Screen Onが動作しているとき、通知が表示されます</string>
+    <string name="ignore_battery_optimizations">バッテリー最適化を無効化</string>
+    <string name="allow_if_you_encounter_issues">問題が生じた場合、許可してください</string>
+    <string name="qs_tile_hidden">タイルが見つからない場合、他のページに表示されている可能性があります</string>
+    <string name="add_qs_tile_alternate">クイック設定パネルの編集ボタンをタップして、Keep Screen Onのタイルを追加することもできます</string>
+    <string name="background_service">バックグラウンドサービス</string>
+    <string name="current_screen_timeout">現在のタイムアウト時間: %d</string>
+    <string name="maximum_timeout_value">最大タイムアウト時間</string>
+    <string name="advanced">高度な設定</string>
+    <string name="maximum_description">Keep Screen Onが動作している場合のタイムアウト時間</string>
+    <string name="maximum_explenation">実際には、画面タイムアウト時間を完全に無効化して常時点灯させることはできません。最大タイムアウト時間と考えられる時間が設定されます。しかし、一部のデバイスでは本来の設定値より長いタイムアウトには設定できないように制限されています。そのため、Keep Screen Onが動作している際に、ここでの設定値ではないタイムアウト時間となってしまう場合には、その値に合わせて変更してください</string>
+    <string name="confirm">確認</string>
+    <string name="reset">リセット</string>
+    <string name="int_max_value_warning">最大値 2147483647</string>
+</resources>
