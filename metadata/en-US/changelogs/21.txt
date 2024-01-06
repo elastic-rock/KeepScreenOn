@@ -1,0 +1,2 @@
+ - Add Japanese (Thanks to aorinngoDo!)
+ - Update dependencies
