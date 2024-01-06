@@ -27,3 +27,4 @@ src="metadata/en-US/images/phoneScreenshots/screenshot-app.png?raw=true">
 **Credits**
 
  - [**JunkFood02/Seal**](https://github.com/JunkFood02/Seal/) - The UI came from here
+ - [**Material Icons**](https://fonts.google.com/icons) - All icons used, licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
