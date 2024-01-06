@@ -8,6 +8,15 @@ For example, this may be useful to you if you need the display to stay on tempor
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/com.elasticrock.keepscreenon/)
 
+**Screenshots**
+
+<img width=333 alt="Screenshot Tile Disabled"
+src="metadata/en-US/images/phoneScreenshots/screenshot-tile-disabled.png?raw=true">
+<img width=333 alt="Screenshot Tile Enabled"
+src="metadata/en-US/images/phoneScreenshots/screenshot-tile-enabled.png?raw=true">
+<img width=333 alt="Screenshot App"
+src="metadata/en-US/images/phoneScreenshots/screenshot-app.png?raw=true">
+
 **Permissions**
 
  - **WRITE_SETTINGS** - Required to read and update system timeout
