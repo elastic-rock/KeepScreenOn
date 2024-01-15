@@ -271,7 +271,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                                 openDialog = true
                             } else {
                                 checked = !checked
-                                runBlocking { DataStoreRepository(dataStore).saveListenForBatteryLow(checked) }
+                                scope.launch { DataStoreRepository(dataStore).saveListenForBatteryLow(checked) }
                             }
                         }
                     )
@@ -293,7 +293,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                                 openDialog = true
                             } else {
                                 checked = !checked
-                                runBlocking { DataStoreRepository(dataStore).saveListenForScreenOff(checked) }
+                                scope.launch { DataStoreRepository(dataStore).saveListenForScreenOff(checked) }
                             }
                         }
                     )
