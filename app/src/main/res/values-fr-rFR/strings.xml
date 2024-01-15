@@ -48,4 +48,5 @@
     <string name="confirm">Confirmer</string>
     <string name="reset">Réinitialiser</string>
     <string name="int_max_value_warning">Max. 2147483647</string>
+    <string name="ignore_battery_optimizations_dialog_description">Pour que cette fonction soit fiable, l\'application doit être exclue de l\'optimisation de la batterie</string>
 </resources>

@@ -147,6 +147,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
 
     Scaffold(Modifier.fillMaxSize(),
         topBar = {
@@ -255,53 +256,51 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                 }
 
                 item {
-                    val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
-                    if (isIgnoringBatteryOptimization) {
-                        PreferenceItem(
-                            title = stringResource(id = R.string.ignore_battery_optimizations),
-                            description = stringResource(id = R.string.permission_granted),
-                            enabled = false,
-                            icon = Icons.Filled.EnergySavingsLeaf
-                        )
-                    } else {
-                        PreferenceItem(
-                            title = stringResource(id = R.string.ignore_battery_optimizations),
-                            description = stringResource(id = R.string.allow_if_you_encounter_issues),
-                            enabled = true,
-                            icon = Icons.Filled.EnergySavingsLeaf,
-                            onClick = { context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) }
-                        )
-                    }
-                }
-
-                item {
                     PreferenceSubtitle(text = stringResource(id = R.string.options))
                 }
 
                 item {
+                    var openDialog by remember { mutableStateOf(false) }
                     var checked by remember { mutableStateOf(runBlocking { DataStoreRepository(dataStore).readListenForBatteryLow() } ) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_battery_low)),
                         icon = Icons.Filled.BatteryAlert,
                         isChecked = checked,
                         onClick = {
-                            checked = !checked
-                            runBlocking { DataStoreRepository(dataStore).saveListenForBatteryLow(checked) }
+                            if (!isIgnoringBatteryOptimization) {
+                                openDialog = true
+                            } else {
+                                checked = !checked
+                                runBlocking { DataStoreRepository(dataStore).saveListenForBatteryLow(checked) }
+                            }
                         }
                     )
+
+                    if (openDialog) {
+                        IgnoreBatteryOptimizationsDialog(onDismissRequest = { openDialog = false }, context)
+                    }
                 }
 
                 item {
+                    var openDialog by remember { mutableStateOf(false) }
                     var checked by remember { mutableStateOf(runBlocking { DataStoreRepository(dataStore).readListenForScreenOff() }) }
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_screen_is_turned_off)),
                         icon = Icons.Filled.Lock,
                         isChecked = checked,
                         onClick = {
-                            checked = !checked
-                            runBlocking { DataStoreRepository(dataStore).saveListenForScreenOff(checked) }
+                            if (!isIgnoringBatteryOptimization) {
+                                openDialog = true
+                            } else {
+                                checked = !checked
+                                runBlocking { DataStoreRepository(dataStore).saveListenForScreenOff(checked) }
+                            }
                         }
                     )
+
+                    if (openDialog) {
+                        IgnoreBatteryOptimizationsDialog(onDismissRequest = { openDialog = false }, context)
+                    }
                 }
 
                 item {
@@ -344,10 +343,12 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                                         isError = if (currentMaxTimeout.toLongOrNull() == null) { true } else currentMaxTimeout.toLong() > Int.MAX_VALUE,
                                         supportingText = {
                                             if (currentMaxTimeout.toLongOrNull() == null) {
+                                                @Suppress("UNUSED_EXPRESSION")
                                                 null
                                             } else if (currentMaxTimeout.toLong() > Int.MAX_VALUE) {
                                                 Text(text = stringResource(id = R.string.int_max_value_warning))
                                             } else {
+                                                @Suppress("UNUSED_EXPRESSION")
                                                 null
                                             }
                                         }
@@ -617,5 +618,22 @@ fun PreferenceSubtitle(
             .padding(contentPadding),
         color = color,
         style = MaterialTheme.typography.labelLarge
+    )
+}
+
+@Composable
+fun IgnoreBatteryOptimizationsDialog(
+    onDismissRequest: () -> Unit,
+    context: Context
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = { TextButton(onClick = {
+            context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+            onDismissRequest.invoke()
+        }) { Text(text = stringResource(id = R.string.confirm)) } },
+        icon = { Icons.Filled.EnergySavingsLeaf },
+        title = { Text(text = stringResource(id = R.string.ignore_battery_optimizations)) },
+        text = { Text(text = stringResource(id = R.string.ignore_battery_optimizations_dialog_description)) }
     )
 }

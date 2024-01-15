@@ -52,4 +52,5 @@
     <string name="confirm">Potvrdit</string>
     <string name="reset">Resetovat</string>
     <string name="int_max_value_warning">Max. 2147483647</string>
+    <string name="ignore_battery_optimizations_dialog_description">Aby tato funkce mohla spolehlivě fungovat, aplikace musí být vyloučena z obtimalizace baterie</string>
 </resources>
