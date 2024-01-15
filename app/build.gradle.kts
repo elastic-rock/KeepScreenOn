@@ -11,8 +11,8 @@ android {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
         targetSdk = 34
-        versionCode = 21
-        versionName = "1.16.0"
+        versionCode = 22
+        versionName = "1.16.1"
         resourceConfigurations.addAll(listOf("cs", "en-rUS", "en-rGB","el-rGR", "fr-rFR", "zh-rCN", "ar", "ja"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

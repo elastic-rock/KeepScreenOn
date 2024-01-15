@@ -1,0 +1,1 @@
+ - Exempting the app from battery optimizations is now required in order to use the automatic restore functions
