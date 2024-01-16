@@ -12,5 +12,4 @@
         <item quantity="one">%d λεπτό</item>
         <item quantity="other">%d λεπτά</item>
     </plurals>
-    <string name="always">Πάντα</string>
 </resources>

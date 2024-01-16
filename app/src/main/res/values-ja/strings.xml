@@ -15,7 +15,6 @@
     <string name="grant_permission">権限の許可</string>
     <string name="add_tile_instructions">クイック設定パネルの編集ボタンをタップし、Keep Screen Onのタイルを追加してください</string>
     <string name="add_qs_tile">クイック設定タイルの追加</string>
-    <string name="always">常時</string>
     <string name="listening_for_battery_low_action">バッテリー残量低下検出のための常駐サービス</string>
     <string name="listening_for_screen_off_action">画面オフ操作検出のための常駐サービス</string>
     <string name="listening_for_battery_low_and_screen_off_actions">バッテリー残量低下、画面オフ操作検出    のための常駐サービス</string>
@@ -31,7 +30,6 @@
     <string name="notifications">通知</string>
     <string name="posted_when_keep_screen_on_is_active">Keep Screen Onが動作しているとき、通知が表示されます</string>
     <string name="ignore_battery_optimizations">バッテリー最適化を無効化</string>
-    <string name="allow_if_you_encounter_issues">問題が生じた場合、許可してください</string>
     <string name="qs_tile_hidden">タイルが見つからない場合、他のページに表示されている可能性があります</string>
     <string name="add_qs_tile_alternate">クイック設定パネルの編集ボタンをタップして、Keep Screen Onのタイルを追加することもできます</string>
     <string name="background_service">バックグラウンドサービス</string>

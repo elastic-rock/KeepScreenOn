@@ -4,8 +4,6 @@
     <string name="add_qs_tile_alternate">بدلا من ذلك ، انقر فوق زر التحرير في لوحة الإعدادات السريعة وأضف زر الـKeep Screen On</string>
     <string name="add_tile_instructions">اضغط على زر التحرير في لوحة الإعدادات السريعة وأضف زر \"Keep Screen On\"</string>
     <string name="advanced">إعدادات متقدمة</string>
-    <string name="allow_if_you_encounter_issues">السماح إذا واجهت مشاكل</string>
-    <string name="always">دائما</string>
     <string name="background_service">خدمة الخلفية</string>
     <string name="confirm">تأكيد</string>
     <string name="current_screen_timeout">مهلة الشاشة الحالية: %d</string>

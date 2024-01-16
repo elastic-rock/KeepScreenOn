@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <plurals name="minute">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <plurals name="minute" tools:ignore="MissingQuantity">
         <item quantity="other">%d دقائق</item>
         <item quantity="one">%d دقيقة</item>
     </plurals>
-    <plurals name="second">
+    <plurals name="second" tools:ignore="MissingQuantity">
         <item quantity="other">%d ثوان</item>
         <item quantity="one">%d ثانية</item>
     </plurals>

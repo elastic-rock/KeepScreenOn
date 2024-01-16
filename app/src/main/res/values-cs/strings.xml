@@ -24,7 +24,6 @@
         <item quantity="few">%d dny</item>
         <item quantity="other">%d dní</item>
     </plurals>
-    <string name="always">Vždy</string>
     <string name="listening_for_battery_low_action">Kontrola nízkého stavu baterie</string>
     <string name="listening_for_screen_off_action">Kontrola vypnutí obrazovky</string>
     <string name="listening_for_battery_low_and_screen_off_actions">Kontrola nízkého stavu baterie a vypnutí obrazovky</string>
@@ -40,7 +39,6 @@
     <string name="notifications">Notifikace</string>
     <string name="posted_when_keep_screen_on_is_active">Zobrazeny když je Nevypínat obrazovku aktivní</string>
     <string name="ignore_battery_optimizations">Vyloučit z optimalizace baterie</string>
-    <string name="allow_if_you_encounter_issues">Povolte pokud se setkáte s problémy</string>
     <string name="qs_tile_hidden">Pokud nemůžete najít dlaždici, může být na další stránce</string>
     <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
     <string name="background_service">Služba na pozadí</string>
