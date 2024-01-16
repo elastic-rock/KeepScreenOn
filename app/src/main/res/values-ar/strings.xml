@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <plurals name="minute" tools:ignore="MissingQuantity">
+        <item quantity="other">%d دقائق</item>
+        <item quantity="one">%d دقيقة</item>
+    </plurals>
+    <plurals name="second" tools:ignore="MissingQuantity">
+        <item quantity="other">%d ثوان</item>
+        <item quantity="one">%d ثانية</item>
+    </plurals>
     <string name="add_qs_tile">إضافة زر الإعدادات السريعة</string>
     <string name="add_qs_tile_alternate">بدلا من ذلك ، انقر فوق زر التحرير في لوحة الإعدادات السريعة وأضف زر الـKeep Screen On</string>
     <string name="add_tile_instructions">اضغط على زر التحرير في لوحة الإعدادات السريعة وأضف زر \"Keep Screen On\"</string>
