@@ -143,7 +143,6 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
-    val tag = "MainActivity"
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
