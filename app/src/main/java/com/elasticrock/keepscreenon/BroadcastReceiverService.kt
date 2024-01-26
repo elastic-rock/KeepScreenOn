@@ -11,7 +11,6 @@ import android.content.Intent.ACTION_BATTERY_LOW
 import android.content.Intent.ACTION_SCREEN_OFF
 import android.content.IntentFilter
 import android.os.Build
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import kotlinx.coroutines.launch
@@ -22,21 +21,15 @@ class BroadcastReceiverService : LifecycleService() {
     private val batteryLowReceiver = BatteryLowReceiver()
     private val screenOffReceiver = ScreenOffReceiver()
 
-    private val tag = "BroadcastReceiverService"
-
     private var monitorBatteryLow = false
     private var monitorScreenOff = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        Log.d(tag,"onStartCommand")
-
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW") {
-            Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
             registerBatteryLowReceiver()
         }
         if (intent?.action == "com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF") {
-            Log.d(tag, "intent.action == com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
             registerScreenOffReceiver()
         }
 
@@ -112,7 +105,6 @@ class BroadcastReceiverService : LifecycleService() {
     private inner class BatteryLowReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_BATTERY_LOW) {
-                Log.d(tag,"ACTION_BATTERY_LOW")
                 restoreScreenTimeout()
                 stopForegroundService()
             }
@@ -122,7 +114,6 @@ class BroadcastReceiverService : LifecycleService() {
     private inner class ScreenOffReceiver: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_SCREEN_OFF) {
-                Log.d(tag,"ACTION_SCREEN_OFF")
                 restoreScreenTimeout()
                 stopForegroundService()
             }
@@ -152,7 +143,6 @@ class BroadcastReceiverService : LifecycleService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(tag,"onDestroy")
         if (monitorBatteryLow) {
             unregisterReceiver(batteryLowReceiver)
         }

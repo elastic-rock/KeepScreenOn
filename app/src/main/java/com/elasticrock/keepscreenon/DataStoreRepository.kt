@@ -35,7 +35,6 @@ class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
             .map { preferences ->
                 preferences[batteryLowKey] ?: false
             }
-        Log.d(tag, "listenForBatteryLow == ${listenForBatteryLow.first()}")
         return listenForBatteryLow.first()
     }
 
@@ -54,7 +53,6 @@ class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
             .map { preferences ->
                 preferences[screenOffKey] ?: false
             }
-        Log.d(tag, "listenForScreenOff == ${listenForScreenOff.first()}")
         return listenForScreenOff.first()
     }
 

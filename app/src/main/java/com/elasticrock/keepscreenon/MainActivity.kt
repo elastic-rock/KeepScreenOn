@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -95,10 +94,8 @@ val screenTimeoutState = MutableLiveData(0)
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "preferences")
 
 class MainActivity : ComponentActivity() {
-    private val tag = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(tag, "Lifecycle: onCreate()")
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             KeepScreenOnTheme {
@@ -112,31 +109,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.d(tag, "Lifecycle: onStart()")
         val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         canWriteSettingsState.value = Settings.System.canWrite(applicationContext)
         isIgnoringBatteryOptimizationState.value = pm.isIgnoringBatteryOptimizations(applicationContext.packageName)
         screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.d(tag, "Lifecycle: onRestart()")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(tag, "Lifecycle: onResume()")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(tag, "Lifecycle: onStop()")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(tag, "Lifecycle: onDestroy()")
     }
 }
 

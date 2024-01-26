@@ -10,29 +10,23 @@ import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class QSTileService : TileService() {
 
-    private val tag = "QSTileService"
-
     override fun onTileAdded() {
         super.onTileAdded()
-        Log.d(tag,"Lifecycle: onTileAdded")
         isTileAddedState.value = true
     }
 
     override fun onTileRemoved() {
         super.onTileRemoved()
-        Log.d(tag,"Lifecycle: onTileRemoved")
         isTileAddedState.value = false
     }
     override fun onStartListening() {
         super.onStartListening()
-        Log.d(tag,"Lifecycle: onStartListening")
         val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
         val maxTimeout = runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }
         qsTile.label = getString(R.string.keep_screen_on)
@@ -54,7 +48,6 @@ class QSTileService : TileService() {
 
     override fun onClick() {
         super.onClick()
-        Log.d(tag,"onClick")
         val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
         if (!Settings.System.canWrite(applicationContext)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

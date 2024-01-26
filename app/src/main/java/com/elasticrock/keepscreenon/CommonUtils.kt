@@ -7,8 +7,6 @@ import android.provider.Settings
 
 class CommonUtils {
 
-    private val tag = "ScreenTimeoutUtils"
-
     val modifySystemSettingsIntent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = Uri.parse("package:com.elasticrock.keepscreenon") }
 
     fun readScreenTimeout(contentResolver: ContentResolver) : Int {
