@@ -44,6 +44,7 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -293,7 +294,7 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                     )
 
                     if (openDialog) {
-                        AlertDialog(
+                        BasicAlertDialog(
                             onDismissRequest = {
                                 openDialog = false
                                 scope.launch { currentMaxTimeout = DataStoreRepository(dataStore).readMaximumTimeout().toString() }
