@@ -22,7 +22,7 @@
     </plurals>
     <string name="listening_for_battery_low_action">Contrôle de l\'état de la batterie</string>
     <string name="listening_for_screen_off_action">Contrôle de l\'arrêt de l\'écran</string>
-    <string name="listening_for_battery_low_and_screen_off_actions">Contrôle de l\'état de la batterie et de l\'arrêt de l\'écran</string>
+    <string name="listening_for_battery_low_and_or_screen_off_actions">Contrôle de l\'état de la batterie et/ou de l\'arrêt de l\'écran</string>
     <string name="tile_already_added">Bloc déjà ajouté</string>
     <string name="restore_timeout_when_battery_low">Renouveler le délai lorsque la batterie est faible</string>
     <string name="restore_timeout_when_screen_is_turned_off">Renouveler le délai lorsque l\'écran est éteint</string>

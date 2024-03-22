@@ -126,13 +126,13 @@ class QSTileService : TileService() {
         if (listenForBatteryLow) {
             val intent = Intent()
                 .setClass(this, BroadcastReceiverService::class.java)
-                .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_BATTERY_LOW")
+                .setAction(monitorBatteryLowAction)
             startService(intent)
         }
         if (listenForScreenOff) {
             val intent = Intent()
                 .setClass(this, BroadcastReceiverService::class.java)
-                .setAction("com.elasticrock.keepscreenon.ACTION_MONITOR_SCREEN_OFF")
+                .setAction(monitorScreenOffAction)
             startService(intent)
         }
     }

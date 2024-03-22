@@ -17,7 +17,6 @@
     <string name="add_qs_tile">クイック設定タイルの追加</string>
     <string name="listening_for_battery_low_action">バッテリー残量低下検出のための常駐サービス</string>
     <string name="listening_for_screen_off_action">画面オフ操作検出のための常駐サービス</string>
-    <string name="listening_for_battery_low_and_screen_off_actions">バッテリー残量低下、画面オフ操作検出    のための常駐サービス</string>
     <string name="tile_already_added">タイルは追加済みです</string>
     <string name="restore_timeout_when_battery_low">バッテリー残量低下時にタイムアウトを元の値に戻す</string>
     <string name="restore_timeout_when_screen_is_turned_off">画面オフの操作時にタイムアウトを元の値に戻す</string>

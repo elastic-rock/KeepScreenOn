@@ -6,7 +6,6 @@
     <string name="add_qs_tile">添加控制中心磁贴</string>
     <string name="listening_for_battery_low_action">监听电量低事件</string>
     <string name="listening_for_screen_off_action">监听关屏事件</string>
-    <string name="listening_for_battery_low_and_screen_off_actions">监听电量低与关屏事件</string>
     <string name="tile_already_added">磁贴已经加上了</string>
     <string name="restore_timeout_when_battery_low">在电量低时关闭屏幕常亮</string>
     <string name="restore_timeout_when_screen_is_turned_off">用户主动息屏后关闭屏幕常亮</string>

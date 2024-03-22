@@ -20,7 +20,6 @@
     <string name="int_max_value_warning">الحد الأقصى. 2147483647</string>
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="listening_for_battery_low_action">الاستماع إلى الحركة المنخفضة للبطارية</string>
-    <string name="listening_for_battery_low_and_screen_off_actions">الاستماع إلى إجراءات انخفاض البطارية وإيقاف تشغيل الشاشة</string>
     <string name="listening_for_screen_off_action">الاستماع إلى حركة إيقاف الشاشة</string>
     <string name="maximum_description">تعيين قيمة المهلة عندما يكون إبقاء الشاشة قيد التشغيل نشطا</string>
     <string name="maximum_explenation">لم يتم ضبط مهلة الشاشة في الواقع على أبدا ، لأنه غير ممكن. يتم تعيين أعلى قيمة ممكنة. ومع ذلك ، لا تسمح بعض الهواتف للمستخدمين بتعيين قيمة أعلى مما تسمح به الإعدادات. لذلك ، إذا واجهت مشكلة حيث يتم تعيين قيمة مختلفة في كل مرة تقوم فيها بتمكين Keep Screen On، ثم القيمة هنا ، قم بتعديلها لتتوافق مع القيمة التي حددها النظام</string>
