@@ -40,7 +40,16 @@ class BroadcastReceiverService : LifecycleService() {
         }
 
         val importance = NotificationManager.IMPORTANCE_LOW
-        val name = getString(R.string.listening_for_battery_low_and_or_screen_off_actions)
+        val name = if (monitorBatteryLow && monitorScreenOff)
+        {
+            getString(R.string.listening_for_battery_low_and_screen_off_actions)
+        } else if (monitorBatteryLow)
+        {
+            getString(R.string.listening_for_battery_low_action)
+        } else
+        {
+            getString(R.string.listening_for_screen_off_action)
+        }
         val stopPendingIntent = Intent(this, BroadcastReceiverService::class.java)
             .apply { action = stopMonitorAcion }
             .let { PendingIntent.getService(this, 1, it, FLAG_IMMUTABLE) }
