@@ -11,8 +11,8 @@ import android.content.Intent
 import android.content.Intent.ACTION_BATTERY_LOW
 import android.content.Intent.ACTION_SCREEN_OFF
 import android.content.IntentFilter
+import android.graphics.drawable.Icon
 import android.os.Build
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import kotlinx.coroutines.launch
@@ -44,6 +44,8 @@ class BroadcastReceiverService : LifecycleService() {
         val stopPendingIntent = Intent(this, BroadcastReceiverService::class.java)
             .apply { action = stopMonitorAcion }
             .let { PendingIntent.getService(this, 1, it, FLAG_IMMUTABLE) }
+        val action = Notification.Action.Builder(Icon.createWithResource(this, R.drawable.outline_close_24), getString(R.string.stop), stopPendingIntent)
+            .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -62,13 +64,14 @@ class BroadcastReceiverService : LifecycleService() {
             val notification: Notification = Notification.Builder(this, channelId)
                 .setContentTitle(name)
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)
-                .addAction(R.drawable.outline_lock_clock_qs, getString(R.string.stop), stopPendingIntent)
+                .addAction(action)
                 .build()
             startForeground(1, notification)
         } else {
             @Suppress("DEPRECATION") val notification: Notification = Notification.Builder(this)
                 .setContentTitle(name)
                 .setSmallIcon(R.drawable.outline_lock_clock_qs)
+                .addAction(action)
                 .build()
             startForeground(1, notification)
         }
