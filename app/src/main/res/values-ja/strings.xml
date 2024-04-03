@@ -32,7 +32,6 @@
     <string name="qs_tile_hidden">タイルが見つからない場合、他のページに表示されている可能性があります</string>
     <string name="add_qs_tile_alternate">クイック設定パネルの編集ボタンをタップして、Keep Screen Onのタイルを追加することもできます</string>
     <string name="background_service">バックグラウンドサービス</string>
-    <string name="current_screen_timeout">現在のタイムアウト時間: %d</string>
     <string name="maximum_timeout_value">最大タイムアウト時間</string>
     <string name="advanced">高度な設定</string>
     <string name="maximum_description">Keep Screen Onが動作している場合のタイムアウト時間</string>

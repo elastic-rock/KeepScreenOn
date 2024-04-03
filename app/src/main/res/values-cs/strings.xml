@@ -42,7 +42,7 @@
     <string name="qs_tile_hidden">Pokud nemůžete najít dlaždici, může být na další stránce</string>
     <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
     <string name="background_service">Služba na pozadí</string>
-    <string name="current_screen_timeout">Aktuální interval vypnutí obrazovky: %d</string>
+    <string name="current_screen_timeout">Aktuální interval vypnutí obrazovky: %d ms</string>
     <string name="maximum_timeout_value">Maximální interval</string>
     <string name="advanced">Pokročilé</string>
     <string name="maximum_description">Nastavená hodnota intervalu, když je Nevypínat obrazovku aktivní</string>

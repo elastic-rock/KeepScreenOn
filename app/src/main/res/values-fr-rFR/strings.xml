@@ -38,7 +38,7 @@
     <string name="qs_tile_hidden">Si vous ne trouvez pas le bloc, il se peut qu\'il se trouve sur une autre page</string>
     <string name="add_qs_tile_alternate">Vous pouvez également appuyer sur le bouton de modification dans le panneau des paramètres rapides et ajouter le bloc Maintenir l\'écran allumé</string>
     <string name="background_service">Service d\'arrière-plan</string>
-    <string name="current_screen_timeout">Délai de mise en veille de l\'écran actuel: %d</string>
+    <string name="current_screen_timeout">Délai de mise en veille de l\'écran actuel: %d ms</string>
     <string name="maximum_timeout_value">Délai maximal</string>
     <string name="advanced">Avancé</string>
     <string name="maximum_description">Valeur du délai de mise en veille de l\'écran lorsque la fonction Maintenir l\'écran allumé est activée</string>

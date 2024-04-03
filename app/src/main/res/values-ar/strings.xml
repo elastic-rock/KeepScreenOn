@@ -14,7 +14,6 @@
     <string name="advanced">إعدادات متقدمة</string>
     <string name="background_service">خدمة الخلفية</string>
     <string name="confirm">تأكيد</string>
-    <string name="current_screen_timeout">مهلة الشاشة الحالية: %d</string>
     <string name="grant_permission">منح الإذن</string>
     <string name="ignore_battery_optimizations">تجاهل تحسينات البطارية</string>
     <string name="int_max_value_warning">الحد الأقصى. 2147483647</string>
