@@ -608,7 +608,6 @@ fun IgnoreBatteryOptimizationsDialog(
             context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
             onDismissRequest.invoke()
         }) { Text(text = stringResource(id = R.string.confirm)) } },
-        icon = { Icons.Filled.EnergySavingsLeaf },
         title = { Text(text = stringResource(id = R.string.ignore_battery_optimizations)) },
         text = { Text(text = stringResource(id = R.string.ignore_battery_optimizations_dialog_description)) }
     )
