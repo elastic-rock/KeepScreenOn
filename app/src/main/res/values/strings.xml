@@ -47,4 +47,5 @@
     <string name="int_max_value_warning">Max. 2147483647</string>
     <string name="ignore_battery_optimizations_dialog_description">In order for this function to work reliably, the app must be exempt from battery optimization</string>
     <string name="stop">Stop</string>
+    <string name="info">Info</string>
 </resources>
