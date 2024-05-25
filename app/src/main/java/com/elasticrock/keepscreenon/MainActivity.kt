@@ -1,16 +1,23 @@
 package com.elasticrock.keepscreenon
 
 import android.app.StatusBarManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -33,6 +40,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BatteryAlert
 import androidx.compose.material.icons.filled.Build
@@ -57,6 +65,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -78,12 +87,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 import com.elasticrock.keepscreenon.ui.theme.applyOpacity
 import kotlinx.coroutines.launch
@@ -103,7 +118,7 @@ class MainActivity : ComponentActivity() {
             KeepScreenOnTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    KeepScreenOnApp(dataStore)
+                    App(dataStore)
                 }
             }
         }
@@ -118,9 +133,111 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun App(dataStore: DataStore<Preferences>) {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "main") {
+        composable("main") { MainScreen(dataStore, navController) }
+        composable("info") { InfoScreen(navController) }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
+fun InfoScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val clipboard = getSystemService(context, ClipboardManager::class.java) as ClipboardManager
+
+    Scaffold(Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.about)) },
+                navigationIcon = { IconButton(onClick = {
+                        navController.navigate("main")
+                        Log.d("MainActivity", "Navigate to Main")
+                    }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
+                    }
+                }
+            )
+                 },
+        content = { padding ->
+            LazyColumn(Modifier.padding(padding)) {
+                item {
+                    AboutItem(
+                        title = stringResource(id = R.string.author),
+                        subtitle = stringResource(id = R.string.david_weis)
+                    )
+                }
+
+                item {
+                    val url = "https://github.com/elastic-rock/KeepScreenOn"
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    AboutItem(
+                        title = stringResource(id = R.string.source_code),
+                        subtitle = stringResource(id = R.string.github),
+                        onClick = {
+                            intent.data = Uri.parse(url)
+                            context.startActivity(intent)
+                        }
+                    )
+                }
+
+                item {
+                    val appId = "com.elasticrock.keepscreenon"
+                    AboutItem(
+                        title = stringResource(id = R.string.application_id),
+                        subtitle = appId,
+                        onClick = {
+                            val clip: ClipData = ClipData.newPlainText("simple text", appId)
+                            clipboard.setPrimaryClip(clip)
+                        }
+                    )
+                }
+
+                item {
+                    fun getAppVersion(context: Context): String {
+                        return try {
+                            val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+                            packageInfo.versionName
+                        } catch (e: PackageManager.NameNotFoundException) {
+                            e.printStackTrace()
+                            "Unknown"
+                        }
+                    }
+
+                    val version = getAppVersion(context)
+
+                    AboutItem(
+                        title = stringResource(id = R.string.version),
+                        subtitle = version,
+                        onClick = {
+                            val clip: ClipData = ClipData.newPlainText("simple text", version)
+                            clipboard.setPrimaryClip(clip)
+                        }
+                    )
+                }
+
+                item {
+                    val url = "https://gnu.org/licenses/gpl-3.0.txt"
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    AboutItem(
+                        title = stringResource(id = R.string.license),
+                        subtitle = "GPL-3.0",
+                        onClick = {
+                            intent.data = Uri.parse(url)
+                            context.startActivity(intent)
+                        }
+                    )
+                }
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostController) {
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -135,7 +252,10 @@ fun KeepScreenOnApp(dataStore: DataStore<Preferences>) {
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
-                actions = { IconButton(onClick = { /*TODO*/ })  { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.info)) } }
+                actions = { IconButton(onClick = {
+                    navController.navigate("info")
+                    Log.d("MainActivity", "Navigate to Info")
+                })  { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
             )
         }, content = { padding ->
             LazyColumn(Modifier.padding(padding)) {
@@ -472,9 +592,39 @@ fun PreferenceItem(
             }
         }
     }
-
 }
 
+@Composable
+fun AboutItem(
+    title: String,
+    subtitle: String? = null,
+    onClick: () -> Unit = {},
+) {
+    Surface(
+        modifier = Modifier.clickable(
+            onClick = onClick
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal.dp, vertical.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 12.dp)
+                    .padding(end = 8.dp)
+            ) {
+                PreferenceItemTitle(text = title)
+                if (!subtitle.isNullOrEmpty()) PreferenceItemDescription(
+                    text = subtitle
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun PreferenceSwitch(

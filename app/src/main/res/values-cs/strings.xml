@@ -52,5 +52,10 @@
     <string name="int_max_value_warning">Max. 2147483647</string>
     <string name="ignore_battery_optimizations_dialog_description">Aby tato funkce mohla spolehlivě fungovat, aplikace musí být vyloučena z obtimalizace baterie</string>
     <string name="stop">Zastavit</string>
-    <string name="info">Info</string>
+    <string name="about">O Aplikaci</string>
+    <string name="author">Autor</string>
+    <string name="source_code">Zdrojový kód</string>
+    <string name="application_id">ID aplikace</string>
+    <string name="version">Verze</string>
+    <string name="license">Licence</string>
 </resources>
