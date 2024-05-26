@@ -21,6 +21,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -134,7 +136,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(dataStore: DataStore<Preferences>) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "main") {
+    NavHost(
+        navController = navController,
+        startDestination = "main",
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
+    ) {
         composable("main") { MainScreen(dataStore, navController) }
         composable("info") { InfoScreen(navController) }
     }
