@@ -1,0 +1,2 @@
+ - Disabled navigation animations
+ - Updated dependencies
