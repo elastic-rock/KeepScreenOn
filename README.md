@@ -7,6 +7,9 @@ For example, this may be useful to you if you need the display to stay on tempor
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/com.elasticrock.keepscreenon/)
+[<img src="https://raw.githubusercontent.com/Kunzisoft/Github-badge/main/get-it-on-github.png"
+alt="Get it on GitHub"
+height="80">](https://github.com/elastic-rock/KeepScreenOn/releases/latest)
 
 **Screenshots**
 
