@@ -16,10 +16,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -90,7 +90,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -113,13 +112,10 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "pr
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        enableEdgeToEdge()
         setContent {
             KeepScreenOnTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    App(dataStore)
-                }
+                App(dataStore)
             }
         }
     }
@@ -161,7 +157,6 @@ fun InfoScreen(navController: NavHostController) {
                 title = { Text(text = stringResource(id = R.string.about)) },
                 navigationIcon = { IconButton(onClick = {
                         navController.navigate("main")
-                        Log.d("MainActivity", "Navigate to Main")
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
                     }
@@ -261,7 +256,6 @@ fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostControll
                 },
                 actions = { IconButton(onClick = {
                     navController.navigate("info")
-                    Log.d("MainActivity", "Navigate to Info")
                 })  { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
             )
         }, content = { padding ->
