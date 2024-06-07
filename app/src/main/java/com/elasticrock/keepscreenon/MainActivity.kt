@@ -113,6 +113,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
         setContent {
             KeepScreenOnTheme {
                 App(dataStore)
@@ -163,8 +166,8 @@ fun InfoScreen(navController: NavHostController) {
                 }
             )
                  },
-        content = { padding ->
-            LazyColumn(Modifier.padding(padding)) {
+        content = { innerPadding ->
+            LazyColumn(contentPadding = innerPadding) {
                 item {
                     AboutItem(
                         title = stringResource(id = R.string.author),
@@ -258,8 +261,8 @@ fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostControll
                     navController.navigate("info")
                 })  { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
             )
-        }, content = { padding ->
-            LazyColumn(Modifier.padding(padding)) {
+        }, content = { innerPadding ->
+            LazyColumn(contentPadding = innerPadding) {
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.qs_tile))
