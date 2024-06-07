@@ -30,6 +30,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -82,6 +87,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -262,7 +268,19 @@ fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostControll
                 })  { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
             )
         }, content = { innerPadding ->
-            LazyColumn(contentPadding = innerPadding) {
+            val layoutDirection = LocalLayoutDirection.current
+            val displayCutout = WindowInsets.displayCutout.asPaddingValues()
+            val startPadding = displayCutout.calculateStartPadding(layoutDirection)
+            val endPadding = displayCutout.calculateEndPadding(layoutDirection)
+            LazyColumn(
+                contentPadding = innerPadding,
+                modifier = Modifier.padding(
+                    PaddingValues(
+                        start = startPadding,
+                        end = endPadding
+                    )
+                )
+            ) {
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.qs_tile))
