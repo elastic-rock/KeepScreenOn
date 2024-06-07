@@ -254,6 +254,11 @@ fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostControll
     val scope = rememberCoroutineScope()
     val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
 
+    val layoutDirection = LocalLayoutDirection.current
+    val displayCutout = WindowInsets.displayCutout.asPaddingValues()
+    val startPadding = displayCutout.calculateStartPadding(layoutDirection)
+    val endPadding = displayCutout.calculateEndPadding(layoutDirection)
+
     Scaffold(Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
@@ -263,23 +268,15 @@ fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostControll
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
+                modifier = Modifier.padding(start = startPadding, end = endPadding),
                 actions = { IconButton(onClick = {
                     navController.navigate("info")
                 })  { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
             )
         }, content = { innerPadding ->
-            val layoutDirection = LocalLayoutDirection.current
-            val displayCutout = WindowInsets.displayCutout.asPaddingValues()
-            val startPadding = displayCutout.calculateStartPadding(layoutDirection)
-            val endPadding = displayCutout.calculateEndPadding(layoutDirection)
             LazyColumn(
                 contentPadding = innerPadding,
-                modifier = Modifier.padding(
-                    PaddingValues(
-                        start = startPadding,
-                        end = endPadding
-                    )
-                )
+                modifier = Modifier.padding(start = startPadding, end = endPadding)
             ) {
 
                 item {
