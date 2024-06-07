@@ -1,0 +1,2 @@
+ - Properly implemented edge to edge drawing
+ - Updated dependencies
