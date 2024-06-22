@@ -21,8 +21,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -153,7 +160,30 @@ fun App(dataStore: DataStore<Preferences>) {
         popExitTransition = { ExitTransition.None },
     ) {
         composable("main") { MainScreen(dataStore, navController) }
-        composable("info") { InfoScreen(navController) }
+        composable(
+            route = "info",
+            enterTransition = {
+                fadeIn(
+                    animationSpec = tween(
+                        200, easing = LinearEasing
+                    )
+                ) + slideIntoContainer(
+                    animationSpec = tween(200, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start
+                )
+                              },
+            exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        200, easing = LinearEasing
+                    )
+                ) + slideOutOfContainer(
+                    animationSpec = tween(200, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.End
+                )
+            }
+        )
+        { InfoScreen(navController) }
     }
 }
 
@@ -168,7 +198,7 @@ fun InfoScreen(navController: NavHostController) {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.about)) },
                 navigationIcon = { IconButton(onClick = {
-                        navController.navigate("main")
+                        navController.navigateUp()
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
                     }
