@@ -110,7 +110,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -159,7 +158,14 @@ fun App(dataStore: DataStore<Preferences>) {
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
-        composable("main") { MainScreen(dataStore, navController) }
+        composable("main") {
+            MainScreen(
+                dataStore = dataStore,
+                onInfoButtonClick = {
+                    navController.navigate("info")
+                }
+            )
+        }
         composable(
             route = "info",
             enterTransition = {
@@ -183,13 +189,17 @@ fun App(dataStore: DataStore<Preferences>) {
                 )
             }
         )
-        { InfoScreen(navController) }
+        { InfoScreen(
+            onBackArrowClick = {
+                navController.navigateUp()
+            }
+        ) }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoScreen(navController: NavHostController) {
+fun InfoScreen(onBackArrowClick: () -> Unit) {
     val context = LocalContext.current
     val clipboard = getSystemService(context, ClipboardManager::class.java) as ClipboardManager
 
@@ -197,9 +207,7 @@ fun InfoScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.about)) },
-                navigationIcon = { IconButton(onClick = {
-                        navController.navigateUp()
-                    }) {
+                navigationIcon = { IconButton(onClick = onBackArrowClick) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
                     }
                 }
@@ -305,7 +313,7 @@ fun InfoScreen(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostController) {
+fun MainScreen(dataStore: DataStore<Preferences>, onInfoButtonClick: () -> Unit) {
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -326,9 +334,7 @@ fun MainScreen(dataStore: DataStore<Preferences>, navController: NavHostControll
                     )
                 },
                 modifier = Modifier.padding(start = startPadding, end = endPadding),
-                actions = { IconButton(onClick = {
-                    navController.navigate("info")
-                })  { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
+                actions = { IconButton(onClick = onInfoButtonClick) { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
             )
         }, content = { innerPadding ->
             LazyColumn(
