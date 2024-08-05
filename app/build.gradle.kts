@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.elasticrock.keepscreenon"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 28
         versionName = "1.18.2"
         resourceConfigurations.addAll(listOf("cs", "en-rUS", "en-rGB","el-rGR", "fr-rFR", "zh-rCN", "ar", "ja"))

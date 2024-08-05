@@ -7,7 +7,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Icon
@@ -249,13 +248,8 @@ fun InfoScreen(onBackArrowClick: () -> Unit) {
 
                 item {
                     fun getAppVersion(context: Context): String {
-                        return try {
-                            val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                            packageInfo.versionName
-                        } catch (e: PackageManager.NameNotFoundException) {
-                            e.printStackTrace()
-                            "Unknown"
-                        }
+                        val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+                        return packageInfo.versionName!!
                     }
 
                     val version = getAppVersion(context)
