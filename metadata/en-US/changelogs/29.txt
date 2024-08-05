@@ -1,0 +1,2 @@
+ - Target API 35
+ - Added navigation animation
