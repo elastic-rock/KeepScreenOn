@@ -25,10 +25,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -168,22 +165,14 @@ fun App(dataStore: DataStore<Preferences>) {
         composable(
             route = "info",
             enterTransition = {
-                fadeIn(
-                    animationSpec = tween(
-                        200, easing = LinearEasing
-                    )
-                ) + slideIntoContainer(
-                    animationSpec = tween(200, easing = EaseIn),
+                slideIntoContainer(
+                    animationSpec = tween(150, easing = EaseIn),
                     towards = AnimatedContentTransitionScope.SlideDirection.Start
                 )
                               },
             exitTransition = {
-                fadeOut(
-                    animationSpec = tween(
-                        200, easing = LinearEasing
-                    )
-                ) + slideOutOfContainer(
-                    animationSpec = tween(200, easing = EaseOut),
+                slideOutOfContainer(
+                    animationSpec = tween(150, easing = EaseOut),
                     towards = AnimatedContentTransitionScope.SlideDirection.End
                 )
             }
