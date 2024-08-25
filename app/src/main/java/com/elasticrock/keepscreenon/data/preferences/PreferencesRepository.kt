@@ -1,4 +1,4 @@
-package com.elasticrock.keepscreenon
+package com.elasticrock.keepscreenon.data.preferences
 
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -7,12 +7,13 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
-class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
+@Singleton
+class PreferencesRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {
 
     private val tag = "UserPreferencesRepository"
     private val batteryLowKey = booleanPreferencesKey("listen_for_battery_low")
@@ -30,13 +31,10 @@ class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun readListenForBatteryLow() : Boolean {
-        val listenForBatteryLow: Flow<Boolean> = dataStore.data
-            .map { preferences ->
-                preferences[batteryLowKey] ?: false
-            }
-        return listenForBatteryLow.first()
-    }
+    val listenForBatteryLow: Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[batteryLowKey] ?: false
+        }
 
     suspend fun saveListenForScreenOff(listenForScreenOff: Boolean) {
         try {
@@ -48,13 +46,10 @@ class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun readListenForScreenOff() : Boolean {
-        val listenForScreenOff: Flow<Boolean> = dataStore.data
-            .map { preferences ->
-                preferences[screenOffKey] ?: false
-            }
-        return listenForScreenOff.first()
-    }
+    val listenForScreenOff: Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[screenOffKey] ?: false
+        }
 
     suspend fun savePreviousScreenTimeout(screenTimeout: Int) {
         try {
@@ -66,13 +61,10 @@ class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun readPreviousScreenTimeout() : Int {
-        val previousScreenTimeout: Flow<Int> = dataStore.data
-            .map { preferences ->
-                preferences[previousScreenTimeoutKey] ?: 120000
-            }
-        return previousScreenTimeout.first()
-    }
+    val previousScreenTimeout: Flow<Int> = dataStore.data
+        .map { preferences ->
+            preferences[previousScreenTimeoutKey] ?: 120000
+        }
 
     suspend fun saveMaximumTimeout(maximumTimeout: Int) {
         try {
@@ -84,11 +76,8 @@ class DataStoreRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun readMaximumTimeout() : Int {
-        val maximumTimeout: Flow<Int> = dataStore.data
-            .map { preferences ->
-                preferences[maximumTimeoutKey] ?: Int.MAX_VALUE
-            }
-        return maximumTimeout.first()
-    }
+    val maximumTimeout: Flow<Int> = dataStore.data
+        .map { preferences ->
+            preferences[maximumTimeoutKey] ?: Int.MAX_VALUE
+        }
 }

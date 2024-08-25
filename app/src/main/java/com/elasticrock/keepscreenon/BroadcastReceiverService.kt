@@ -15,6 +15,13 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
+import com.elasticrock.keepscreenon.data.preferences.PreferencesRepository
+import com.elasticrock.keepscreenon.di.dataStore
+import com.elasticrock.keepscreenon.util.CommonUtils
+import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
+import com.elasticrock.keepscreenon.util.monitorScreenOffAction
+import com.elasticrock.keepscreenon.util.stopMonitorAcion
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -118,7 +125,7 @@ class BroadcastReceiverService : LifecycleService() {
 
     private fun restoreScreenTimeout() {
         runBlocking {
-            val previousScreenTimeout = DataStoreRepository(dataStore).readPreviousScreenTimeout()
+            val previousScreenTimeout = PreferencesRepository(dataStore).previousScreenTimeout.first()
             launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
         }
     }

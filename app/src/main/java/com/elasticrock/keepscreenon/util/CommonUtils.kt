@@ -1,4 +1,4 @@
-package com.elasticrock.keepscreenon
+package com.elasticrock.keepscreenon.util
 
 import android.content.ContentResolver
 import android.content.Intent

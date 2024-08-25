@@ -10,7 +10,13 @@ import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import com.elasticrock.keepscreenon.data.preferences.PreferencesRepository
+import com.elasticrock.keepscreenon.di.dataStore
+import com.elasticrock.keepscreenon.util.CommonUtils
+import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
+import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -28,7 +34,7 @@ class QSTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
         val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
-        val maxTimeout = runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }
+        val maxTimeout = runBlocking { PreferencesRepository(dataStore).maximumTimeout.first() }
         qsTile.label = getString(R.string.keep_screen_on)
         if (!Settings.System.canWrite(applicationContext)) {
             qsTile.state = Tile.STATE_INACTIVE
@@ -59,19 +65,19 @@ class QSTileService : TileService() {
                 startActivityAndCollapse(CommonUtils().modifySystemSettingsIntent)
             }
             qsTile.updateTile()
-        } else if (screenTimeout == runBlocking { DataStoreRepository(dataStore).readMaximumTimeout() }) {
+        } else if (screenTimeout == runBlocking { PreferencesRepository(dataStore).maximumTimeout.first() }) {
             runBlocking {
-                val previousScreenTimeout = DataStoreRepository(dataStore).readPreviousScreenTimeout()
+                val previousScreenTimeout = PreferencesRepository(dataStore).previousScreenTimeout.first()
                 launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
                 launch { inactiveState(previousScreenTimeout) }
             }
             stopService(Intent(this, BroadcastReceiverService::class.java))
         } else {
             runBlocking {
-                val maxTimeout = async { DataStoreRepository(dataStore).readMaximumTimeout() }
+                val maxTimeout = async { PreferencesRepository(dataStore).maximumTimeout.first() }
                 launch { activeState(maxTimeout.await()) }
                 launch { CommonUtils().setScreenTimeout(contentResolver, maxTimeout.await()) }
-                launch { DataStoreRepository(dataStore).savePreviousScreenTimeout(screenTimeout) }
+                launch { PreferencesRepository(dataStore).savePreviousScreenTimeout(screenTimeout) }
                 launch { startBroadcastReceiverService() }
             }
         }
@@ -112,8 +118,8 @@ class QSTileService : TileService() {
 
     private fun startBroadcastReceiverService() {
 
-        val listenForBatteryLow = runBlocking { DataStoreRepository(dataStore).readListenForBatteryLow() }
-        val listenForScreenOff = runBlocking { DataStoreRepository(dataStore).readListenForScreenOff() }
+        val listenForBatteryLow = runBlocking { PreferencesRepository(dataStore).listenForBatteryLow.first() }
+        val listenForScreenOff = runBlocking { PreferencesRepository(dataStore).listenForScreenOff.first() }
 
         fun startService(intent: Intent) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

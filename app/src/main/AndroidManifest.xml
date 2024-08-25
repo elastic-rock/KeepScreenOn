@@ -12,6 +12,7 @@
         android:label="@string/keep_screen_on"
         android:localeConfig="@xml/locales_config"
         android:theme="@style/Theme.KeepScreenOn"
+        android:name=".KeepScreenOnApplication"
         tools:targetApi="34" >
         <activity
             android:name=".MainActivity"
