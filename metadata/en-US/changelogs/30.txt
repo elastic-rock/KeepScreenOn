@@ -1,0 +1,2 @@
+ - Speed up animation
+ - Under the hood improvements
