@@ -69,7 +69,6 @@ import com.elasticrock.keepscreenon.QSTileService
 import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.canWriteSettingsState
 import com.elasticrock.keepscreenon.isIgnoringBatteryOptimizationState
-import com.elasticrock.keepscreenon.isTileAddedState
 import com.elasticrock.keepscreenon.screenTimeoutState
 import com.elasticrock.keepscreenon.ui.components.IgnoreBatteryOptimizationsDialog
 import com.elasticrock.keepscreenon.ui.components.PreferenceItem
@@ -119,8 +118,7 @@ fun MainScreen(
                 }
 
                 item {
-                    val isTileAdded by isTileAddedState.observeAsState(false)
-                    if (isTileAdded) {
+                    if (state.value.isTileAdded) {
                         PreferencesHintCard(
                             title = stringResource(id = (R.string.tile_already_added)),
                             description = stringResource(id = R.string.qs_tile_hidden),

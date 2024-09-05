@@ -28,7 +28,6 @@ import dagger.hilt.internal.GeneratedEntryPoint
 
 val canWriteSettingsState = MutableLiveData(false)
 val isIgnoringBatteryOptimizationState = MutableLiveData(false)
-val isTileAddedState = MutableLiveData(false)
 val screenTimeoutState = MutableLiveData(0)
 
 @AndroidEntryPoint

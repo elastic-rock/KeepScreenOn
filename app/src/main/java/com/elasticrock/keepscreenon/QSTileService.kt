@@ -24,12 +24,12 @@ class QSTileService : TileService() {
 
     override fun onTileAdded() {
         super.onTileAdded()
-        isTileAddedState.value = true
+        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(true) }
     }
 
     override fun onTileRemoved() {
         super.onTileRemoved()
-        isTileAddedState.value = false
+        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(false) }
     }
     override fun onStartListening() {
         super.onStartListening()
@@ -47,7 +47,7 @@ class QSTileService : TileService() {
         } else {
             inactiveState(screenTimeout)
         }
-        isTileAddedState.value = true
+        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(true) }
         screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
     }
 

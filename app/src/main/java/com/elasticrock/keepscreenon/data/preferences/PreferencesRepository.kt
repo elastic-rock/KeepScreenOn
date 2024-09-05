@@ -20,6 +20,7 @@ class PreferencesRepository @Inject constructor(private val dataStore: DataStore
     private val screenOffKey = booleanPreferencesKey("listen_for_screen_off")
     private val previousScreenTimeoutKey = intPreferencesKey("previous_screen_timeout")
     private val maximumTimeoutKey = intPreferencesKey("maximum_timeout")
+    private val isTileAddedKey = booleanPreferencesKey("is_tile_added")
 
     suspend fun saveListenForBatteryLow(listenForBatteryLow: Boolean) {
         try {
@@ -79,5 +80,20 @@ class PreferencesRepository @Inject constructor(private val dataStore: DataStore
     val maximumTimeout: Flow<Int> = dataStore.data
         .map { preferences ->
             preferences[maximumTimeoutKey] ?: Int.MAX_VALUE
+        }
+
+    suspend fun saveIsTileAdded(isTileAdded: Boolean) {
+        try {
+            dataStore.edit { preferences ->
+                preferences[isTileAddedKey] = isTileAdded
+            }
+        } catch (e: IOException) {
+            Log.e(tag,"Error writing isTileAdded property")
+        }
+    }
+
+    val isTileAdded: Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[isTileAddedKey] ?: false
         }
 }

@@ -18,7 +18,8 @@ import javax.inject.Inject
 data class MainScreenState(
     val isRestoreWhenBatteryLowEnabled: Boolean = false,
     val isRestoreWhenScreenOffEnabled: Boolean = false,
-    val maxTimeout: Int = Int.MAX_VALUE
+    val maxTimeout: Int = Int.MAX_VALUE,
+    val isTileAdded: Boolean = false
 )
 
 @HiltViewModel
@@ -28,13 +29,15 @@ class MainScreenViewModel @Inject constructor(
     private val _isRestoreWhenBatteryLowEnabled = preferencesRepository.listenForBatteryLow
     private val _isRestoreWhenScreenOffEnabled = preferencesRepository.listenForScreenOff
     private val _maxTimeout = preferencesRepository.maximumTimeout
+    private val _isTileAdded = preferencesRepository.isTileAdded
 
     private val _state = MutableStateFlow(MainScreenState())
-    val state = combine(_state, _isRestoreWhenBatteryLowEnabled, _isRestoreWhenScreenOffEnabled, _maxTimeout) { state, isRestoreWhenBatteryLowEnabled, isRestoreWhenScreenOffEnabled, maxTimeout ->
+    val state = combine(_state, _isRestoreWhenBatteryLowEnabled, _isRestoreWhenScreenOffEnabled, _maxTimeout, _isTileAdded) { state, isRestoreWhenBatteryLowEnabled, isRestoreWhenScreenOffEnabled, maxTimeout, isTileAdded ->
         state.copy(
             isRestoreWhenBatteryLowEnabled = isRestoreWhenBatteryLowEnabled,
             isRestoreWhenScreenOffEnabled = isRestoreWhenScreenOffEnabled,
-            maxTimeout = maxTimeout
+            maxTimeout = maxTimeout,
+            isTileAdded = isTileAdded
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainScreenState())
 
