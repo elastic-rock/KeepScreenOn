@@ -109,6 +109,8 @@ class QSTileService : TileService() {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
             } else if (screenTimeout < 86400000) {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.hour, screenTimeout/3600000, screenTimeout/3600000)
+            } else if (screenTimeout == Int.MAX_VALUE) {
+                qsTile.subtitle = getString(R.string.on)
             } else {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.day, screenTimeout/86400000, screenTimeout/86400000)
             }
