@@ -16,13 +16,9 @@
     <string name="confirm">تأكيد</string>
     <string name="grant_permission">منح الإذن</string>
     <string name="ignore_battery_optimizations">تجاهل تحسينات البطارية</string>
-    <string name="int_max_value_warning">الحد الأقصى. 2147483647</string>
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="listening_for_battery_low_action">الاستماع إلى الحركة المنخفضة للبطارية</string>
     <string name="listening_for_screen_off_action">الاستماع إلى حركة إيقاف الشاشة</string>
-    <string name="maximum_description">تعيين قيمة المهلة عندما يكون إبقاء الشاشة قيد التشغيل نشطا</string>
-    <string name="maximum_explenation">لم يتم ضبط مهلة الشاشة في الواقع على أبدا ، لأنه غير ممكن. يتم تعيين أعلى قيمة ممكنة. ومع ذلك ، لا تسمح بعض الهواتف للمستخدمين بتعيين قيمة أعلى مما تسمح به الإعدادات. لذلك ، إذا واجهت مشكلة حيث يتم تعيين قيمة مختلفة في كل مرة تقوم فيها بتمكين Keep Screen On، ثم القيمة هنا ، قم بتعديلها لتتوافق مع القيمة التي حددها النظام</string>
-    <string name="maximum_timeout_value">الحد الأقصى لقيمة المهلة</string>
     <string name="modify_system_settings">تعديل إعدادات النظام</string>
     <string name="notifications">الإشعارات</string>
     <string name="options">خيارات</string>
@@ -31,7 +27,6 @@
     <string name="posted_when_keep_screen_on_is_active">تم النشر عندما يكون إبقاء الشاشة قيد التشغيل نشطا</string>
     <string name="qs_tile">لوحة الإعدادات السريعة</string>
     <string name="qs_tile_hidden">إذا لم تتمكن من العثور على الزر، فقد يكون في صفحة أخرى</string>
-    <string name="reset">إرجاع</string>
     <string name="restore_timeout_when_battery_low">استعادة المهلة عندما تكون البطارية منخفضة</string>
     <string name="restore_timeout_when_screen_is_turned_off">استعادة المهلة عند إيقاف تشغيل الشاشة</string>
     <string name="this_permission_is_required">هذا الإذن مطلوب</string>

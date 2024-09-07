@@ -32,11 +32,6 @@
     <string name="qs_tile_hidden">タイルが見つからない場合、他のページに表示されている可能性があります</string>
     <string name="add_qs_tile_alternate">クイック設定パネルの編集ボタンをタップして、Keep Screen Onのタイルを追加することもできます</string>
     <string name="background_service">バックグラウンドサービス</string>
-    <string name="maximum_timeout_value">最大タイムアウト時間</string>
     <string name="advanced">高度な設定</string>
-    <string name="maximum_description">Keep Screen Onが動作している場合のタイムアウト時間</string>
-    <string name="maximum_explenation">実際には、画面タイムアウト時間を完全に無効化して常時点灯させることはできません。最大タイムアウト時間と考えられる時間が設定されます。しかし、一部のデバイスでは本来の設定値より長いタイムアウトには設定できないように制限されています。そのため、Keep Screen Onが動作している際に、ここでの設定値ではないタイムアウト時間となってしまう場合には、その値に合わせて変更してください</string>
     <string name="confirm">確認</string>
-    <string name="reset">リセット</string>
-    <string name="int_max_value_warning">最大値 2147483647</string>
 </resources>

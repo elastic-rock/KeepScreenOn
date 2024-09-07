@@ -38,13 +38,8 @@
     <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="background_service">Background service</string>
     <string name="current_screen_timeout">Current screen timeout: %d ms</string>
-    <string name="maximum_timeout_value">Maximum timeout value</string>
     <string name="advanced">Advanced</string>
-    <string name="maximum_description">Timeout value set when Keep Screen On is active</string>
-    <string name="maximum_explenation">The screen timeout is actually not set to never, as it is not possible. The highest possible value is set. However, some phones do not allow users to set a value higher than the settings allow. Therefore, if you encounter an issue where every time you enable Keep Screen On a different value is set then the value here, modify it to correspond to the value set by the system.</string>
     <string name="confirm">Confirm</string>
-    <string name="reset">Reset</string>
-    <string name="int_max_value_warning">Max. 2147483647</string>
     <string name="ignore_battery_optimizations_dialog_description">In order for this function to work reliably, the app must be exempt from battery optimisation</string>
     <string name="stop">Stop</string>
     <string name="about">About</string>

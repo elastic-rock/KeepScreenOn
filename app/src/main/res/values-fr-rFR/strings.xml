@@ -39,13 +39,8 @@
     <string name="add_qs_tile_alternate">Vous pouvez également appuyer sur le bouton de modification dans le panneau des paramètres rapides et ajouter le bloc Maintenir l\'écran allumé</string>
     <string name="background_service">Service d\'arrière-plan</string>
     <string name="current_screen_timeout">Délai de mise en veille de l\'écran actuel: %d ms</string>
-    <string name="maximum_timeout_value">Délai maximal</string>
     <string name="advanced">Avancé</string>
-    <string name="maximum_description">Valeur du délai de mise en veille de l\'écran lorsque la fonction Maintenir l\'écran allumé est activée</string>
-    <string name="maximum_explenation">Le délai de mise en veille de l\'écran n\'est pas fixé à jamais, car ce n\'est pas possible. La valeur la plus élevée possible est utilisée. Certains téléphones n\'autorisent pas les utilisateurs à définir une valeur supérieure à celle autorisée par les réglages. Par conséquent, si vous rencontrez un problème où, à chaque fois que vous activez la fonction Maintenir l\'écran allumé, une valeur différente de celle indiquée ici est définie, modifiez-la pour qu\'elle corresponde à la valeur définie par le système.</string>
     <string name="confirm">Confirmer</string>
-    <string name="reset">Réinitialiser</string>
-    <string name="int_max_value_warning">Max. 2147483647</string>
     <string name="ignore_battery_optimizations_dialog_description">Pour que cette fonction soit fiable, l\'application doit être exclue de l\'optimisation de la batterie</string>
     <string name="stop">Arrêter</string>
     <string name="about">À propos</string>
