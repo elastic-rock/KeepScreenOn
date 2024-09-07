@@ -26,8 +26,3 @@ src="metadata/en-US/images/phoneScreenshots/screenshot-app.png?raw=true">
  - **FOREGROUND_SERVICE** - Needed to listen for battery_low and/or screen_off actions, if you enable the feature "Restore timeout when battery is low" and/or "Restore timeout when screen is turned off"
  - **FOREGROUND_SERVICE_SPECIAL_USE** - Needed to specify the appropriate foreground service type
  - **POST_NOTIFICATIONS** - Needed to post notifications when foreground service is running
-
-**Credits**
-
- - [**JunkFood02/Seal**](https://github.com/JunkFood02/Seal/) - The UI came from here
- - [**Material Icons**](https://fonts.google.com/icons) - All icons used, licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
