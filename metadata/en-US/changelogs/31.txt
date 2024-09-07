@@ -1,0 +1,4 @@
+ - Improved timeout selection in the app
+ - Improved the ignore battery optimizations dialogue
+ - Added a third party licenses screen
+ - Moved isTileAdded login to DataStore
