@@ -18,6 +18,8 @@ hilt = "2.52"
 androidxHilt = "1.2.0"
 ksp = "2.0.0-1.0.21"
 lifecycleRuntimeComposeAndroid = "2.8.5"
+ossLicensesParser = "1.0.0"
+ossLicensesPlugin = "0.10.6"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -43,6 +45,8 @@ dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" 
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHilt" }
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
+oss-licenses-parser = { module = "de.philipp-bobek:oss-licenses-parser", version.ref = "ossLicensesParser" }
+oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

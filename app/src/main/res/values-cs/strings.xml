@@ -58,4 +58,6 @@
     <string name="application_id">ID aplikace</string>
     <string name="version">Verze</string>
     <string name="license">Licence</string>
+    <string name="third_party_licenses">Licence třetích stran</string>
+    <string name="third_party_licenses_description">Licence zahrnutých open source knihoven</string>
 </resources>

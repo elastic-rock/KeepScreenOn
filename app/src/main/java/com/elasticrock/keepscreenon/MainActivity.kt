@@ -20,11 +20,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.elasticrock.keepscreenon.ui.info.InfoScreen
+import com.elasticrock.keepscreenon.ui.licenses.LicensesScreen
 import com.elasticrock.keepscreenon.ui.main.MainScreen
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 import com.elasticrock.keepscreenon.util.CommonUtils
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.internal.GeneratedEntryPoint
 
 val canWriteSettingsState = MutableLiveData(false)
 val isIgnoringBatteryOptimizationState = MutableLiveData(false)
@@ -60,8 +60,18 @@ fun App() {
     NavHost(
         navController = navController,
         startDestination = "main",
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
+        enterTransition = {
+            slideIntoContainer(
+                animationSpec = tween(150, easing = EaseIn),
+                towards = AnimatedContentTransitionScope.SlideDirection.Start
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                animationSpec = tween(150, easing = EaseOut),
+                towards = AnimatedContentTransitionScope.SlideDirection.End
+            )
+        },
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
@@ -72,25 +82,22 @@ fun App() {
                 }
             )
         }
-        composable(
-            route = "info",
-            enterTransition = {
-                slideIntoContainer(
-                    animationSpec = tween(150, easing = EaseIn),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Start
-                )
-                              },
-            exitTransition = {
-                slideOutOfContainer(
-                    animationSpec = tween(150, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.End
-                )
-            }
-        )
-        { InfoScreen(
-            onBackArrowClick = {
-                navController.navigateUp()
-            }
-        ) }
+        composable("info") {
+            InfoScreen(
+                onBackArrowClick = {
+                    navController.navigateUp()
+                },
+                onLicensesOptionClick = {
+                    navController.navigate("licenses")
+                }
+            )
+        }
+        composable("licenses") {
+            LicensesScreen(
+                onBackArrowClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
     }
 }

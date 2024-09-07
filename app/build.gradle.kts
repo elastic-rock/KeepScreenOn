@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger.hilt)
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 android {
@@ -80,4 +81,5 @@ dependencies {
     implementation(libs.dagger.hilt)
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.oss.licenses.parser)
 }

@@ -54,4 +54,6 @@
     <string name="application_id">ID de l\'application</string>
     <string name="version">Version</string>
     <string name="license">Licence</string>
+    <string name="third_party_licenses">Licences de parties tierces</string>
+    <string name="third_party_licenses_description">Licences des bibliothèques open source incluses</string>
 </resources>

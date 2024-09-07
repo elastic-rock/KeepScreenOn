@@ -38,7 +38,10 @@ import com.elasticrock.keepscreenon.ui.components.AboutItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoScreen(onBackArrowClick: () -> Unit) {
+fun InfoScreen(
+    onBackArrowClick: () -> Unit,
+    onLicensesOptionClick: () -> Unit
+) {
     val context = LocalContext.current
     val clipboard = getSystemService(context, ClipboardManager::class.java) as ClipboardManager
 
@@ -115,6 +118,14 @@ fun InfoScreen(onBackArrowClick: () -> Unit) {
                             intent.data = Uri.parse(url)
                             context.startActivity(intent)
                         }
+                    )
+                }
+
+                item {
+                    AboutItem(
+                        title = stringResource(id = R.string.third_party_licenses),
+                        subtitle = stringResource(id = R.string.third_party_licenses_description),
+                        onClick = onLicensesOptionClick
                     )
                 }
             }
