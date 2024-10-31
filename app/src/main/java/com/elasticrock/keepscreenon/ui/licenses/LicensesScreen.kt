@@ -31,16 +31,16 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.ui.components.AboutItem
-import de.philipp_bobek.oss_licenses_parser.OssLicensesParser
+import com.mikepenz.aboutlibraries.Libs
+import com.mikepenz.aboutlibraries.util.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LicensesScreen(onBackArrowClick: () -> Unit) {
     val context = LocalContext.current
 
-    val thirdPartyLicenseMetadataFile = context.resources.openRawResource(R.raw.third_party_license_metadata)
-    val thirdPartyLicensesFile = context.resources.openRawResource(R.raw.third_party_licenses)
-    val licenses = OssLicensesParser.parseAllLicenses(thirdPartyLicenseMetadataFile, thirdPartyLicensesFile).sortedBy { license -> license.libraryName }
+    val libs = Libs.Builder().withContext(context).build()
+    val libraries = libs.libraries
 
     Scaffold(
         Modifier.fillMaxSize(),
@@ -48,19 +48,19 @@ fun LicensesScreen(onBackArrowClick: () -> Unit) {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.third_party_licenses)) },
                 navigationIcon = { IconButton(onClick = onBackArrowClick) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
-                }
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
+                    }
                 }
             )
         },
         content = { innerPadding ->
             LazyColumn(contentPadding = innerPadding) {
-                items(licenses) { item ->
+                items(libraries) { item ->
                     val intent = Intent(Intent.ACTION_VIEW)
                     AboutItem(
-                        title = item.libraryName,
+                        title = item.name,
                         onClick = {
-                            intent.data = Uri.parse(item.licenseContent)
+                            intent.data = Uri.parse(item.website)
                             context.startActivity(intent)
                         }
                     )

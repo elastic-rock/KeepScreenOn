@@ -5,10 +5,5 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dagger.hilt) apply false
-}
-
-buildscript {
-    dependencies {
-        classpath(libs.oss.licenses.plugin)
-    }
+    alias(libs.plugins.aboutlibs) apply false
 }
