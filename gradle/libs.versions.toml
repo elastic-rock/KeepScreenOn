@@ -1,7 +1,7 @@
 [versions]
 aboutlibs = "11.2.3"
 activityCompose = "1.9.3"
-agp = "8.7.1"
+agp = "8.7.2"
 composeBom = "2024.10.01"
 coreKtx = "1.15.0"
 datastorePreferences = "1.1.1"
