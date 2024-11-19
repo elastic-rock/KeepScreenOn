@@ -15,73 +15,95 @@ import com.elasticrock.keepscreenon.di.dataStore
 import com.elasticrock.keepscreenon.util.CommonUtils
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class QSTileService : TileService() {
 
+    private var coroutineScope: CoroutineScope? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope?.cancel()
+    }
+
     override fun onTileAdded() {
         super.onTileAdded()
-        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(true) }
+        coroutineScope?.launch { PreferencesRepository(dataStore).saveIsTileAdded(true) }
     }
 
     override fun onTileRemoved() {
         super.onTileRemoved()
-        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(false) }
-    }
-    override fun onStartListening() {
-        super.onStartListening()
-        val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
-        val maxTimeout = runBlocking { PreferencesRepository(dataStore).maximumTimeout.first() }
-        qsTile.label = getString(R.string.keep_screen_on)
-        if (!Settings.System.canWrite(applicationContext)) {
-            qsTile.state = Tile.STATE_INACTIVE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                qsTile.subtitle = getString(R.string.grant_permission)
-            }
-            qsTile.updateTile()
-        } else if (screenTimeout == maxTimeout) {
-            activeState(maxTimeout)
-        } else {
-            inactiveState(screenTimeout)
-        }
-        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(true) }
-        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
+        coroutineScope?.launch { PreferencesRepository(dataStore).saveIsTileAdded(false) }
     }
 
+    override fun onStartListening() {
+        super.onStartListening()
+        coroutineScope?.launch {
+            val canWrite = async { Settings.System.canWrite(applicationContext) }
+            val screenTimeout = async { CommonUtils().readScreenTimeout(contentResolver) }
+            val maxTimeout = async { PreferencesRepository(dataStore).maximumTimeout.first() }
+
+            qsTile.label = getString(R.string.keep_screen_on)
+            if (!canWrite.await()) {
+                qsTile.state = Tile.STATE_INACTIVE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    qsTile.subtitle = getString(R.string.grant_permission)
+                }
+                qsTile.updateTile()
+            } else if (screenTimeout.await() == maxTimeout.await()) {
+                activeState(maxTimeout.await())
+            } else {
+                inactiveState(screenTimeout.await())
+            }
+
+            screenTimeoutState.value = screenTimeout.await()
+        }
+    }
 
     override fun onClick() {
         super.onClick()
-        val screenTimeout = CommonUtils().readScreenTimeout(contentResolver)
-        if (!Settings.System.canWrite(applicationContext)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, CommonUtils().modifySystemSettingsIntent, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
+        val context = this
+        coroutineScope?.launch {
+            val canWrite = async { Settings.System.canWrite(applicationContext) }
+            val screenTimeout = async { CommonUtils().readScreenTimeout(contentResolver) }
+            val maximumTimeout = async { PreferencesRepository(dataStore).maximumTimeout.first() }
+            val previousScreenTimeout = async { PreferencesRepository(dataStore).previousScreenTimeout.first() }
+
+            if (!canWrite.await()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, CommonUtils().modifySystemSettingsIntent, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
+                } else {
+                    CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
+                    @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
+                    startActivityAndCollapse(CommonUtils().modifySystemSettingsIntent)
+                }
+                qsTile.updateTile()
+            } else if (screenTimeout.await() == maximumTimeout.await()) {
+                inactiveState(previousScreenTimeout.await())
+                CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout.await())
+                stopService(Intent(context, BroadcastReceiverService::class.java))
             } else {
-                CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-                @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
-                startActivityAndCollapse(CommonUtils().modifySystemSettingsIntent)
+                activeState(maximumTimeout.await())
+                CommonUtils().setScreenTimeout(contentResolver, maximumTimeout.await())
+                PreferencesRepository(dataStore).savePreviousScreenTimeout(screenTimeout.await())
+                startBroadcastReceiverService()
             }
-            qsTile.updateTile()
-        } else if (screenTimeout == runBlocking { PreferencesRepository(dataStore).maximumTimeout.first() }) {
-            runBlocking {
-                val previousScreenTimeout = PreferencesRepository(dataStore).previousScreenTimeout.first()
-                launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
-                launch { inactiveState(previousScreenTimeout) }
-            }
-            stopService(Intent(this, BroadcastReceiverService::class.java))
-        } else {
-            runBlocking {
-                val maxTimeout = async { PreferencesRepository(dataStore).maximumTimeout.first() }
-                launch { activeState(maxTimeout.await()) }
-                launch { CommonUtils().setScreenTimeout(contentResolver, maxTimeout.await()) }
-                launch { PreferencesRepository(dataStore).savePreviousScreenTimeout(screenTimeout) }
-                launch { startBroadcastReceiverService() }
-            }
+
+            //Re-read as it cannot be assumed that the value will actually correspond to the value set earlier, since some devices like Xiaomi tamper with it
+            screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
         }
-        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
     }
 
     private fun inactiveState(screenTimeout: Int) {
@@ -118,10 +140,9 @@ class QSTileService : TileService() {
         qsTile.updateTile()
     }
 
-    private fun startBroadcastReceiverService() {
-
-        val listenForBatteryLow = runBlocking { PreferencesRepository(dataStore).listenForBatteryLow.first() }
-        val listenForScreenOff = runBlocking { PreferencesRepository(dataStore).listenForScreenOff.first() }
+    private suspend fun startBroadcastReceiverService() {
+        val listenForBatteryLow = PreferencesRepository(dataStore).listenForBatteryLow.first()
+        val listenForScreenOff = PreferencesRepository(dataStore).listenForScreenOff.first()
 
         fun startService(intent: Intent) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
