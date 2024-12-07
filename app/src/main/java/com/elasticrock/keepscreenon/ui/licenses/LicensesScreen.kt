@@ -60,7 +60,7 @@ fun LicensesScreen(onBackArrowClick: () -> Unit) {
                     AboutItem(
                         title = item.name,
                         onClick = {
-                            intent.data = Uri.parse(item.website)
+                            intent.data = Uri.parse(item.licenses.first().url)
                             context.startActivity(intent)
                         }
                     )
