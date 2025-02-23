@@ -1,0 +1,2 @@
+ - Added Turkish translation (Thanks to @ugurhamzacebioglu)
+ - Updated dependencies
