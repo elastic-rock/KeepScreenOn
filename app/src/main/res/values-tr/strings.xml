@@ -1,8 +1,8 @@
 <resources>
   <string name="keep_screen_on">Keep Screen On</string>
   <string name="grant_permission">Erişim izni ver</string>
-  <string name="add_tile_instructions">Hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kutucuğunu etkinleştirin.</string>
-  <string name="add_qs_tile">Hızlı ayarlar kutucuğu ekle</string>
+  <string name="add_tile_instructions">Hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kısayolunu etkinleştirin.</string>
+  <string name="add_qs_tile">Hızlı ayarlar kısayolu ekle</string>
   <plurals name="second">
     <item quantity="one">%d saniye</item>
     <item quantity="other">%d saniye</item>
@@ -22,12 +22,12 @@
   <string name="listening_for_battery_low_action">Düşük pil hareketini önemseme</string>
   <string name="listening_for_screen_off_action">Ekran kapatma eylemini önemseme</string>
   <string name="listening_for_battery_low_and_screen_off_actions">Düşük pil ve ekran kapatma eylemlerini önemseme</string>
-  <string name="tile_already_added">Kutucuk zaten eklendi</string>
+  <string name="tile_already_added">Kısayol zaten eklendi</string>
   <string name="restore_timeout_when_battery_low">Pil düşük olduğunda zaman aşımını geri yükle</string>
   <string name="restore_timeout_when_screen_is_turned_off">Ekran kapatıldığında zaman aşımını geri yükle</string>
   <string name="options">Seçenekler</string>
   <string name="permissions">İzinler</string>
-  <string name="qs_tile">Hızlı ayarlar kutucuğu</string>
+  <string name="qs_tile">Hızlı ayarlar kısayolu</string>
   <string name="modify_system_settings">Sistem ayarlarını değiştir</string>
   <string name="this_permission_is_required">Bu izin gereklidir</string>
   <string name="permission_granted">İzin verildi</string>
@@ -35,7 +35,7 @@
   <string name="posted_when_keep_screen_on_is_active">Keep Screen On etkin olduğunda gönderildi</string>
   <string name="ignore_battery_optimizations">Pil optimizasyonlarını yok say</string>
   <string name="qs_tile_hidden">Kutucuğu bulamazsanız, başka bir sayfada olabilir.</string>
-  <string name="add_qs_tile_alternate">Alternatif olarak, hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kutucuğunu etkinleştirin.</string>
+  <string name="add_qs_tile_alternate">Alternatif olarak, hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kısayolunu etkinleştirin.</string>
   <string name="background_service">Arka plan hizmeti</string>
   <string name="current_screen_timeout">Geçerli ekran zaman aşımı: %d ms</string>
   <string name="advanced">Gelişmiş</string>
@@ -44,7 +44,7 @@
   <string name="stop">Durdur</string>
   <string name="about">Hakkında</string>
   <string name="author">Geliştirici</string>
-  <string name="source_code">Kaynak kodu</string>
+  <string name="source_code">Kaynak Kodu</string>
   <string name="application_id">Uygulama Kimliği</string>
   <string name="version">Versiyon</string>
   <string name="license">Lisans</string>
