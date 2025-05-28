@@ -61,6 +61,16 @@ android {
         includeInApk = false
         includeInBundle = false
     }
+    flavorDimensions += listOf("base")
+    productFlavors {
+        create("davidweis") {
+            dimension = "base"
+            applicationId = "eu.davidweis.keepscreenon"
+        }
+        create("elasticrock") {
+            dimension = "base"
+        }
+    }
 }
 
 dependencies {
