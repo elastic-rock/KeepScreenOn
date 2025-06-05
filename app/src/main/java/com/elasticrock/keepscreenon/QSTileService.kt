@@ -6,6 +6,7 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
@@ -22,6 +23,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 class QSTileService : TileService() {
 
@@ -82,12 +84,13 @@ class QSTileService : TileService() {
 
             if (!canWrite.await()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, CommonUtils().modifySystemSettingsIntent, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
+                    startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = ("package:" + applicationContext.packageName).toUri() }, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
                 } else {
-                    CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    CommonUtils().modifySystemSettingsIntent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
+                    val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = ("package:" + applicationContext.packageName).toUri() }
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
                     @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
-                    startActivityAndCollapse(CommonUtils().modifySystemSettingsIntent)
+                    startActivityAndCollapse(intent)
                 }
                 qsTile.updateTile()
             } else if (screenTimeout.await() == maximumTimeout.await()) {

@@ -2,10 +2,13 @@ package com.elasticrock.keepscreenon.ui.main
 
 import android.app.StatusBarManager
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -71,6 +74,7 @@ import com.elasticrock.keepscreenon.ui.components.PreferenceSubtitle
 import com.elasticrock.keepscreenon.ui.components.PreferenceSwitch
 import com.elasticrock.keepscreenon.ui.components.PreferencesHintCard
 import com.elasticrock.keepscreenon.util.CommonUtils
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -163,7 +167,7 @@ fun MainScreen(
                             description = stringResource(id = R.string.this_permission_is_required),
                             enabled = true,
                             icon = Icons.Filled.Settings,
-                            onClick = { context.startActivity(CommonUtils().modifySystemSettingsIntent) }
+                            onClick = { context.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = ("package:" + context.packageName).toUri() } ) }
                         )
                     }
                 }
