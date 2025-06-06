@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Icon
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -58,9 +57,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.elasticrock.keepscreenon.QSTileService
@@ -73,8 +74,6 @@ import com.elasticrock.keepscreenon.ui.components.PreferenceItem
 import com.elasticrock.keepscreenon.ui.components.PreferenceSubtitle
 import com.elasticrock.keepscreenon.ui.components.PreferenceSwitch
 import com.elasticrock.keepscreenon.ui.components.PreferencesHintCard
-import com.elasticrock.keepscreenon.util.CommonUtils
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -251,25 +250,21 @@ fun MainScreen(
                 }
 
                 item {
-                    PreferenceSubtitle(text = stringResource(id = R.string.advanced))
-                }
-
-                item {
                     var expanded by remember { mutableStateOf(false) }
 
-                    val timeoutOptions = listOf(
-                        60000,
-                        120000,
-                        300000,
-                        600000,
-                        1800000,
-                        Int.MAX_VALUE
+                    val timeoutOptions = mapOf(
+                        60000 to pluralStringResource(R.plurals.minute, 1, 1),
+                        120000 to pluralStringResource(R.plurals.minute, 2, 2),
+                        300000 to pluralStringResource(R.plurals.minute, 5, 5),
+                        600000 to pluralStringResource(R.plurals.minute, 10, 10),
+                        1800000 to pluralStringResource(R.plurals.minute, 30, 30),
+                        Int.MAX_VALUE to stringResource(R.string.always_on)
                     )
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 0.dp),
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         ExposedDropdownMenuBox(
@@ -278,14 +273,11 @@ fun MainScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             OutlinedTextField(
-                                value = state.value.maxTimeout.toString(),
+                                value = timeoutOptions[state.value.maxTimeout]!!,
                                 onValueChange = {},
                                 label = { Text(stringResource(id = R.string.set_timeout_value)) },
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                                suffix = {
-                                    Text("ms")
-                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .menuAnchor(MenuAnchorType.PrimaryNotEditable)
@@ -296,9 +288,9 @@ fun MainScreen(
                             ) {
                                 timeoutOptions.forEach { option ->
                                     DropdownMenuItem(
-                                        text = { Text(text = option.toString(), style = MaterialTheme.typography.bodyLarge) },
+                                        text = { Text(text = option.value, style = MaterialTheme.typography.bodyLarge) },
                                         onClick = {
-                                            viewModel.onMaxTimeoutChange(option)
+                                            viewModel.onMaxTimeoutChange(option.key)
                                             expanded = false
                                         },
                                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -312,7 +304,17 @@ fun MainScreen(
                 item {
                     val screenTimeout by screenTimeoutState.observeAsState(0)
                     Text(
-                        text = stringResource(R.string.current_screen_timeout, screenTimeout),
+                        text = if (screenTimeout < 60000) {
+                            stringResource(R.string.current_screen_timeout) + pluralStringResource(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
+                        } else if (screenTimeout < 3600000) {
+                            stringResource(R.string.current_screen_timeout) + pluralStringResource(R.plurals.minute, screenTimeout/60000, screenTimeout/60000)
+                        } else if (screenTimeout < 86400000) {
+                            stringResource(R.string.current_screen_timeout) + pluralStringResource(R.plurals.hour, screenTimeout/3600000, screenTimeout/3600000)
+                        } else if (screenTimeout == Int.MAX_VALUE) {
+                            stringResource(R.string.current_screen_timeout) + stringResource(R.string.always_on)
+                        } else {
+                            stringResource(R.string.current_screen_timeout) + pluralStringResource(R.plurals.day, screenTimeout/86400000, screenTimeout/86400000)
+                        },
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier
                             .fillMaxWidth()

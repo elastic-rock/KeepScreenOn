@@ -1,15 +1,15 @@
 [versions]
-aboutlibs = "12.1.2"
+aboutlibs = "12.2.1"
 activityCompose = "1.10.1"
 agp = "8.10.1"
-composeBom = "2025.05.01"
+composeBom = "2025.06.00"
 coreKtx = "1.16.0"
 datastorePreferences = "1.1.7"
 espressoCore = "3.6.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlin = "2.0.0"
-lifecycleRuntimeKtx = "2.9.0"
+lifecycleRuntimeKtx = "2.9.1"
 material3 = "1.3.2"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.0"
@@ -18,7 +18,7 @@ uiTestManifest = "1.8.2"
 hilt = "2.56.2"
 androidxHilt = "1.2.0"
 ksp = "2.0.0-1.0.21"
-lifecycleRuntimeComposeAndroid = "2.9.0"
+lifecycleRuntimeComposeAndroid = "2.9.1"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }

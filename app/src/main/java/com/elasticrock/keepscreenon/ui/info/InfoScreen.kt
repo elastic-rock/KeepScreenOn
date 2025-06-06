@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.net.toUri
 import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.ui.components.AboutItem
 
@@ -59,9 +59,15 @@ fun InfoScreen(
         content = { innerPadding ->
             LazyColumn(contentPadding = innerPadding) {
                 item {
+                    val url = "https://davidweis.eu"
+                    val intent = Intent(Intent.ACTION_VIEW)
                     AboutItem(
                         title = stringResource(id = R.string.author),
-                        subtitle = stringResource(id = R.string.david_weis)
+                        subtitle = stringResource(id = R.string.david_weis),
+                        onClick = {
+                            intent.data = url.toUri()
+                            context.startActivity(intent)
+                        }
                     )
                 }
 
@@ -72,14 +78,14 @@ fun InfoScreen(
                         title = stringResource(id = R.string.source_code),
                         subtitle = stringResource(id = R.string.github),
                         onClick = {
-                            intent.data = Uri.parse(url)
+                            intent.data = url.toUri()
                             context.startActivity(intent)
                         }
                     )
                 }
 
                 item {
-                    val appId = "com.elasticrock.keepscreenon"
+                    val appId = context.packageName
                     AboutItem(
                         title = stringResource(id = R.string.application_id),
                         subtitle = appId,
@@ -115,7 +121,7 @@ fun InfoScreen(
                         title = stringResource(id = R.string.license),
                         subtitle = "GPL-3.0",
                         onClick = {
-                            intent.data = Uri.parse(url)
+                            intent.data = url.toUri()
                             context.startActivity(intent)
                         }
                     )

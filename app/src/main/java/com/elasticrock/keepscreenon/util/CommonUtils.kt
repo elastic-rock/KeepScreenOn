@@ -1,8 +1,6 @@
 package com.elasticrock.keepscreenon.util
 
 import android.content.ContentResolver
-import android.content.Intent
-import android.net.Uri
 import android.provider.Settings
 
 class CommonUtils {

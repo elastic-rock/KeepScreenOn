@@ -6,11 +6,11 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import androidx.core.net.toUri
 import com.elasticrock.keepscreenon.data.preferences.PreferencesRepository
 import com.elasticrock.keepscreenon.di.dataStore
 import com.elasticrock.keepscreenon.util.CommonUtils
@@ -23,7 +23,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
 
 class QSTileService : TileService() {
 
@@ -135,7 +134,7 @@ class QSTileService : TileService() {
             } else if (screenTimeout < 86400000) {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.hour, screenTimeout/3600000, screenTimeout/3600000)
             } else if (screenTimeout == Int.MAX_VALUE) {
-                qsTile.subtitle = getString(R.string.on)
+                qsTile.subtitle = getString(R.string.always_on)
             } else {
                 qsTile.subtitle = resources.getQuantityString(R.plurals.day, screenTimeout/86400000, screenTimeout/86400000)
             }

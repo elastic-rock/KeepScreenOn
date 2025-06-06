@@ -42,7 +42,7 @@
     <string name="qs_tile_hidden">Pokud nemůžete najít dlaždici, může být na další stránce</string>
     <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
     <string name="background_service">Služba na pozadí</string>
-    <string name="current_screen_timeout">Aktuální interval vypnutí obrazovky: %d ms</string>
+    <string name="current_screen_timeout">"Aktuální interval vypnutí obrazovky: "</string>
     <string name="advanced">Pokročilé</string>
     <string name="confirm">Potvrdit</string>
     <string name="ignore_battery_optimizations_dialog_description">Aby tato funkce mohla spolehlivě fungovat, aplikace musí být vyloučena z obtimalizace baterie</string>
@@ -55,4 +55,5 @@
     <string name="license">Licence</string>
     <string name="third_party_licenses">Licence třetích stran</string>
     <string name="third_party_licenses_description">Licence zahrnutých open source knihoven</string>
+    <string name="always_on">Vždy zapnuto</string>
 </resources>

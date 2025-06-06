@@ -33,6 +33,7 @@ import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.ui.components.AboutItem
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.util.withContext
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +61,7 @@ fun LicensesScreen(onBackArrowClick: () -> Unit) {
                     AboutItem(
                         title = item.name,
                         onClick = {
-                            intent.data = Uri.parse(item.licenses.first().url)
+                            intent.data = item.licenses.first().url?.toUri()
                             context.startActivity(intent)
                         }
                     )
