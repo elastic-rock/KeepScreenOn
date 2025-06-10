@@ -16,41 +16,25 @@ import com.elasticrock.keepscreenon.di.dataStore
 import com.elasticrock.keepscreenon.util.CommonUtils
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class QSTileService : TileService() {
 
-    private var coroutineScope: CoroutineScope? = null
-
-    override fun onCreate() {
-        super.onCreate()
-        coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        coroutineScope?.cancel()
-    }
-
     override fun onTileAdded() {
         super.onTileAdded()
-        coroutineScope?.launch { PreferencesRepository(dataStore).saveIsTileAdded(true) }
+        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(true) }
     }
 
     override fun onTileRemoved() {
         super.onTileRemoved()
-        coroutineScope?.launch { PreferencesRepository(dataStore).saveIsTileAdded(false) }
+        runBlocking { PreferencesRepository(dataStore).saveIsTileAdded(false) }
     }
 
     override fun onStartListening() {
         super.onStartListening()
-        coroutineScope?.launch {
+        runBlocking {
             val canWrite = async { Settings.System.canWrite(applicationContext) }
             val screenTimeout = async { CommonUtils().readScreenTimeout(contentResolver) }
             val maxTimeout = async { PreferencesRepository(dataStore).maximumTimeout.first() }
@@ -75,7 +59,7 @@ class QSTileService : TileService() {
     override fun onClick() {
         super.onClick()
         val context = this
-        coroutineScope?.launch {
+        runBlocking {
             val canWrite = async { Settings.System.canWrite(applicationContext) }
             val screenTimeout = async { CommonUtils().readScreenTimeout(contentResolver) }
             val maximumTimeout = async { PreferencesRepository(dataStore).maximumTimeout.first() }
