@@ -32,6 +32,5 @@
     <string name="qs_tile_hidden">タイルが見つからない場合、他のページに表示されている可能性があります</string>
     <string name="add_qs_tile_alternate">クイック設定パネルの編集ボタンをタップして、Keep Screen Onのタイルを追加することもできます</string>
     <string name="background_service">バックグラウンドサービス</string>
-    <string name="advanced">高度な設定</string>
     <string name="confirm">確認</string>
 </resources>
