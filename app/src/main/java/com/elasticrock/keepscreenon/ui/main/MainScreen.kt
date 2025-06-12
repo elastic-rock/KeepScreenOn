@@ -8,6 +8,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -46,6 +47,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -74,6 +76,8 @@ import com.elasticrock.keepscreenon.ui.components.PreferenceItem
 import com.elasticrock.keepscreenon.ui.components.PreferenceSubtitle
 import com.elasticrock.keepscreenon.ui.components.PreferenceSwitch
 import com.elasticrock.keepscreenon.ui.components.PreferencesHintCard
+import com.elasticrock.keepscreenon.BuildConfig
+import com.elasticrock.keepscreenon.util.reviewPrompt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,12 +89,19 @@ fun MainScreen(
 
     val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
+    val activity = LocalActivity.current
     val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
 
     val layoutDirection = LocalLayoutDirection.current
     val displayCutout = WindowInsets.displayCutout.asPaddingValues()
     val startPadding = displayCutout.calculateStartPadding(layoutDirection)
     val endPadding = displayCutout.calculateEndPadding(layoutDirection)
+
+    LaunchedEffect(state.value.displayReviewPrompt) {
+        if (BuildConfig.FLAVOR == "play" && state.value.displayReviewPrompt) {
+            reviewPrompt(context, activity!!)
+        }
+    }
 
     Scaffold(
         Modifier.fillMaxSize(),

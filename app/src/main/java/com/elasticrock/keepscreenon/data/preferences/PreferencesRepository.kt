@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
@@ -21,6 +22,7 @@ class PreferencesRepository @Inject constructor(private val dataStore: DataStore
     private val previousScreenTimeoutKey = intPreferencesKey("previous_screen_timeout")
     private val maximumTimeoutKey = intPreferencesKey("maximum_timeout")
     private val isTileAddedKey = booleanPreferencesKey("is_tile_added")
+    private val openCountKey = intPreferencesKey("open_count")
 
     suspend fun saveListenForBatteryLow(listenForBatteryLow: Boolean) {
         try {
@@ -96,4 +98,20 @@ class PreferencesRepository @Inject constructor(private val dataStore: DataStore
         .map { preferences ->
             preferences[isTileAddedKey] ?: false
         }
+
+    val openCount: Flow<Int> = dataStore.data
+        .map { preferences ->
+            preferences[openCountKey] ?: 0
+        }
+
+    suspend fun incrementOpenCount() {
+        try {
+            val previousCount = openCount.first()
+            dataStore.edit { preferences ->
+                preferences[openCountKey] = previousCount + 1
+            }
+        } catch (e: IOException) {
+            Log.e(tag,"Error writing isFirstTimeLaunch property")
+        }
+    }
 }

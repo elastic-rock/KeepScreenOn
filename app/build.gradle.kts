@@ -45,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.7"
@@ -61,14 +62,14 @@ android {
         includeInApk = false
         includeInBundle = false
     }
-    flavorDimensions += listOf("base")
+    flavorDimensions += listOf("target")
     productFlavors {
-        create("davidweis") {
-            dimension = "base"
+        create("play") {
+            dimension = "target"
             applicationId = "eu.davidweis.keepscreenon"
         }
-        create("elasticrock") {
-            dimension = "base"
+        create("general") {
+            dimension = "target"
         }
     }
 }
@@ -100,4 +101,6 @@ dependencies {
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.aboutlibs)
+    "playImplementation"(libs.play.review)
+    "playImplementation"(libs.play.review.ktx)
 }
