@@ -13,6 +13,7 @@
         android:localeConfig="@xml/locales_config"
         android:theme="@style/Theme.KeepScreenOn"
         android:name=".KeepScreenOnApplication"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="35" >
         <activity
             android:name=".MainActivity"

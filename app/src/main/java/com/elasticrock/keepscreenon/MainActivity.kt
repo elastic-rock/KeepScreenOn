@@ -9,9 +9,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.compose.NavHost
@@ -59,30 +63,39 @@ fun App() {
         navController = navController,
         startDestination = "main",
         enterTransition = {
-            slideIntoContainer(
-                animationSpec = tween(150, easing = EaseIn),
+            fadeIn(
+                animationSpec = tween(
+                    150, easing = LinearEasing
+                )
+            ) + slideIntoContainer(
+                animationSpec = tween(300, easing = EaseIn),
                 towards = AnimatedContentTransitionScope.SlideDirection.Start
             )
         },
         exitTransition = {
-            slideOutOfContainer(
-                animationSpec = tween(150, easing = EaseIn),
-                towards = AnimatedContentTransitionScope.SlideDirection.Start
+            fadeOut(
+                animationSpec = tween(
+                    150, easing = LinearEasing
+                )
+            ) + slideOutOfContainer(
+                animationSpec = tween(150, easing = EaseOut),
+                towards = AnimatedContentTransitionScope.SlideDirection.End
             )
         },
         popEnterTransition = {
-            slideIntoContainer(
-                animationSpec = tween(150, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.End
-            )
+            EnterTransition.None
         },
         popExitTransition = {
-            slideOutOfContainer(
-                animationSpec = tween(150, easing = EaseOut),
+            fadeOut(
+                animationSpec = tween(
+                    150, easing = LinearEasing
+                )
+            ) + slideOutOfContainer(
+                animationSpec = tween(150, easing = LinearEasing),
                 towards = AnimatedContentTransitionScope.SlideDirection.End
             )
-        },
-    ) {
+        }
+        ) {
         composable("main") {
             MainScreen(
                 onInfoButtonClick = {
