@@ -56,7 +56,9 @@ android {
         }
     }
     aboutLibraries {
-        excludeFields = arrayOf("generated")
+        export {
+            excludeFields.addAll("generated")
+        }
     }
     dependenciesInfo {
         includeInApk = false
