@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
@@ -68,19 +69,12 @@ fun App() {
                     150, easing = LinearEasing
                 )
             ) + slideIntoContainer(
-                animationSpec = tween(300, easing = EaseIn),
+                animationSpec = tween(150, easing = EaseIn),
                 towards = AnimatedContentTransitionScope.SlideDirection.Start
             )
         },
         exitTransition = {
-            fadeOut(
-                animationSpec = tween(
-                    150, easing = LinearEasing
-                )
-            ) + slideOutOfContainer(
-                animationSpec = tween(150, easing = EaseOut),
-                towards = AnimatedContentTransitionScope.SlideDirection.End
-            )
+            ExitTransition.None
         },
         popEnterTransition = {
             EnterTransition.None
@@ -91,7 +85,7 @@ fun App() {
                     150, easing = LinearEasing
                 )
             ) + slideOutOfContainer(
-                animationSpec = tween(150, easing = LinearEasing),
+                animationSpec = tween(150, easing = EaseOut),
                 towards = AnimatedContentTransitionScope.SlideDirection.End
             )
         }
