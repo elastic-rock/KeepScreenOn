@@ -1,0 +1,3 @@
+ - Improved UI for better communication
+ - Predictive back
+ - Fixed error where addition and removal of tile would not have been registered by the app
