@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -60,15 +59,14 @@ fun PreferencesHintCard(
             with(MaterialTheme) {
                 Text(
                     text = title,
-                    maxLines = 1,
                     style = typography.titleLarge.copy(fontSize = 20.sp),
                     color = contentColor
                 )
                 if (description != null) Text(
                     text = description,
                     color = contentColor,
-                    maxLines = 2, overflow = TextOverflow.Ellipsis,
                     style = typography.bodyMedium,
+                    modifier = Modifier.padding(top = 2.dp)
                 )
             }
         }

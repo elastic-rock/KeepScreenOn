@@ -39,8 +39,6 @@
     <string name="add_qs_tile_alternate">Vous pouvez également appuyer sur le bouton de modification dans le panneau des paramètres rapides et ajouter le bloc Maintenir l\'écran allumé</string>
     <string name="background_service">Service d\'arrière-plan</string>
     <string name="current_screen_timeout">"Délai de mise en veille de l'écran actuel: "</string>
-    <string name="confirm">Confirmer</string>
-    <string name="ignore_battery_optimizations_dialog_description">Pour que cette fonction soit fiable, l\'application doit être exclue de l\'optimisation de la batterie</string>
     <string name="stop">Arrêter</string>
     <string name="about">À propos</string>
     <string name="author">Auteur</string>
@@ -52,4 +50,7 @@
     <string name="third_party_licenses_description">Licences des bibliothèques open source incluses</string>
     <string name="set_timeout_value">Régler le délai de mise en veille</string>
     <string name="always_on">Toujours allumé</string>
+    <string name="needed_to_restore_timeout_automatically">Nécessaire pour renouveler automatiquement le délai de mise en veille</string>
+    <string name="the_app_must_be_exempt_from_battery_optimizations">L\'application doit être exclue de l\'optimisation de la batterie</string>
+    <string name="screen_timeout_warning">Le délai suivant ne fonctionne pas sur tous les appareils</string>
 </resources>

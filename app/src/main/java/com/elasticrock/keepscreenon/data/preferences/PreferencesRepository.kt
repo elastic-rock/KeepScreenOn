@@ -23,6 +23,7 @@ class PreferencesRepository @Inject constructor(private val dataStore: DataStore
     private val maximumTimeoutKey = intPreferencesKey("maximum_timeout")
     private val isTileAddedKey = booleanPreferencesKey("is_tile_added")
     private val openCountKey = intPreferencesKey("open_count")
+    private val isNotificationPermissionDeniedPermanentlyKey = booleanPreferencesKey("is_notification_permission_denied_permanently")
 
     suspend fun saveListenForBatteryLow(listenForBatteryLow: Boolean) {
         try {
@@ -114,4 +115,19 @@ class PreferencesRepository @Inject constructor(private val dataStore: DataStore
             Log.e(tag,"Error writing isFirstTimeLaunch property")
         }
     }
+
+    suspend fun saveIsNotificationPermissionDeniedPermanently(isNotificationPermissionDeniedPermanently: Boolean) {
+        try {
+            dataStore.edit { preferences ->
+                preferences[isNotificationPermissionDeniedPermanentlyKey] = isNotificationPermissionDeniedPermanently
+            }
+        } catch (e: IOException) {
+            Log.e(tag,"Error writing isNotificationPermissionDeniedPermanently property")
+        }
+    }
+
+    val isNotificationPermissionDeniedPermanently: Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[isNotificationPermissionDeniedPermanentlyKey] ?: false
+        }
 }

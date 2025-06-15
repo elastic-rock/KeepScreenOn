@@ -52,6 +52,7 @@ class QSTileService : TileService() {
                 inactiveState(screenTimeout.await())
             }
 
+            PreferencesRepository(dataStore).saveIsTileAdded(true)
             screenTimeoutState.value = screenTimeout.await()
         }
     }
@@ -87,6 +88,7 @@ class QSTileService : TileService() {
                 startBroadcastReceiverService()
             }
 
+            PreferencesRepository(dataStore).saveIsTileAdded(true)
             //Re-read as it cannot be assumed that the value will actually correspond to the value set earlier, since some devices like Xiaomi tamper with it
             screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
         }

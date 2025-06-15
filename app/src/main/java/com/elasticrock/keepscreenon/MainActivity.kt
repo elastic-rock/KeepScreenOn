@@ -1,6 +1,7 @@
 package com.elasticrock.keepscreenon
 
 import android.content.Context
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -18,6 +19,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,11 +29,13 @@ import com.elasticrock.keepscreenon.ui.licenses.LicensesScreen
 import com.elasticrock.keepscreenon.ui.main.MainScreen
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
 import com.elasticrock.keepscreenon.util.CommonUtils
+import com.elasticrock.keepscreenon.util.notificationPermission
 import dagger.hilt.android.AndroidEntryPoint
 
 val canWriteSettingsState = MutableLiveData(false)
 val isIgnoringBatteryOptimizationState = MutableLiveData(false)
 val screenTimeoutState = MutableLiveData(0)
+val isNotificationPermissionGranted = MutableLiveData(false)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -54,6 +58,7 @@ class MainActivity : ComponentActivity() {
         canWriteSettingsState.value = Settings.System.canWrite(applicationContext)
         isIgnoringBatteryOptimizationState.value = pm.isIgnoringBatteryOptimizations(applicationContext.packageName)
         screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
+        isNotificationPermissionGranted.value = ContextCompat.checkSelfPermission(this, notificationPermission) == PERMISSION_GRANTED
     }
 }
 

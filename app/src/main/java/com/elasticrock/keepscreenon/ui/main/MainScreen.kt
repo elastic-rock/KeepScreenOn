@@ -3,19 +3,17 @@ package com.elasticrock.keepscreenon.ui.main
 import android.app.StatusBarManager
 import android.content.ComponentName
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_DENIED
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -30,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BatteryAlert
+import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
@@ -50,11 +49,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -62,21 +59,22 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.elasticrock.keepscreenon.BuildConfig
 import com.elasticrock.keepscreenon.QSTileService
 import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.canWriteSettingsState
 import com.elasticrock.keepscreenon.isIgnoringBatteryOptimizationState
+import com.elasticrock.keepscreenon.isNotificationPermissionGranted
 import com.elasticrock.keepscreenon.screenTimeoutState
-import com.elasticrock.keepscreenon.ui.components.IgnoreBatteryOptimizationsDialog
 import com.elasticrock.keepscreenon.ui.components.PreferenceItem
 import com.elasticrock.keepscreenon.ui.components.PreferenceSubtitle
 import com.elasticrock.keepscreenon.ui.components.PreferenceSwitch
 import com.elasticrock.keepscreenon.ui.components.PreferencesHintCard
-import com.elasticrock.keepscreenon.BuildConfig
+import com.elasticrock.keepscreenon.util.notificationPermission
 import com.elasticrock.keepscreenon.util.reviewPrompt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,8 +84,6 @@ fun MainScreen(
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-
-    val notificationPermission = "android.permission.POST_NOTIFICATIONS"
     val context = LocalContext.current
     val activity = LocalActivity.current
     val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
@@ -184,18 +180,17 @@ fun MainScreen(
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     item {
-                        var isPermissionGranted by remember { mutableIntStateOf(checkSelfPermission(context, notificationPermission)) }
+                        val isPermissionGranted by isNotificationPermissionGranted.observeAsState(false)
+                        var shouldShowRequestPermissionRationale by remember { mutableStateOf(false) }
                         val requestPermissionLauncher = rememberLauncherForActivityResult(
                             ActivityResultContracts.RequestPermission()
                         ) { isGranted: Boolean ->
-                            isPermissionGranted = if (isGranted) {
-                                PERMISSION_GRANTED
-
-                            } else {
-                                PERMISSION_DENIED
+                            isNotificationPermissionGranted.value = isGranted
+                            if (!isGranted && shouldShowRequestPermissionRationale) {
+                                viewModel.onNotificationDeniedPermanentlyChange(true)
                             }
                         }
-                        if (isPermissionGranted == PERMISSION_GRANTED) {
+                        if (isPermissionGranted) {
                             PreferenceItem(
                                 title = stringResource(id = R.string.notifications),
                                 description = stringResource(id = R.string.permission_granted),
@@ -208,9 +203,37 @@ fun MainScreen(
                                 description = stringResource(id = R.string.posted_when_keep_screen_on_is_active),
                                 enabled = true,
                                 icon = Icons.Filled.Notifications,
-                                onClick = { requestPermissionLauncher.launch(notificationPermission) }
+                                onClick = {
+                                    if (shouldShowRequestPermissionRationale(activity!!, notificationPermission)) {
+                                        shouldShowRequestPermissionRationale = true
+                                    }
+                                    if (viewModel.state.value.isNotificationPermissionDeniedPermanently) {
+                                        context.startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply { putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName) })
+                                    } else {
+                                        requestPermissionLauncher.launch(notificationPermission)
+                                    }
+                                }
                             )
                         }
+                    }
+                }
+
+                item {
+                    if (isIgnoringBatteryOptimization) {
+                        PreferenceItem(
+                            title = stringResource(id = R.string.ignore_battery_optimizations),
+                            description = stringResource(id = R.string.permission_granted),
+                            enabled = false,
+                            icon = Icons.Filled.EnergySavingsLeaf
+                        )
+                    } else {
+                        PreferenceItem(
+                            title = stringResource(id = R.string.ignore_battery_optimizations),
+                            description = stringResource(id = R.string.needed_to_restore_timeout_automatically),
+                            enabled = true,
+                            icon = Icons.Filled.EnergySavingsLeaf,
+                            onClick = { context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) }
+                        )
                     }
                 }
 
@@ -219,45 +242,31 @@ fun MainScreen(
                 }
 
                 item {
-                    var openDialog by remember { mutableStateOf(false) }
                     val checked = state.value.isRestoreWhenBatteryLowEnabled && isIgnoringBatteryOptimization
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_battery_low)),
+                        description = if (!isIgnoringBatteryOptimization) stringResource(R.string.the_app_must_be_exempt_from_battery_optimizations) else null,
                         icon = Icons.Filled.BatteryAlert,
                         isChecked = checked,
+                        enabled = isIgnoringBatteryOptimization,
                         onClick = {
-                            if (!isIgnoringBatteryOptimization) {
-                                openDialog = true
-                            } else {
-                                viewModel.onRestoreWhenBatteryLowChange(!checked)
-                            }
+                            viewModel.onRestoreWhenBatteryLowChange(!checked)
                         }
                     )
-
-                    if (openDialog) {
-                        IgnoreBatteryOptimizationsDialog(onDismissRequest = { openDialog = false }, context)
-                    }
                 }
 
                 item {
-                    var openDialog by remember { mutableStateOf(false) }
                     val checked = state.value.isRestoreWhenScreenOffEnabled && isIgnoringBatteryOptimization
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_screen_is_turned_off)),
+                        description = if (!isIgnoringBatteryOptimization) stringResource(R.string.the_app_must_be_exempt_from_battery_optimizations) else null,
                         icon = Icons.Filled.Lock,
                         isChecked = checked,
+                        enabled = isIgnoringBatteryOptimization,
                         onClick = {
-                            if (!isIgnoringBatteryOptimization) {
-                                openDialog = true
-                            } else {
-                                viewModel.onRestoreWhenScreenOffChange(!checked)
-                            }
+                            viewModel.onRestoreWhenScreenOffChange(!checked)
                         }
                     )
-
-                    if (openDialog) {
-                        IgnoreBatteryOptimizationsDialog(onDismissRequest = { openDialog = false }, context)
-                    }
                 }
 
                 item {
@@ -272,11 +281,10 @@ fun MainScreen(
                         Int.MAX_VALUE to stringResource(R.string.always_on)
                     )
 
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         ExposedDropdownMenuBox(
                             expanded = expanded,
@@ -308,6 +316,17 @@ fun MainScreen(
                                     )
                                 }
                             }
+                        }
+
+                        AnimatedVisibility(
+                            visible = state.value.maxTimeout > 600000
+                        ) {
+                            Text(
+                                text = stringResource(R.string.screen_timeout_warning),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp)
+                            )
                         }
                     }
                 }

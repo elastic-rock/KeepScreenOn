@@ -38,8 +38,6 @@
   <string name="add_qs_tile_alternate">Alternatif olarak, hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kısayolunu etkinleştirin.</string>
   <string name="background_service">Arka plan hizmeti</string>
   <string name="current_screen_timeout">"Geçerli ekran zaman aşımı: "</string>
-  <string name="confirm">Onayla</string>
-  <string name="ignore_battery_optimizations_dialog_description">Bu işlevin güvenilir şekilde çalışması için uygulamanın pil optimizasyonundan muaf olması gerekir.</string>
   <string name="stop">Durdur</string>
   <string name="about">Hakkında</string>
   <string name="author">Geliştirici</string>

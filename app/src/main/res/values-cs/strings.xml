@@ -43,8 +43,6 @@
     <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
     <string name="background_service">Služba na pozadí</string>
     <string name="current_screen_timeout">"Aktuální interval vypnutí obrazovky: "</string>
-    <string name="confirm">Potvrdit</string>
-    <string name="ignore_battery_optimizations_dialog_description">Aby tato funkce mohla spolehlivě fungovat, aplikace musí být vyloučena z obtimalizace baterie</string>
     <string name="stop">Zastavit</string>
     <string name="about">O Aplikaci</string>
     <string name="author">Autor</string>
@@ -56,4 +54,7 @@
     <string name="third_party_licenses_description">Licence zahrnutých open source knihoven</string>
     <string name="set_timeout_value">Nastavit interval vypnutí</string>
     <string name="always_on">Vždy zapnuto</string>
+    <string name="needed_to_restore_timeout_automatically">Vyžadováno k automatickému obnovení intervalu vypnutí</string>
+    <string name="the_app_must_be_exempt_from_battery_optimizations">Aplikace musí být vyloučena z optimalizace baterie</string>
+    <string name="screen_timeout_warning">Tento interval nemusí fungovat na všech zařízeních</string>
 </resources>

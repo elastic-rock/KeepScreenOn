@@ -21,5 +21,4 @@
     <string name="qs_tile_hidden">若找不到磁贴，也许它到另一页去了</string>
     <string name="add_qs_tile_alternate">或者在控制中心自行添加磁贴</string>
     <string name="background_service">后台服务</string>
-    <string name="confirm">确认</string>
 </resources>

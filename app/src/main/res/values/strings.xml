@@ -38,8 +38,6 @@
     <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="background_service">Background service</string>
     <string name="current_screen_timeout">"Current screen timeout: "</string>
-    <string name="confirm">Confirm</string>
-    <string name="ignore_battery_optimizations_dialog_description">In order for this function to work reliably, the app must be exempt from battery optimization</string>
     <string name="stop">Stop</string>
     <string name="about">About</string>
     <string name="author">Author</string>
@@ -53,4 +51,7 @@
     <string name="third_party_licenses_description">Licenses of included open source libraries</string>
     <string name="set_timeout_value">Set timeout value</string>
     <string name="always_on">Always on</string>
+    <string name="needed_to_restore_timeout_automatically">Needed to restore timeout automatically</string>
+    <string name="the_app_must_be_exempt_from_battery_optimizations">The app must be exempt from battery optimizations</string>
+    <string name="screen_timeout_warning">The following timeout may not work on all devices</string>
 </resources>
