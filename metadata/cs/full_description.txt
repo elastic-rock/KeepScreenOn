@@ -1,3 +1,15 @@
 Nevypínat obrazovku umožňuje přidat dlaždici rychlého nastavení, pomocí které lze snadno vypnout automatické vypínání obrazovky a následně obnovit předchozí interval.
 
 Aplikace Vám může být vhod, pokud chcete, aby se obrazovka dočasně nevypínala např. při prohlížení webové stranky či dokumentu, nebo pokud Vaše zařízení neumožňuje v nastavení vnastavit interval vypínání na nikdy.
+
+Funkce:
+ - Zakázání vypínání displeje, nebo nastavení vlastního intervalu
+ - Dlaždice rychlého nastavení
+ - Automatické obnovení intervalu při nízkém stavu baterie
+ - Automatické obnovení intervalu při vypnutí obrazovky
+ - Material You
+ - Bez reklam a strašidelných trackerů
+ - Bez přístupu k internetu
+ - Open Source
+
+Zdrojový kód: https://github.com/elastic-rock/KeepScreenOn

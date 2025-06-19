@@ -1,3 +1,15 @@
 Maintenir l'écran allumé vous permet d'ajouter un bloc de réglages rapides avec lequel vous pouvez facilement désactiver le délai de mise en veille de l'écran, puis renouveler la valeur précédente.
 
 Cela peut être utile, par exemple, si vous avez besoin que l'écran reste temporairement allumé lors de la consultation d'un site web ou d'un document, ou si votre appareil n'offre pas la possibilité de régler le délai sur "jamais" dans les paramètres.
+
+Fonctionnalités :
+ - Désactivation de délai de mise en veille de l'écran ou définition d'une valeur spécifique
+ - Bloc de réglages rapides
+ - Renouvellement automatique du délai lorsque la batterie est faible
+ - Renouvellement automatique du délai lorsque l'écran est éteint
+ - Material You
+ - Pas de pubs ou de traceurs effrayants
+ - Pas d'accès à Internet
+ - Open Source
+
+Code source : https://github.com/elastic-rock/KeepScreenOn
