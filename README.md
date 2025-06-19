@@ -13,13 +13,13 @@ height="80">](https://github.com/elastic-rock/KeepScreenOn/releases/latest)
 
 **Screenshots**
 
-<img width=250 alt="Prevent your screen from turning off"
+<img width=240 alt="Prevent your screen from turning off"
 src="metadata/en-US/images/phoneScreenshots/1.png?raw=true">
-<img width=250 alt="No ads. No trackers. No internet access."
+<img width=240 alt="No ads. No trackers. No internet access."
 src="metadata/en-US/images/phoneScreenshots/2.png?raw=true">
-<img width=250 alt="Easy access in the quick settings"
+<img width=240 alt="Easy access in the quick settings"
 src="metadata/en-US/images/phoneScreenshots/3.png?raw=true">
-<img width=250 alt="Automatically restore your previous screen timeout"
+<img width=240 alt="Automatically restore your previous screen timeout"
 src="metadata/en-US/images/phoneScreenshots/4.png?raw=true">
 
 **Permissions**
