@@ -59,7 +59,7 @@ fun PreferencesHintCard(
             with(MaterialTheme) {
                 Text(
                     text = title,
-                    style = typography.titleLarge.copy(fontSize = 20.sp),
+                    style = typography.titleLarge,
                     color = contentColor
                 )
                 if (description != null) Text(

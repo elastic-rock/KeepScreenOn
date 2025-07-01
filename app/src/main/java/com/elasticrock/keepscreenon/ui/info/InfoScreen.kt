@@ -11,9 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -30,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
@@ -45,19 +50,29 @@ fun InfoScreen(
     val context = LocalContext.current
     val clipboard = getSystemService(context, ClipboardManager::class.java) as ClipboardManager
 
+    val layoutDirection = LocalLayoutDirection.current
+    val displayCutout = WindowInsets.displayCutout.asPaddingValues()
+    val startPadding = displayCutout.calculateStartPadding(layoutDirection)
+    val endPadding = displayCutout.calculateEndPadding(layoutDirection)
+
     Scaffold(
         Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.about)) },
-                navigationIcon = { IconButton(onClick = onBackArrowClick) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
-                }
+                modifier = Modifier.padding(start = startPadding, end = endPadding),
+                navigationIcon = {
+                    IconButton(onClick = onBackArrowClick) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Go back")
+                    }
                 }
             )
         },
         content = { innerPadding ->
-            LazyColumn(contentPadding = innerPadding) {
+            LazyColumn(
+                contentPadding = innerPadding,
+                modifier = Modifier.padding(start = startPadding, end = endPadding)
+            ) {
                 item {
                     val url = "https://davidweis.eu"
                     val intent = Intent(Intent.ACTION_VIEW)

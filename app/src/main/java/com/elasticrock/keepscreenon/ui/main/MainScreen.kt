@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -81,6 +82,7 @@ import com.elasticrock.keepscreenon.util.reviewPrompt
 @Composable
 fun MainScreen(
     onInfoButtonClick: () -> Unit,
+    onDonateButtonClick: () -> Unit,
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
@@ -110,7 +112,14 @@ fun MainScreen(
                     )
                 },
                 modifier = Modifier.padding(start = startPadding, end = endPadding),
-                actions = { IconButton(onClick = onInfoButtonClick) { Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about)) } }
+                actions = {
+                    IconButton(onClick = onDonateButtonClick) {
+                        Icon(Icons.Filled.VolunteerActivism, contentDescription = stringResource(id = R.string.donate))
+                    }
+                    IconButton(onClick = onInfoButtonClick) {
+                        Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about))
+                    }
+                }
             )
         }, content = { innerPadding ->
             LazyColumn(
