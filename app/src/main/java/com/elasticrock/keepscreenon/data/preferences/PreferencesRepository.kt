@@ -82,7 +82,7 @@ class PreferencesRepository @Inject constructor(private val dataStore: DataStore
 
     val maximumTimeout: Flow<Int> = dataStore.data
         .map { preferences ->
-            preferences[maximumTimeoutKey] ?: Int.MAX_VALUE
+            preferences[maximumTimeoutKey] ?: 600000
         }
 
     suspend fun saveIsTileAdded(isTileAdded: Boolean) {
