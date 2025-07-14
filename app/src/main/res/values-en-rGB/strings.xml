@@ -52,4 +52,6 @@
     <string name="needed_to_restore_timeout_automatically">Needed to restore timeout automatically</string>
     <string name="the_app_must_be_exempt_from_battery_optimizations">The app must be exempt from battery optimisations</string>
     <string name="screen_timeout_warning">The following timeout may not work on all devices</string>
+    <string name="donation_text_1">Hi there! My name is David Weis and I am the developer behind this app.</string>
+    <string name="donation_text_2">I have spent hours working on Keep Screen On and publish all of the source code online. To ensure the app can stay free and maintained, please consider helping out. Thank you!</string>
 </resources>

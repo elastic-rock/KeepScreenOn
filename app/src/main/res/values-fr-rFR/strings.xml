@@ -53,4 +53,6 @@
     <string name="needed_to_restore_timeout_automatically">Nécessaire pour renouveler automatiquement le délai de mise en veille</string>
     <string name="the_app_must_be_exempt_from_battery_optimizations">L\'application doit être exclue de l\'optimisation de la batterie</string>
     <string name="screen_timeout_warning">Le délai suivant ne fonctionne pas sur tous les appareils</string>
+    <string name="donation_text_1">Bonjour à tous ! Je m\'appelle David Weis et je suis le développeur de cette application.</string>
+    <string name="donation_text_2">J\'ai passé des heures à travailler sur cette application et j\'ai publié tout le code source en ligne. Pour que l\'application puisse rester gratuite et maintenue, merci d\'envisager de soutenir le projet.</string>
 </resources>

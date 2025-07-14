@@ -57,4 +57,6 @@
     <string name="needed_to_restore_timeout_automatically">Vyžadováno k automatickému obnovení intervalu vypnutí</string>
     <string name="the_app_must_be_exempt_from_battery_optimizations">Aplikace musí být vyloučena z optimalizace baterie</string>
     <string name="screen_timeout_warning">Tento interval nemusí fungovat na všech zařízeních</string>
+    <string name="donation_text_1">Zdravím vás! Jmenuji se David Weis a jsem vývojářem této aplikace.</string>
+    <string name="donation_text_2">Strávil jsem hodiny nad touto aplikací a zveřejnil jsem veškerý zdrojový kód online. Aby aplikace mohla zůstat zdarma a udržovaná, zvažte, prosím, projekt finančně podpořit. Děkuji.</string>
 </resources>

@@ -61,5 +61,5 @@
     <string name="ethereum" translatable="false">Ethereum</string>
     <string name="monero" translatable="false">Monero</string>
     <string name="donation_text_1">Hi there! My name is David Weis and I am the developer behind this app.</string>
-    <string name="donation_text_2">I have spent hours working on Keep Screen On and publish all of the source code online. To ensure the app can stay free and maintained, please consider helping out.</string>
+    <string name="donation_text_2">I have spent hours working on Keep Screen On and publish all of the source code online. To ensure the app can stay free and maintained, please consider helping out. Thank you!</string>
 </resources>
