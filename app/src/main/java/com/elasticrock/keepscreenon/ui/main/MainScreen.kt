@@ -96,6 +96,7 @@ fun MainScreen(
     val endPadding = displayCutout.calculateEndPadding(layoutDirection)
 
     LaunchedEffect(state.value.displayReviewPrompt) {
+        @Suppress("KotlinConstantConditions")
         if (BuildConfig.FLAVOR == "play" && state.value.displayReviewPrompt) {
             reviewPrompt(context, activity!!)
         }
