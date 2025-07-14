@@ -79,22 +79,6 @@ fun Color.applyOpacity(enabled: Boolean): Color {
     return if (enabled) this else this.copy(alpha = 0.62f)
 }
 
-fun Color.lighten(factor: Float) : Color {
-    return this.copy(
-        red = this.red + (1 - this.red) * factor,
-        green = this.green + (1 - this.green) * factor,
-        blue = this.blue + (1 - this.blue) * factor
-    )
-}
-
-fun Color.darken(factor: Float) : Color {
-    return this.copy(
-        red = this.red * (1 - factor),
-        green = this.green * (1 - factor),
-        blue = this.blue * (1 - factor)
-    )
-}
-
 @Composable
 fun KeepScreenOnTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

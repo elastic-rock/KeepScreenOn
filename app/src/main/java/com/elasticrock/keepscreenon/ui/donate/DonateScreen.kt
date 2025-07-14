@@ -30,7 +30,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -111,79 +110,46 @@ fun DonateScreen(
 
                 item {
                     val walletAddress = "bc1q38cn82smjwtcnj57tukjwmpx23mpwz7jz47rte"
-                    val url = "bitcoin:$walletAddress"
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    val onCopy: () -> Unit = {
-                        coroutineScope.launch {
-                            val clipData = ClipData.newPlainText("simple text", walletAddress)
-                            clipboard.setClipEntry(ClipEntry(clipData))
-                        }
-                    }
                     DonationMethod(
                         title = stringResource(R.string.bitcoin),
                         description = walletAddress,
                         icon = painterResource(R.drawable.bitcoin_logo_128px),
                         onClick = {
-                            intent.data = url.toUri()
-                            if (intent.resolveActivity(context.packageManager) != null) {
-                                context.startActivity(intent)
-                            } else {
-                                onCopy
+                            coroutineScope.launch {
+                                val clipData = ClipData.newPlainText("simple text", walletAddress)
+                                clipboard.setClipEntry(ClipEntry(clipData))
                             }
                         },
-                        onCopy = onCopy
                     )
                 }
 
                 item {
                     val walletAddress = "0x8C924F0309Bb8d8c11fC468d3AeF9aAc55739278"
-                    val url = "ethereum:$walletAddress"
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    val onCopy: () -> Unit = {
-                        coroutineScope.launch {
-                            val clipData = ClipData.newPlainText("simple text", walletAddress)
-                            clipboard.setClipEntry(ClipEntry(clipData))
-                        }
-                    }
                     DonationMethod(
                         title = stringResource(R.string.ethereum),
                         description = walletAddress,
                         icon = painterResource(R.drawable.ethereum_logo_128px),
                         onClick = {
-                            intent.data = url.toUri()
-                            if (intent.resolveActivity(context.packageManager) != null) {
-                                context.startActivity(intent)
-                            } else {
-                                onCopy
+                            coroutineScope.launch {
+                                val clipData = ClipData.newPlainText("simple text", walletAddress)
+                                clipboard.setClipEntry(ClipEntry(clipData))
                             }
-                        },
-                        onCopy = onCopy
+                        }
                     )
                 }
 
                 item {
                     val walletAddress = "4B7jCaWktCvjjy6y71ceUoi5UonMyz9b2RnEhqvq7EywBEbMw5Jov4T9tPBxpbbw2SG3uRLiMhxhveMUf1LiXm48LbBavUv"
-                    val url = "monero:$walletAddress"
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    val onCopy: () -> Unit = {
-                        coroutineScope.launch {
-                            val clipData = ClipData.newPlainText("simple text", walletAddress)
-                            clipboard.setClipEntry(ClipEntry(clipData))
-                        }
-                    }
                     DonationMethod(
                         title = stringResource(R.string.monero),
                         description = walletAddress,
                         icon = painterResource(R.drawable.monero_logo_128px),
                         onClick = {
-                            intent.data = url.toUri()
-                            if (intent.resolveActivity(context.packageManager) != null) {
-                                context.startActivity(intent)
-                            } else {
-                                onCopy
+                            coroutineScope.launch {
+                                val clipData = ClipData.newPlainText("simple text", walletAddress)
+                                clipboard.setClipEntry(ClipEntry(clipData))
                             }
-                        },
-                        onCopy = onCopy
+                        }
                     )
                 }
             }

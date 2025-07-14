@@ -3,7 +3,6 @@ package com.elasticrock.keepscreenon.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -26,8 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.elasticrock.keepscreenon.ui.theme.darken
-import com.elasticrock.keepscreenon.ui.theme.lighten
 
 @Composable
 fun DonationMethod(
@@ -35,7 +30,6 @@ fun DonationMethod(
     description: String,
     icon: Painter,
     onClick: () -> Unit,
-    onCopy: () -> Unit,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     enabled: Boolean = true
@@ -72,19 +66,12 @@ fun DonationMethod(
                 modifier = Modifier.padding(top = 2.dp)
             )
         }
-        IconButton(
-            onClick = onCopy,
-            colors = IconButtonDefaults.iconButtonColors(
-                contentColor = contentColor,
-                containerColor = if (isSystemInDarkTheme()) containerColor.lighten(0.1f) else containerColor.darken(0.1f)
-            ),
-            modifier = Modifier.padding(start = 8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.ContentCopy,
-                contentDescription = null
-            )
-        }
+        Icon(
+            imageVector = Icons.Filled.ContentCopy,
+            contentDescription = null,
+            modifier = Modifier.padding(start = 20.dp, end = 12.dp),
+            tint = contentColor
+        )
     }
 }
 
