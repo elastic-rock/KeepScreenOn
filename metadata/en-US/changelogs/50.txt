@@ -1,0 +1,2 @@
+ - Updated dependencies
+ - Fixed non-working crypto links
