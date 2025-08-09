@@ -139,6 +139,21 @@ fun DonateScreen(
                 }
 
                 item {
+                    val walletAddress = "GC3C4RqsjziADKVHj4We9MwqhAPTbnN16S6QPCXj3dpp"
+                    DonationMethod(
+                        title = stringResource(R.string.solana),
+                        description = walletAddress,
+                        icon = painterResource(R.drawable.solana_logo_128px),
+                        onClick = {
+                            coroutineScope.launch {
+                                val clipData = ClipData.newPlainText("simple text", walletAddress)
+                                clipboard.setClipEntry(ClipEntry(clipData))
+                            }
+                        }
+                    )
+                }
+
+                item {
                     val walletAddress = "4B7jCaWktCvjjy6y71ceUoi5UonMyz9b2RnEhqvq7EywBEbMw5Jov4T9tPBxpbbw2SG3uRLiMhxhveMUf1LiXm48LbBavUv"
                     DonationMethod(
                         title = stringResource(R.string.monero),
