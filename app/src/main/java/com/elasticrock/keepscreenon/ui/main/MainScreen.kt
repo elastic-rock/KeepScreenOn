@@ -14,6 +14,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -23,22 +24,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddModerator
+import androidx.compose.material.icons.filled.AutoAwesomeMosaic
 import androidx.compose.material.icons.filled.BatteryAlert
 import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.NoEncryption
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VolunteerActivism
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +53,7 @@ import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,6 +72,7 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.elasticrock.keepscreenon.BroadcastReceiverService
 import com.elasticrock.keepscreenon.BuildConfig
 import com.elasticrock.keepscreenon.QSTileService
 import com.elasticrock.keepscreenon.R
@@ -75,6 +84,9 @@ import com.elasticrock.keepscreenon.ui.components.PreferenceItem
 import com.elasticrock.keepscreenon.ui.components.PreferenceSubtitle
 import com.elasticrock.keepscreenon.ui.components.PreferenceSwitch
 import com.elasticrock.keepscreenon.ui.components.PreferencesHintCard
+import com.elasticrock.keepscreenon.util.CommonUtils
+import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
+import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import com.elasticrock.keepscreenon.util.notificationPermission
 import com.elasticrock.keepscreenon.util.reviewPrompt
 
@@ -88,7 +100,10 @@ fun MainScreen(
     val state = viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val contentResolver = context.contentResolver
     val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
+    val screenTimeout by screenTimeoutState.observeAsState(0)
+    val canWriteSettings by canWriteSettingsState.observeAsState(false)
 
     val layoutDirection = LocalLayoutDirection.current
     val displayCutout = WindowInsets.displayCutout.asPaddingValues()
@@ -107,61 +122,94 @@ fun MainScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.keep_screen_on),
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    Text(text = stringResource(R.string.keep_screen_on))
                 },
                 modifier = Modifier.padding(start = startPadding, end = endPadding),
                 actions = {
-                    IconButton(onClick = onDonateButtonClick) {
-                        Icon(Icons.Filled.VolunteerActivism, contentDescription = stringResource(id = R.string.donate))
-                    }
                     IconButton(onClick = onInfoButtonClick) {
                         Icon(Icons.Filled.Info, contentDescription = stringResource(id = R.string.about))
                     }
                 }
             )
-        }, content = { innerPadding ->
+        },
+        floatingActionButton = {
+            if (!canWriteSettings) {
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(stringResource(R.string.grant_permission))
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Filled.AddModerator, contentDescription = null)
+                    },
+                    onClick = { context.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = ("package:" + context.packageName).toUri() } ) }
+                )
+            } else if (screenTimeout == state.value.maxTimeout) {
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(stringResource(R.string.disable))
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Filled.NoEncryption, contentDescription = null)
+                    },
+                    onClick = {
+                        CommonUtils().setScreenTimeout(contentResolver, state.value.previousScreenTimeout)
+                        context.stopService(Intent(context, BroadcastReceiverService::class.java))
+
+                        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
+                    }
+                )
+            } else {
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(stringResource(R.string.keep_screen_on))
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Filled.Lock, contentDescription = null)
+                    },
+                    onClick = {
+                        viewModel.onPreviousScreenTimeoutChange(screenTimeout)
+                        CommonUtils().setScreenTimeout(contentResolver, state.value.maxTimeout)
+
+                        fun startService(intent: Intent) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                context.startForegroundService(intent)
+                            } else {
+                                startService(intent)
+                            }
+                        }
+
+                        if (state.value.isRestoreWhenBatteryLowEnabled) {
+                            val intent = Intent()
+                                .setClass(context, BroadcastReceiverService::class.java)
+                                .setAction(monitorBatteryLowAction)
+                            startService(intent)
+                        }
+                        if (state.value.isRestoreWhenScreenOffEnabled) {
+                            val intent = Intent()
+                                .setClass(context, BroadcastReceiverService::class.java)
+                                .setAction(monitorScreenOffAction)
+                            startService(intent)
+                        }
+
+                        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
+                    }
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        content = { innerPadding ->
             LazyColumn(
                 contentPadding = innerPadding,
                 modifier = Modifier.padding(start = startPadding, end = endPadding)
             ) {
 
                 item {
-                    PreferenceSubtitle(text = stringResource(id = R.string.qs_tile))
-                }
-
-                item {
-                    if (state.value.isTileAdded) {
-                        PreferencesHintCard(
-                            title = stringResource(id = (R.string.tile_already_added)),
-                            description = stringResource(id = R.string.qs_tile_hidden),
-                            enabled = false
-                        )
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            PreferencesHintCard(
-                                title = stringResource(id = (R.string.add_qs_tile)),
-                                description = stringResource(id = R.string.add_qs_tile_alternate),
-                                icon = Icons.Filled.Add,
-                                onClick = {
-                                    val statusBarService = context.getSystemService(StatusBarManager::class.java)
-                                    statusBarService.requestAddTileService(
-                                        ComponentName(context, QSTileService::class.java.name),
-                                        context.getString(R.string.keep_screen_on),
-                                        Icon.createWithResource(context, R.drawable.outline_lock_clock_qs),
-                                        {}) {}
-                                }
-                            )
-                        } else {
-                            PreferencesHintCard(
-                                title = stringResource(id = (R.string.add_qs_tile)),
-                                description = stringResource(R.string.add_tile_instructions),
-                                enabled = false
-                            )
-                        }
-                    }
+                    PreferencesHintCard(
+                        title = stringResource(R.string.support_the_app),
+                        description = stringResource(R.string.support_the_app_description),
+                        icon = Icons.Filled.VolunteerActivism,
+                        onClick = onDonateButtonClick
+                    )
                 }
 
                 item {
@@ -169,7 +217,6 @@ fun MainScreen(
                 }
 
                 item {
-                    val canWriteSettings by canWriteSettingsState.observeAsState(false)
                     if (canWriteSettings) {
                         PreferenceItem(
                             title = stringResource(id = R.string.modify_system_settings),
@@ -249,6 +296,61 @@ fun MainScreen(
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.options))
+                }
+
+                item {
+                    var openDialog by remember { mutableStateOf(false) }
+
+                    if (openDialog) {
+                        AlertDialog(
+                            title = {
+                                Text(stringResource(R.string.add_qs_tile))
+                            },
+                            text = {
+                                Text(stringResource(R.string.add_qs_tile_instructions))
+                            },
+                            onDismissRequest = {
+                                openDialog = false
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        openDialog = false
+                                    }
+                                ) {
+                                    Text(stringResource(R.string.ok))
+                                }
+                            }
+                        )
+                    }
+
+                    if (state.value.isTileAdded) {
+                        PreferenceItem(
+                            title = stringResource(id = R.string.qs_tile),
+                            description = stringResource(id = R.string.tile_already_added),
+                            enabled = false,
+                            icon = Icons.Filled.AutoAwesomeMosaic
+                        )
+                    } else {
+                        PreferenceItem(
+                            title = stringResource(id = R.string.qs_tile),
+                            description = stringResource(id = R.string.add_qs_tile),
+                            enabled = true,
+                            icon = Icons.Filled.AutoAwesomeMosaic,
+                            onClick = {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    val statusBarService = context.getSystemService(StatusBarManager::class.java)
+                                    statusBarService.requestAddTileService(
+                                        ComponentName(context, QSTileService::class.java.name),
+                                        context.getString(R.string.keep_screen_on),
+                                        Icon.createWithResource(context, R.drawable.outline_lock_clock_qs),
+                                        {}) {}
+                                } else {
+                                    openDialog = true
+                                }
+                            }
+                        )
+                    }
                 }
 
                 item {
@@ -342,7 +444,6 @@ fun MainScreen(
                 }
 
                 item {
-                    val screenTimeout by screenTimeoutState.observeAsState(0)
                     Text(
                         text = if (screenTimeout < 60000) {
                             stringResource(R.string.current_screen_timeout) + pluralStringResource(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
@@ -360,6 +461,10 @@ fun MainScreen(
                             .fillMaxWidth()
                             .padding(start = 18.dp, top = 24.dp, bottom = 12.dp),
                     )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.size(80.dp))
                 }
             }
 

@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="keep_screen_on">Nevypínat obrazovku</string>
     <string name="grant_permission">Udělit oprávnění</string>
-    <string name="add_tile_instructions">Chcete-li přidat dlaždici do panelu rychlého nastavení, \n 1) otevřete rychlé nastavení, \n 2) klepněte na tlačítko upravit, \n 3) najdětě dlaždici Inteval vypnutí obrazovky, \n 4) podržte ji a přetáhněte na libovolné místo.</string>
+    <string name="add_qs_tile_instructions">Chcete-li přidat dlaždici do panelu rychlého nastavení, \n 1) otevřete rychlé nastavení, \n 2) klepněte na tlačítko upravit, \n 3) najdětě dlaždici Inteval vypnutí obrazovky, \n 4) podržte ji a přetáhněte na libovolné místo.</string>
     <string name="add_qs_tile">Přidat dlaždici rychlého nastavení</string>
     <plurals name="second" tools:ignore="MissingQuantity">
         <item quantity="one">%d sekunda</item>
@@ -39,8 +39,6 @@
     <string name="notifications">Notifikace</string>
     <string name="posted_when_keep_screen_on_is_active">Zobrazeny když je Nevypínat obrazovku aktivní</string>
     <string name="ignore_battery_optimizations">Vyloučit z optimalizace baterie</string>
-    <string name="qs_tile_hidden">Pokud nemůžete najít dlaždici, může být na další stránce</string>
-    <string name="add_qs_tile_alternate">Případně klepněte tlačítko upravit v panelu rychlého nastavení a přidejte dlaždici Nevypínat obrazovku</string>
     <string name="background_service">Služba na pozadí</string>
     <string name="current_screen_timeout">"Aktuální interval vypnutí obrazovky: "</string>
     <string name="stop">Zastavit</string>
@@ -59,4 +57,12 @@
     <string name="screen_timeout_warning">Tento interval nemusí fungovat na všech zařízeních</string>
     <string name="donation_text_1">Zdravím vás! Jmenuji se David Weis a jsem vývojářem této aplikace.</string>
     <string name="donation_text_2">Strávil jsem hodiny nad touto aplikací a zveřejnil jsem veškerý zdrojový kód online. Aby aplikace mohla zůstat zdarma a udržovaná, zvažte, prosím, projekt finančně podpořit. Děkuji.</string>
+    <string name="logo">Logo</string>
+    <string name="ok">OK</string>
+    <string name="support_the_app">Podpořte aplikaci</string>
+    <string name="support_the_app_description">Pomozte udržet Nevypínat obrazovku zdarma a open source pro všechny!</string>
+    <string name="disable">Vypnout</string>
+    <string name="donate">Přispět</string>
+    <string name="credit_card">Platební karta</string>
+    <string name="through_github_sponsors">Prostřednictvím GitHub Sponsors</string>
 </resources>

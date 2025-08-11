@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="keep_screen_on">Maintenir l\'écran allumé</string>
     <string name="grant_permission">Autoriser</string>
-    <string name="add_tile_instructions">Pour ajouter le bloc aux réglages rapides, \n 1) Ouvrez la fenêtre des réglages rapides, \n 2) Appuyez sur Modifier, \n 3) Trouvez le bloc Maintenir l\'écran allumé, \n 4) Appuyez de manière prolongée sur le bloc, puis faites-le glisser à l\'emplacement de votre choix.</string>
+    <string name="add_qs_tile_instructions">Pour ajouter le bloc aux réglages rapides,   1) Ouvrez la fenêtre des réglages rapides,   2) Appuyez sur Modifier,   3) Trouvez le bloc Maintenir l\'écran allumé,   4) Appuyez de manière prolongée sur le bloc, puis faites-le glisser à l\'emplacement de votre choix.</string>
     <string name="add_qs_tile">Ajouter le bloc aux réglages rapides</string>
     <plurals name="second" tools:ignore="MissingQuantity">
         <item quantity="one">%d seconde</item>
@@ -35,8 +35,6 @@
     <string name="notifications">Notifications</string>
     <string name="posted_when_keep_screen_on_is_active">Affiché lorsque Maintenir l\'écran allumé est actif</string>
     <string name="ignore_battery_optimizations">Exclure de l\'optimisation de la batterie</string>
-    <string name="qs_tile_hidden">Si vous ne trouvez pas le bloc, il se peut qu\'il se trouve sur une autre page</string>
-    <string name="add_qs_tile_alternate">Vous pouvez également appuyer sur le bouton de modification dans le panneau des paramètres rapides et ajouter le bloc Maintenir l\'écran allumé</string>
     <string name="background_service">Service d\'arrière-plan</string>
     <string name="current_screen_timeout">"Délai de mise en veille de l'écran actuel: "</string>
     <string name="stop">Arrêter</string>
@@ -55,4 +53,12 @@
     <string name="screen_timeout_warning">Le délai suivant ne fonctionne pas sur tous les appareils</string>
     <string name="donation_text_1">Bonjour à tous ! Je m\'appelle David Weis et je suis le développeur de cette application.</string>
     <string name="donation_text_2">J\'ai passé des heures à travailler sur cette application et j\'ai publié tout le code source en ligne. Pour que l\'application puisse rester gratuite et maintenue, merci d\'envisager de soutenir le projet.</string>
+    <string name="logo">Logo</string>
+    <string name="ok">OK</string>
+    <string name="support_the_app">Soutenez l\'application</string>
+    <string name="support_the_app_description">Aidez à garder Maintenir l\'écran allumé gratuit et open source pour tous !</string>
+    <string name="disable">Désactiver</string>
+    <string name="donate">Faire un don</string>
+    <string name="credit_card">Carte de paiement</string>
+    <string name="through_github_sponsors">Via GitHub Sponsors</string>
 </resources>

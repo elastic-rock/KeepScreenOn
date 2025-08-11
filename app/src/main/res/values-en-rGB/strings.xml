@@ -1,7 +1,7 @@
 <resources>
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="grant_permission">Grant permission</string>
-    <string name="add_tile_instructions">Tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
+    <string name="add_qs_tile_instructions">To add the quick settings tile, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="add_qs_tile">Add quick settings tile</string>
     <plurals name="second">
         <item quantity="one">%d second</item>
@@ -34,8 +34,6 @@
     <string name="notifications">Notifications</string>
     <string name="posted_when_keep_screen_on_is_active">Posted when Keep Screen On is active</string>
     <string name="ignore_battery_optimizations">Ignore battery optimisations</string>
-    <string name="qs_tile_hidden">If you can\'t find the tile, it may be on another page</string>
-    <string name="add_qs_tile_alternate">Alternatively, tap the edit button in the quick settings panel and add the Keep Screen On tile</string>
     <string name="background_service">Background service</string>
     <string name="current_screen_timeout">"Current screen timeout: "</string>
     <string name="stop">Stop</string>
@@ -54,4 +52,12 @@
     <string name="screen_timeout_warning">The following timeout may not work on all devices</string>
     <string name="donation_text_1">Hi there! My name is David Weis and I am the developer behind this app.</string>
     <string name="donation_text_2">I have spent hours working on Keep Screen On and publish all of the source code online. To ensure the app can stay free and maintained, please consider helping out. Thank you!</string>
+    <string name="logo">Logo</string>
+    <string name="ok">OK</string>
+    <string name="support_the_app">Support the app</string>
+    <string name="support_the_app_description">Help keep Keep Screen On free and open source for everyone!</string>
+    <string name="disable">Disable</string>
+    <string name="donate">Donate</string>
+    <string name="credit_card">Credit card</string>
+    <string name="through_github_sponsors">Through GitHub Sponsors</string>
 </resources>

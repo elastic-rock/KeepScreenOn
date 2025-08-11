@@ -1,7 +1,7 @@
 <resources>
   <string name="keep_screen_on">Keep Screen On</string>
   <string name="grant_permission">Erişim izni ver</string>
-  <string name="add_tile_instructions">Hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kısayolunu etkinleştirin.</string>
+  <string name="add_qs_tile_instructions">Hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kısayolunu etkinleştirin.</string>
   <string name="add_qs_tile">Hızlı ayarlar kısayolu ekle</string>
   <plurals name="second">
     <item quantity="one">%d saniye</item>
@@ -34,8 +34,6 @@
   <string name="notifications">Bildirimler</string>
   <string name="posted_when_keep_screen_on_is_active">Keep Screen On etkin olduğunda gönderildi</string>
   <string name="ignore_battery_optimizations">Pil optimizasyonlarını yok say</string>
-  <string name="qs_tile_hidden">Kutucuğu bulamazsanız, başka bir sayfada olabilir.</string>
-  <string name="add_qs_tile_alternate">Alternatif olarak, hızlı ayarlar panelinde düzenle düğmesine dokunun ve "Keep Screen On" kısayolunu etkinleştirin.</string>
   <string name="background_service">Arka plan hizmeti</string>
   <string name="current_screen_timeout">"Geçerli ekran zaman aşımı: "</string>
   <string name="stop">Durdur</string>

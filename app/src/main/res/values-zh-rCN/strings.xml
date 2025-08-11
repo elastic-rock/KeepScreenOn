@@ -2,7 +2,7 @@
 <resources>
     <string name="keep_screen_on">屏幕常亮</string>
     <string name="grant_permission">获取权限</string>
-    <string name="add_tile_instructions">在控制中心中编辑按钮并添加磁贴</string>
+    <string name="add_qs_tile_instructions">在控制中心中编辑按钮并添加磁贴</string>
     <string name="add_qs_tile">添加控制中心磁贴</string>
     <string name="listening_for_battery_low_action">监听电量低事件</string>
     <string name="listening_for_screen_off_action">监听关屏事件</string>
@@ -18,7 +18,5 @@
     <string name="notifications">通知</string>
     <string name="posted_when_keep_screen_on_is_active">在通知栏显示一条“屏幕常亮”已激活的通知</string>
     <string name="ignore_battery_optimizations">忽略电池优化（MIUI \"应用智能省电\"）</string>
-    <string name="qs_tile_hidden">若找不到磁贴，也许它到另一页去了</string>
-    <string name="add_qs_tile_alternate">或者在控制中心自行添加磁贴</string>
     <string name="background_service">后台服务</string>
 </resources>

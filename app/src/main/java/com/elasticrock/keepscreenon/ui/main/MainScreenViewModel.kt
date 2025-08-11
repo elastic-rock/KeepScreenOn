@@ -17,7 +17,8 @@ data class MainScreenState(
     val maxTimeout: Int = 600000,
     val isTileAdded: Boolean = false,
     val displayReviewPrompt: Boolean = false,
-    val isNotificationPermissionDeniedPermanently: Boolean = false
+    val isNotificationPermissionDeniedPermanently: Boolean = false,
+    val previousScreenTimeout: Int = 0
 )
 
 @HiltViewModel
@@ -31,6 +32,7 @@ class MainScreenViewModel @Inject constructor(
     private val _openCount = preferencesRepository.openCount
     private val _displayReviewPrompt = MutableStateFlow(false)
     private val _isNotificationPermissionDeniedPermanently = preferencesRepository.isNotificationPermissionDeniedPermanently
+    private val _previousScreenTimeout = preferencesRepository.previousScreenTimeout
 
     init {
         viewModelScope.launch {
@@ -44,7 +46,7 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private val _state = MutableStateFlow(MainScreenState())
-    val state = combine(_state, _isRestoreWhenBatteryLowEnabled, _isRestoreWhenScreenOffEnabled, _maxTimeout, _isTileAdded, _displayReviewPrompt, _isNotificationPermissionDeniedPermanently) { flowArray ->
+    val state = combine(_state, _isRestoreWhenBatteryLowEnabled, _isRestoreWhenScreenOffEnabled, _maxTimeout, _isTileAdded, _displayReviewPrompt, _isNotificationPermissionDeniedPermanently, _previousScreenTimeout) { flowArray ->
         val state = flowArray[0] as MainScreenState
         val isRestoreWhenBatteryLowEnabled = flowArray[1] as Boolean
         val isRestoreWhenScreenOffEnabled = flowArray[2] as Boolean
@@ -52,13 +54,15 @@ class MainScreenViewModel @Inject constructor(
         val isTileAdded = flowArray[4] as Boolean
         val displayReviewPrompt = flowArray[5] as Boolean
         val isNotificationPermissionDeniedPermanently = flowArray[6] as Boolean
+        val previousScreenTimeout = flowArray[7] as Int
         state.copy(
             isRestoreWhenBatteryLowEnabled = isRestoreWhenBatteryLowEnabled,
             isRestoreWhenScreenOffEnabled = isRestoreWhenScreenOffEnabled,
             maxTimeout = maxTimeout,
             isTileAdded = isTileAdded,
             displayReviewPrompt = displayReviewPrompt,
-            isNotificationPermissionDeniedPermanently = isNotificationPermissionDeniedPermanently
+            isNotificationPermissionDeniedPermanently = isNotificationPermissionDeniedPermanently,
+            previousScreenTimeout = previousScreenTimeout
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainScreenState())
 
@@ -83,6 +87,12 @@ class MainScreenViewModel @Inject constructor(
     fun onNotificationDeniedPermanentlyChange(value: Boolean) {
         viewModelScope.launch {
             preferencesRepository.saveIsNotificationPermissionDeniedPermanently(value)
+        }
+    }
+
+    fun onPreviousScreenTimeoutChange(value: Int) {
+        viewModelScope.launch {
+            preferencesRepository.savePreviousScreenTimeout(value)
         }
     }
 }
