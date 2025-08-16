@@ -1,0 +1,2 @@
+ - Added Solana donation option
+ - Added the ability to enable and disable Keep Screen On directly from the app
