@@ -127,6 +127,7 @@ class BroadcastReceiverService : LifecycleService() {
         runBlocking {
             val previousScreenTimeout = PreferencesRepository(dataStore).previousScreenTimeout.first()
             launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
+            screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
         }
     }
 
