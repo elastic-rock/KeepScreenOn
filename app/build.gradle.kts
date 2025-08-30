@@ -17,8 +17,8 @@ android {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
         targetSdk = 36
-        versionCode = 53
-        versionName = "1.26.1"
+        versionCode = 54
+        versionName = "1.26.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

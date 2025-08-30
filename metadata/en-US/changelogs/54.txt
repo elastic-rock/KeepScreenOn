@@ -1,0 +1,3 @@
+ - Added Solana donation option
+ - Added the ability to enable and disable Keep Screen On directly from the app
+ - Fixed bug where app UI would not react when stopping KeepScreenOn from notification
