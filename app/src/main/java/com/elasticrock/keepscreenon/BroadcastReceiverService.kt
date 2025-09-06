@@ -22,7 +22,6 @@ import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import com.elasticrock.keepscreenon.util.stopMonitorAcion
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class BroadcastReceiverService : LifecycleService() {
@@ -126,7 +125,7 @@ class BroadcastReceiverService : LifecycleService() {
     private fun restoreScreenTimeout() {
         runBlocking {
             val previousScreenTimeout = PreferencesRepository(dataStore).previousScreenTimeout.first()
-            launch { CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout) }
+            CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout)
             screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
         }
     }
