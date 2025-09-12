@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
         canWriteSettingsState.value = Settings.System.canWrite(applicationContext)
         isIgnoringBatteryOptimizationState.value = pm.isIgnoringBatteryOptimizations(applicationContext.packageName)
         screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
