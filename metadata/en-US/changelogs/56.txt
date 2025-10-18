@@ -1,0 +1,1 @@
+ - Initial tasker integration release for testing purposes (functionality not considered stable, may change at any moment)
