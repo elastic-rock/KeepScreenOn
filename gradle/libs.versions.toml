@@ -17,6 +17,7 @@ hilt = "2.57.2"
 androidxHilt = "1.3.0"
 ksp = "2.2.20-2.0.3"
 lifecycleRuntimeComposeAndroid = "2.9.4"
+taskerplugin = "0.4.10"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -41,6 +42,7 @@ androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", nam
 aboutlibs = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibs" }
 play-review = { module = "com.google.android.play:review", version.ref = "playReview" }
 play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "playReview" }
+taskerplugin = { module = "com.joaomgcd:taskerpluginlibrary", version.ref = "taskerplugin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

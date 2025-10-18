@@ -85,11 +85,11 @@ class QSTileService : TileService() {
                 activeState(maximumTimeout.await())
                 CommonUtils().setScreenTimeout(contentResolver, maximumTimeout.await())
                 PreferencesRepository(dataStore).savePreviousScreenTimeout(screenTimeout.await())
-                startBroadcastReceiverService()
+                CommonUtils().startBroadcastReceiverService(context)
             }
 
             PreferencesRepository(dataStore).saveIsTileAdded(true)
-            //Re-read as it cannot be assumed that the value will actually correspond to the value set earlier, since some devices like Xiaomi tamper with it
+            // Re-read as it cannot be assumed that the value will actually correspond to the value set earlier, since some devices like Xiaomi tamper with it
             screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
         }
     }
@@ -126,31 +126,5 @@ class QSTileService : TileService() {
             }
         }
         qsTile.updateTile()
-    }
-
-    private suspend fun startBroadcastReceiverService() {
-        val listenForBatteryLow = PreferencesRepository(dataStore).listenForBatteryLow.first()
-        val listenForScreenOff = PreferencesRepository(dataStore).listenForScreenOff.first()
-
-        fun startService(intent: Intent) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                applicationContext.startForegroundService(intent)
-            } else {
-                startService(intent)
-            }
-        }
-
-        if (listenForBatteryLow) {
-            val intent = Intent()
-                .setClass(this, BroadcastReceiverService::class.java)
-                .setAction(monitorBatteryLowAction)
-            startService(intent)
-        }
-        if (listenForScreenOff) {
-            val intent = Intent()
-                .setClass(this, BroadcastReceiverService::class.java)
-                .setAction(monitorScreenOffAction)
-            startService(intent)
-        }
     }
 }

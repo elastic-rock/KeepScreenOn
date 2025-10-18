@@ -66,4 +66,6 @@
     <string name="support_the_app">Support the app</string>
     <string name="support_the_app_description">Help keep Keep Screen On free and open source for everyone!</string>
     <string name="disable">Disable</string>
+    <string name="keep_screen_on_already_enabled">Keep Screen On already enabled</string>
+    <string name="keep_screen_on_already_disabled">Keep Screen On already disabled</string>
 </resources>

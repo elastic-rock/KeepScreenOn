@@ -100,6 +100,7 @@ dependencies {
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.aboutlibs)
+    implementation(libs.taskerplugin)
     "playImplementation"(libs.play.review)
     "playImplementation"(libs.play.review.ktx)
 }

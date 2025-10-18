@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.WRITE_SETTINGS" tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:ignore="ForegroundServicesPolicy" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
@@ -15,6 +15,7 @@
         android:name=".KeepScreenOnApplication"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="36" >
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,6 +25,26 @@
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ActivityConfigEnableKeepScreenOn"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Enable Keep Screen On">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ActivityConfigDisableKeepScreenOn"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Disable Keep Screen On">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
 
