@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddModerator
 import androidx.compose.material.icons.filled.AutoAwesomeMosaic
 import androidx.compose.material.icons.filled.BatteryAlert
+import androidx.compose.material.icons.filled.DashboardCustomize
 import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
@@ -42,6 +43,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -49,7 +51,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -57,7 +58,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -70,23 +70,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.elasticrock.keepscreenon.BroadcastReceiverService
 import com.elasticrock.keepscreenon.BuildConfig
-import com.elasticrock.keepscreenon.QSTileService
+import com.elasticrock.keepscreenon.service.QSTileService
 import com.elasticrock.keepscreenon.R
-import com.elasticrock.keepscreenon.canWriteSettingsState
-import com.elasticrock.keepscreenon.isIgnoringBatteryOptimizationState
-import com.elasticrock.keepscreenon.isNotificationPermissionGranted
-import com.elasticrock.keepscreenon.screenTimeoutState
 import com.elasticrock.keepscreenon.ui.components.PreferenceItem
 import com.elasticrock.keepscreenon.ui.components.PreferenceSubtitle
 import com.elasticrock.keepscreenon.ui.components.PreferenceSwitch
 import com.elasticrock.keepscreenon.ui.components.PreferencesHintCard
-import com.elasticrock.keepscreenon.util.CommonUtils
-import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
-import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import com.elasticrock.keepscreenon.util.notificationPermission
 import com.elasticrock.keepscreenon.util.reviewPrompt
 
@@ -100,10 +92,6 @@ fun MainScreen(
     val state = viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val activity = LocalActivity.current
-    val contentResolver = context.contentResolver
-    val isIgnoringBatteryOptimization by isIgnoringBatteryOptimizationState.observeAsState(false)
-    val screenTimeout by screenTimeoutState.observeAsState(0)
-    val canWriteSettings by canWriteSettingsState.observeAsState(false)
 
     val layoutDirection = LocalLayoutDirection.current
     val displayCutout = WindowInsets.displayCutout.asPaddingValues()
@@ -133,7 +121,7 @@ fun MainScreen(
             )
         },
         floatingActionButton = {
-            if (!canWriteSettings) {
+            if (!state.value.canWriteSystemSettings) {
                 ExtendedFloatingActionButton(
                     text = {
                         Text(stringResource(R.string.grant_permission))
@@ -143,7 +131,7 @@ fun MainScreen(
                     },
                     onClick = { context.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = ("package:" + context.packageName).toUri() } ) }
                 )
-            } else if (screenTimeout == state.value.maxTimeout) {
+            } else if (state.value.currentScreenTimeout == state.value.maxTimeout) {
                 ExtendedFloatingActionButton(
                     text = {
                         Text(stringResource(R.string.disable))
@@ -152,10 +140,7 @@ fun MainScreen(
                         Icon(imageVector = Icons.Filled.NoEncryption, contentDescription = null)
                     },
                     onClick = {
-                        CommonUtils().setScreenTimeout(contentResolver, state.value.previousScreenTimeout)
-                        context.stopService(Intent(context, BroadcastReceiverService::class.java))
-
-                        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
+                        viewModel.onKeepScreenOnDisabled(context)
                     }
                 )
             } else {
@@ -167,31 +152,7 @@ fun MainScreen(
                         Icon(imageVector = Icons.Filled.Lock, contentDescription = null)
                     },
                     onClick = {
-                        viewModel.onPreviousScreenTimeoutChange(screenTimeout)
-                        CommonUtils().setScreenTimeout(contentResolver, state.value.maxTimeout)
-
-                        fun startService(intent: Intent) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                context.startForegroundService(intent)
-                            } else {
-                                startService(intent)
-                            }
-                        }
-
-                        if (state.value.isRestoreWhenBatteryLowEnabled) {
-                            val intent = Intent()
-                                .setClass(context, BroadcastReceiverService::class.java)
-                                .setAction(monitorBatteryLowAction)
-                            startService(intent)
-                        }
-                        if (state.value.isRestoreWhenScreenOffEnabled) {
-                            val intent = Intent()
-                                .setClass(context, BroadcastReceiverService::class.java)
-                                .setAction(monitorScreenOffAction)
-                            startService(intent)
-                        }
-
-                        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
+                        viewModel.onKeepScreenOnEnabled(context)
                     }
                 )
             }
@@ -217,7 +178,7 @@ fun MainScreen(
                 }
 
                 item {
-                    if (canWriteSettings) {
+                    if (state.value.canWriteSystemSettings) {
                         PreferenceItem(
                             title = stringResource(id = R.string.modify_system_settings),
                             description = stringResource(id = R.string.permission_granted),
@@ -237,17 +198,16 @@ fun MainScreen(
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     item {
-                        val isPermissionGranted by isNotificationPermissionGranted.observeAsState(false)
                         var shouldShowRequestPermissionRationale by remember { mutableStateOf(false) }
                         val requestPermissionLauncher = rememberLauncherForActivityResult(
                             ActivityResultContracts.RequestPermission()
                         ) { isGranted: Boolean ->
-                            isNotificationPermissionGranted.value = isGranted
+                            viewModel.onNotificationPermissionGranted(isGranted)
                             if (!isGranted && shouldShowRequestPermissionRationale) {
                                 viewModel.onNotificationDeniedPermanentlyChange(true)
                             }
                         }
-                        if (isPermissionGranted) {
+                        if (state.value.isNotificationPermissionGranted) {
                             PreferenceItem(
                                 title = stringResource(id = R.string.notifications),
                                 description = stringResource(id = R.string.permission_granted),
@@ -276,7 +236,7 @@ fun MainScreen(
                 }
 
                 item {
-                    if (isIgnoringBatteryOptimization) {
+                    if (state.value.isIgnoringBatteryOptimizations) {
                         PreferenceItem(
                             title = stringResource(id = R.string.ignore_battery_optimizations),
                             description = stringResource(id = R.string.permission_granted),
@@ -354,13 +314,22 @@ fun MainScreen(
                 }
 
                 item {
-                    val checked = state.value.isRestoreWhenBatteryLowEnabled && isIgnoringBatteryOptimization
+                    PreferenceItem(
+                        title = stringResource(id = R.string.widget),
+                        description = "TODO",
+                        enabled = false,
+                        icon = Icons.Filled.DashboardCustomize
+                    )
+                }
+
+                item {
+                    val checked = state.value.isRestoreWhenBatteryLowEnabled && state.value.isIgnoringBatteryOptimizations
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_battery_low)),
-                        description = if (!isIgnoringBatteryOptimization) stringResource(R.string.the_app_must_be_exempt_from_battery_optimizations) else null,
+                        description = if (!state.value.isIgnoringBatteryOptimizations) stringResource(R.string.the_app_must_be_exempt_from_battery_optimizations) else null,
                         icon = Icons.Filled.BatteryAlert,
                         isChecked = checked,
-                        enabled = isIgnoringBatteryOptimization,
+                        enabled = state.value.isIgnoringBatteryOptimizations,
                         onClick = {
                             viewModel.onRestoreWhenBatteryLowChange(!checked)
                         }
@@ -368,13 +337,13 @@ fun MainScreen(
                 }
 
                 item {
-                    val checked = state.value.isRestoreWhenScreenOffEnabled && isIgnoringBatteryOptimization
+                    val checked = state.value.isRestoreWhenScreenOffEnabled && state.value.isIgnoringBatteryOptimizations
                     PreferenceSwitch(
                         title = stringResource(id = (R.string.restore_timeout_when_screen_is_turned_off)),
-                        description = if (!isIgnoringBatteryOptimization) stringResource(R.string.the_app_must_be_exempt_from_battery_optimizations) else null,
+                        description = if (!state.value.isIgnoringBatteryOptimizations) stringResource(R.string.the_app_must_be_exempt_from_battery_optimizations) else null,
                         icon = Icons.Filled.Lock,
                         isChecked = checked,
-                        enabled = isIgnoringBatteryOptimization,
+                        enabled = state.value.isIgnoringBatteryOptimizations,
                         onClick = {
                             viewModel.onRestoreWhenScreenOffChange(!checked)
                         }
@@ -411,7 +380,7 @@ fun MainScreen(
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                             )
                             ExposedDropdownMenu(
                                 expanded = expanded,
@@ -444,6 +413,7 @@ fun MainScreen(
                 }
 
                 item {
+                    val screenTimeout = state.value.currentScreenTimeout
                     Text(
                         text = if (screenTimeout < 60000) {
                             stringResource(R.string.current_screen_timeout) + pluralStringResource(R.plurals.second, screenTimeout/1000, screenTimeout/1000)
