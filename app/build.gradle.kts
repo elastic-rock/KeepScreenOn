@@ -18,8 +18,8 @@ android {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
         targetSdk = 36
-        versionCode = 57
-        versionName = "1.28.0-alpha"
+        versionCode = 58
+        versionName = "1.28.0-alpha.1"
 
         vectorDrawables {
             useSupportLibrary = true
