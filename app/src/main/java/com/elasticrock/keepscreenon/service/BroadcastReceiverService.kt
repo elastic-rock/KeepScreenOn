@@ -16,8 +16,8 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import com.elasticrock.keepscreenon.R
+import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
-import com.elasticrock.keepscreenon.data.repository.ScreenTimeoutRepository
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import com.elasticrock.keepscreenon.util.stopMonitorAcion
@@ -28,7 +28,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BroadcastReceiverService : LifecycleService() {
     @Inject lateinit var preferencesRepository: PreferencesRepository
-    @Inject lateinit var screenTimeoutRepository: ScreenTimeoutRepository
+    @Inject lateinit var keepScreenOnRepository: KeepScreenOnRepository
 
     private val batteryLowReceiver = BatteryLowReceiver()
     private val screenOffReceiver = ScreenOffReceiver()
@@ -126,7 +126,7 @@ class BroadcastReceiverService : LifecycleService() {
 
     private fun restoreScreenTimeout() {
         runBlocking {
-            screenTimeoutRepository.disableKeepScreenOn(this@BroadcastReceiverService)
+            keepScreenOnRepository.disableKeepScreenOn(this@BroadcastReceiverService)
         }
     }
 

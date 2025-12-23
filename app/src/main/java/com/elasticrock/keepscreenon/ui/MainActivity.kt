@@ -1,9 +1,7 @@
 package com.elasticrock.keepscreenon.ui
 
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,7 +15,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -28,7 +25,6 @@ import com.elasticrock.keepscreenon.ui.info.InfoScreen
 import com.elasticrock.keepscreenon.ui.licenses.LicensesScreen
 import com.elasticrock.keepscreenon.ui.main.MainScreen
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
-import com.elasticrock.keepscreenon.util.notificationPermission
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -49,15 +45,6 @@ class MainActivity: ComponentActivity() {
                 App()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
-        permissionsRepository.updateCanWriteSystemSettings(this)
-        permissionsRepository.updateIsIgnoringBatteryOptimizations(pm.isIgnoringBatteryOptimizations(this.packageName))
-        screenTimeoutRepository.updateCurrentScreenTimeout(contentResolver)
-        permissionsRepository.updateIsNotificationPermissionGranted(ContextCompat.checkSelfPermission(this, notificationPermission) == PERMISSION_GRANTED)
     }
 }
 

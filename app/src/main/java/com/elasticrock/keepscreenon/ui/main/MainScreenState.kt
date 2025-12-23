@@ -1,5 +1,7 @@
 package com.elasticrock.keepscreenon.ui.main
 
+import com.elasticrock.keepscreenon.data.model.KeepScreenOnState
+
 data class MainScreenState(
     val isRestoreWhenBatteryLowEnabled: Boolean = false,
     val isRestoreWhenScreenOffEnabled: Boolean = false,
@@ -7,9 +9,9 @@ data class MainScreenState(
     val isTileAdded: Boolean = false,
     val displayReviewPrompt: Boolean = false,
     val isNotificationPermissionDeniedPermanently: Boolean = false,
-    val previousScreenTimeout: Int = 0,
     val canWriteSystemSettings: Boolean = false,
     val isIgnoringBatteryOptimizations: Boolean = false,
     val isNotificationPermissionGranted: Boolean = false,
-    val currentScreenTimeout: Int = 0
+    val currentScreenTimeout: Int = 0,
+    val keepScreenOnState: KeepScreenOnState = KeepScreenOnState.Disabled(0,0)
 )

@@ -12,9 +12,9 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import androidx.core.net.toUri
 import com.elasticrock.keepscreenon.R
-import com.elasticrock.keepscreenon.data.repository.PermissionsRepository
+import com.elasticrock.keepscreenon.data.model.KeepScreenOnState
+import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
-import com.elasticrock.keepscreenon.data.repository.ScreenTimeoutRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,8 +30,7 @@ import javax.inject.Inject
 class QSTileService : TileService() {
 
     @Inject lateinit var preferencesRepository: PreferencesRepository
-    @Inject lateinit var screenTimeoutRepository: ScreenTimeoutRepository
-    @Inject lateinit var permissionsRepository: PermissionsRepository
+    @Inject lateinit var keepScreenOnRepository: KeepScreenOnRepository
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
     private var uiUpdateJob: Job = Job()
@@ -50,25 +49,27 @@ class QSTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
         serviceScope.launch {
-            permissionsRepository.updateCanWriteSystemSettings(this@QSTileService)
-            val canWrite = permissionsRepository.canWriteSystemSettings.value
-            screenTimeoutRepository.updateCurrentScreenTimeout(this@QSTileService.contentResolver)
-            val screenTimeout = screenTimeoutRepository.currentScreenTimeout.value
-            val maxTimeout = preferencesRepository.maximumTimeout.first()
+            val keepScreenOnState = keepScreenOnRepository.keepScreenOnState.first()
 
             uiUpdateJob.cancelAndJoin()
             uiUpdateJob = launch(Dispatchers.Main) {
                 qsTile.label = getString(R.string.keep_screen_on)
-                if (!canWrite) {
-                    qsTile.state = Tile.STATE_INACTIVE
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        qsTile.subtitle = getString(R.string.grant_permission)
+                when (keepScreenOnState) {
+                    is KeepScreenOnState.PermissionNotGranted -> {
+                        qsTile.state = Tile.STATE_INACTIVE
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            qsTile.subtitle = getString(R.string.grant_permission)
+                        }
+                        qsTile.updateTile()
                     }
-                    qsTile.updateTile()
-                } else if (screenTimeout == maxTimeout) {
-                    activeState(maxTimeout)
-                } else {
-                    inactiveState(screenTimeout)
+
+                    is KeepScreenOnState.Enabled -> {
+                        activeState(keepScreenOnState.currentTimeout)
+                    }
+
+                    is KeepScreenOnState.Disabled -> {
+                        inactiveState(keepScreenOnState.currentTimeout)
+                    }
                 }
             }
 
@@ -79,37 +80,47 @@ class QSTileService : TileService() {
     override fun onClick() {
         super.onClick()
         serviceScope.launch {
-            permissionsRepository.updateCanWriteSystemSettings(this@QSTileService)
-            val canWrite = permissionsRepository.canWriteSystemSettings.value
-            screenTimeoutRepository.updateCurrentScreenTimeout(this@QSTileService.contentResolver)
-            val screenTimeout = screenTimeoutRepository.currentScreenTimeout.value
-            val maximumTimeout = preferencesRepository.maximumTimeout.first()
-            val previousScreenTimeout = screenTimeoutRepository.previousScreenTimeout.first()
-
-            if (!canWrite) {
-                withContext(Dispatchers.Main.immediate) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        startActivityAndCollapse(PendingIntent.getActivity(applicationContext, 1, Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = ("package:" + applicationContext.packageName).toUri() }, FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT))
-                    } else {
-                        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = ("package:" + applicationContext.packageName).toUri() }
-                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                        intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-                        @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
-                        startActivityAndCollapse(intent)
+            when (val keepScreenOnState = keepScreenOnRepository.keepScreenOnState.first()) {
+                is KeepScreenOnState.PermissionNotGranted -> {
+                    withContext(Dispatchers.Main.immediate) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            startActivityAndCollapse(
+                                PendingIntent.getActivity(
+                                    applicationContext,
+                                    1,
+                                    Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply {
+                                        data = ("package:" + applicationContext.packageName).toUri()
+                                    },
+                                    FLAG_IMMUTABLE + FLAG_UPDATE_CURRENT
+                                )
+                            )
+                        } else {
+                            val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply {
+                                data = ("package:" + applicationContext.packageName).toUri()
+                            }
+                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                            intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
+                            @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
+                            startActivityAndCollapse(intent)
+                        }
                     }
                 }
-            } else if (screenTimeout == maximumTimeout) {
-                uiUpdateJob.cancelAndJoin()
-                uiUpdateJob = launch(Dispatchers.Main) {
-                    inactiveState(previousScreenTimeout)
+
+                is KeepScreenOnState.Enabled -> {
+                    uiUpdateJob.cancelAndJoin()
+                    uiUpdateJob = launch(Dispatchers.Main) {
+                        inactiveState(keepScreenOnState.previousTimeout)
+                    }
+                    keepScreenOnRepository.disableKeepScreenOn(this@QSTileService)
                 }
-                screenTimeoutRepository.disableKeepScreenOn(this@QSTileService)
-            } else {
-                uiUpdateJob.cancelAndJoin()
-                uiUpdateJob = launch(Dispatchers.Main) {
-                    activeState(maximumTimeout)
+
+               is KeepScreenOnState.Disabled -> {
+                    uiUpdateJob.cancelAndJoin()
+                    uiUpdateJob = launch(Dispatchers.Main) {
+                        activeState(keepScreenOnState.maximumTimeout)
+                    }
+                    keepScreenOnRepository.enableKeepScreenOn(this@QSTileService)
                 }
-                screenTimeoutRepository.enableKeepScreenOn(this@QSTileService)
             }
         }
     }

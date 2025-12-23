@@ -99,7 +99,7 @@ fun MainScreen(
     val endPadding = displayCutout.calculateEndPadding(layoutDirection)
 
     LaunchedEffect(state.value.displayReviewPrompt) {
-        @Suppress("KotlinConstantConditions")
+        @Suppress("KotlinConstantConditions", "SimplifyBooleanWithConstants")
         if (BuildConfig.FLAVOR == "play" && state.value.displayReviewPrompt) {
             reviewPrompt(context, activity!!)
         }
@@ -202,7 +202,6 @@ fun MainScreen(
                         val requestPermissionLauncher = rememberLauncherForActivityResult(
                             ActivityResultContracts.RequestPermission()
                         ) { isGranted: Boolean ->
-                            viewModel.onNotificationPermissionGranted(isGranted)
                             if (!isGranted && shouldShowRequestPermissionRationale) {
                                 viewModel.onNotificationDeniedPermanentlyChange(true)
                             }

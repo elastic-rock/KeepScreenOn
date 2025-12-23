@@ -3,6 +3,8 @@ package com.elasticrock.keepscreenon.ui.main
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elasticrock.keepscreenon.data.model.KeepScreenOnState
+import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PermissionsRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
 import com.elasticrock.keepscreenon.data.repository.ScreenTimeoutRepository
@@ -18,7 +20,8 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
     private val permissionsRepository: PermissionsRepository,
-    private val screenTimeoutRepository: ScreenTimeoutRepository
+    screenTimeoutRepository: ScreenTimeoutRepository,
+    private val keepScreenOnRepository: KeepScreenOnRepository
 ): ViewModel() {
     private val _isRestoreWhenBatteryLowEnabled = preferencesRepository.listenForBatteryLow
     private val _isRestoreWhenScreenOffEnabled = preferencesRepository.listenForScreenOff
@@ -27,7 +30,7 @@ class MainScreenViewModel @Inject constructor(
     private val _openCount = preferencesRepository.openCount
     private val _displayReviewPrompt = MutableStateFlow(false)
     private val _isNotificationPermissionDeniedPermanently = permissionsRepository.isNotificationPermissionDeniedPermanently
-    private val _previousScreenTimeout = screenTimeoutRepository.previousScreenTimeout
+    private val _keepScreenOnState = keepScreenOnRepository.keepScreenOnState
     private val _canWriteSystemSettings = permissionsRepository.canWriteSystemSettings
     private val _isIgnoringBatteryOptimizations = permissionsRepository.isIgnoringBatteryOptimizations
     private val _isNotificationPermissionGranted = permissionsRepository.isNotificationPermissionGranted
@@ -53,7 +56,7 @@ class MainScreenViewModel @Inject constructor(
         _isTileAdded,
         _displayReviewPrompt,
         _isNotificationPermissionDeniedPermanently,
-        _previousScreenTimeout,
+        _keepScreenOnState,
         _canWriteSystemSettings,
         _isIgnoringBatteryOptimizations,
         _isNotificationPermissionGranted,
@@ -66,7 +69,7 @@ class MainScreenViewModel @Inject constructor(
         val isTileAdded = flowArray[4] as Boolean
         val displayReviewPrompt = flowArray[5] as Boolean
         val isNotificationPermissionDeniedPermanently = flowArray[6] as Boolean
-        val previousScreenTimeout = flowArray[7] as Int
+        val keepScreenOnState = flowArray[7] as KeepScreenOnState
         val canWriteSystemSettings = flowArray[8] as Boolean
         val isIgnoringBatteryOptimizations = flowArray[9] as Boolean
         val isNotificationPermissionGranted = flowArray[10] as Boolean
@@ -78,7 +81,7 @@ class MainScreenViewModel @Inject constructor(
             isTileAdded = isTileAdded,
             displayReviewPrompt = displayReviewPrompt,
             isNotificationPermissionDeniedPermanently = isNotificationPermissionDeniedPermanently,
-            previousScreenTimeout = previousScreenTimeout,
+            keepScreenOnState = keepScreenOnState,
             canWriteSystemSettings = canWriteSystemSettings,
             isIgnoringBatteryOptimizations = isIgnoringBatteryOptimizations,
             isNotificationPermissionGranted = isNotificationPermissionGranted,
@@ -110,19 +113,15 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun onNotificationPermissionGranted(value: Boolean) {
-        permissionsRepository.updateIsNotificationPermissionGranted(value)
-    }
-
     fun onKeepScreenOnDisabled(context: Context) {
         viewModelScope.launch {
-            screenTimeoutRepository.disableKeepScreenOn(context)
+            keepScreenOnRepository.disableKeepScreenOn(context)
         }
     }
 
     fun onKeepScreenOnEnabled(context: Context) {
         viewModelScope.launch {
-            screenTimeoutRepository.enableKeepScreenOn(context)
+            keepScreenOnRepository.enableKeepScreenOn(context)
         }
     }
 }

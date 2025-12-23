@@ -1,35 +1,41 @@
 package com.elasticrock.keepscreenon.data.repository
 
 import android.content.Context
+import android.content.Context.POWER_SERVICE
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.PowerManager
 import android.provider.Settings
+import androidx.core.content.ContextCompat
 import com.elasticrock.keepscreenon.data.source.PreferencesDataStoreSource
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.elasticrock.keepscreenon.util.notificationPermission
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PermissionsRepository @Inject constructor(private val preferencesDataStoreSource: PreferencesDataStoreSource) {
-    private val _canWriteSystemSettings = MutableStateFlow(false)
-    val canWriteSystemSettings: StateFlow<Boolean> = _canWriteSystemSettings
-
-    fun updateCanWriteSystemSettings(context: Context) {
-        _canWriteSystemSettings.value = Settings.System.canWrite(context)
+class PermissionsRepository @Inject constructor(
+    private val preferencesDataStoreSource: PreferencesDataStoreSource,
+    @ApplicationContext context: Context
+) {
+    val canWriteSystemSettings = flow {
+        while (true) {
+            emit(Settings.System.canWrite(context))
+        }
     }
 
-    private val _isIgnoringBatteryOptimizations = MutableStateFlow(false)
-    val isIgnoringBatteryOptimizations: StateFlow<Boolean> = _isIgnoringBatteryOptimizations
-
-    fun updateIsIgnoringBatteryOptimizations(value: Boolean) {
-        _isIgnoringBatteryOptimizations.value = value
+    val isIgnoringBatteryOptimizations = flow {
+        val pm = context.getSystemService(POWER_SERVICE) as PowerManager
+        while (true) {
+            emit(pm.isIgnoringBatteryOptimizations(context.packageName))
+        }
     }
 
-    private val _isNotificationPermissionGranted = MutableStateFlow(false)
-    val isNotificationPermissionGranted: StateFlow<Boolean> = _isNotificationPermissionGranted
-
-    fun updateIsNotificationPermissionGranted(value: Boolean) {
-        _isNotificationPermissionGranted.value = value
+    val isNotificationPermissionGranted = flow {
+        while (true) {
+            emit(ContextCompat.checkSelfPermission(context, notificationPermission) == PERMISSION_GRANTED)
+        }
     }
 
     suspend fun saveIsNotificationPermissionDeniedPermanently(value: Boolean) {
