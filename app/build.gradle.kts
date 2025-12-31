@@ -18,8 +18,8 @@ android {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
         targetSdk = 36
-        versionCode = 58
-        versionName = "1.28.0-alpha.1"
+        versionCode = 59
+        versionName = "1.28.0-alpha.2"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -103,6 +103,7 @@ dependencies {
     implementation(libs.aboutlibs)
     implementation(libs.taskerplugin)
     implementation(libs.androidx.glance.material3)
+    implementation(libs.material3)
     "playImplementation"(libs.play.review)
     "playImplementation"(libs.play.review.ktx)
 }

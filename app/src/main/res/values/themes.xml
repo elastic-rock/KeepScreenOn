@@ -5,4 +5,6 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@android:color/background_light</item>
     </style>
+
+    <style name="WidgetTheme" parent="Theme.Material3.DynamicColors.DayNight"/>
 </resources>

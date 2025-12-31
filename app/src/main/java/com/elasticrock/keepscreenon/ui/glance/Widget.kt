@@ -57,12 +57,12 @@ fun WidgetContent(keepScreenOnRepository: KeepScreenOnRepository) {
                     }
                     is KeepScreenOnState.Disabled -> {
                         coroutineScope.launch {
-                            keepScreenOnRepository.enableKeepScreenOn(context)
+                            keepScreenOnRepository.enableKeepScreenOn()
                         }
                     }
                     is KeepScreenOnState.Enabled -> {
                         coroutineScope.launch {
-                            keepScreenOnRepository.disableKeepScreenOn(context)
+                            keepScreenOnRepository.disableKeepScreenOn()
                         }
                     }
                 }
@@ -83,7 +83,7 @@ fun WidgetContent(keepScreenOnRepository: KeepScreenOnRepository) {
                 is KeepScreenOnState.Enabled -> ImageProvider(R.drawable.outline_lock_clock_crossed)
                 KeepScreenOnState.PermissionNotGranted -> ImageProvider(R.drawable.outline_error_outline_24)
             },
-            contentDescription = "Keep Screen On",
+            contentDescription = null,
             modifier = GlanceModifier.size(40.dp),
             colorFilter = ColorFilter.tint(
                 when (keepScreenOnState.value) {

@@ -13,5 +13,6 @@ data class MainScreenState(
     val isIgnoringBatteryOptimizations: Boolean = false,
     val isNotificationPermissionGranted: Boolean = false,
     val currentScreenTimeout: Int = 0,
-    val keepScreenOnState: KeepScreenOnState = KeepScreenOnState.Disabled(0,0)
+    val keepScreenOnState: KeepScreenOnState = KeepScreenOnState.Disabled(0,0),
+    val addTileDialogOpen: Boolean = false
 )

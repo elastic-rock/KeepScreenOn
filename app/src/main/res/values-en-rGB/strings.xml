@@ -60,4 +60,10 @@
     <string name="donate">Donate</string>
     <string name="credit_card">Credit card</string>
     <string name="through_github_sponsors">Through GitHub Sponsors</string>
+    <string name="widget">Widget</string>
+    <string name="widget_description">Enable and disable Keep Screen On</string>
+    <string name="add_widget_to_home_screen">Add widget to home screen</string>
+    <string name="enable">Enable</string>
+    <string name="enables_keep_screen_on">Enables Keep Screen On</string>
+    <string name="disables_keep_screen_on">Disables Keep Screen On</string>
 </resources>

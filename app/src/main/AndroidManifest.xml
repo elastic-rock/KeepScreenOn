@@ -28,25 +28,25 @@
             </intent-filter>
         </activity>
 
-<!--        <activity-->
-<!--            android:name=".ActivityConfigEnableKeepScreenOn"-->
-<!--            android:exported="true"-->
-<!--            android:icon="@mipmap/ic_launcher"-->
-<!--            android:label="Enable Keep Screen On">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+        <activity
+            android:name=".tasker.ActivityConfigEnableKeepScreenOn"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/enable">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
 
-<!--        <activity-->
-<!--            android:name=".ActivityConfigDisableKeepScreenOn"-->
-<!--            android:exported="true"-->
-<!--            android:icon="@mipmap/ic_launcher"-->
-<!--            android:label="Disable Keep Screen On">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+        <activity
+            android:name=".tasker.ActivityConfigDisableKeepScreenOn"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/disable">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".service.QSTileService"
@@ -54,9 +54,8 @@
             android:icon="@drawable/outline_lock_clock_qs"
             android:label="@string/keep_screen_on"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE" >
-            <meta-data
-                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
-                android:value="true" />
+            <meta-data android:name="android.service.quicksettings.TOGGLEABLE_TILE" android:value="true" />
+            <meta-data android:name="android.service.quicksettings.TILE_CATEGORY" android:value="android.service.quicksettings.CATEGORY_DISPLAY" />
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -71,7 +70,9 @@
                 android:value="Restore screen timeout when battery is low and/or screen turns off" />
         </service>
 
-        <receiver android:name=".ui.glance.WidgetReceiver"
+        <receiver
+            android:name=".ui.glance.WidgetReceiver"
+            android:label="@string/keep_screen_on"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -80,7 +81,5 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
-
     </application>
-
 </manifest>

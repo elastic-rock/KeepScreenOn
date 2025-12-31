@@ -140,7 +140,7 @@ fun MainScreen(
                         Icon(imageVector = Icons.Filled.NoEncryption, contentDescription = null)
                     },
                     onClick = {
-                        viewModel.onKeepScreenOnDisabled(context)
+                        viewModel.onKeepScreenOnDisabled()
                     }
                 )
             } else {
@@ -152,7 +152,7 @@ fun MainScreen(
                         Icon(imageVector = Icons.Filled.Lock, contentDescription = null)
                     },
                     onClick = {
-                        viewModel.onKeepScreenOnEnabled(context)
+                        viewModel.onKeepScreenOnEnabled()
                     }
                 )
             }
@@ -258,31 +258,6 @@ fun MainScreen(
                 }
 
                 item {
-                    var openDialog by remember { mutableStateOf(false) }
-
-                    if (openDialog) {
-                        AlertDialog(
-                            title = {
-                                Text(stringResource(R.string.add_qs_tile))
-                            },
-                            text = {
-                                Text(stringResource(R.string.add_qs_tile_instructions))
-                            },
-                            onDismissRequest = {
-                                openDialog = false
-                            },
-                            confirmButton = {
-                                TextButton(
-                                    onClick = {
-                                        openDialog = false
-                                    }
-                                ) {
-                                    Text(stringResource(R.string.ok))
-                                }
-                            }
-                        )
-                    }
-
                     if (state.value.isTileAdded) {
                         PreferenceItem(
                             title = stringResource(id = R.string.qs_tile),
@@ -291,6 +266,7 @@ fun MainScreen(
                             icon = Icons.Filled.AutoAwesomeMosaic
                         )
                     } else {
+                        val tileLabelStringResource = stringResource(R.string.keep_screen_on)
                         PreferenceItem(
                             title = stringResource(id = R.string.qs_tile),
                             description = stringResource(id = R.string.add_qs_tile),
@@ -301,24 +277,28 @@ fun MainScreen(
                                     val statusBarService = context.getSystemService(StatusBarManager::class.java)
                                     statusBarService.requestAddTileService(
                                         ComponentName(context, QSTileService::class.java.name),
-                                        context.getString(R.string.keep_screen_on),
+                                        tileLabelStringResource,
                                         Icon.createWithResource(context, R.drawable.outline_lock_clock_qs),
                                         {}) {}
                                 } else {
-                                    openDialog = true
+                                    viewModel.onAddTileDialogOpen()
                                 }
                             }
                         )
                     }
                 }
 
-                item {
-                    PreferenceItem(
-                        title = stringResource(id = R.string.widget),
-                        description = "TODO",
-                        enabled = false,
-                        icon = Icons.Filled.DashboardCustomize
-                    )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    item {
+                        PreferenceItem(
+                            title = stringResource(id = R.string.widget),
+                            description = stringResource(R.string.add_widget_to_home_screen),
+                            icon = Icons.Filled.DashboardCustomize,
+                            onClick = {
+                                viewModel.onAddWidget()
+                            }
+                        )
+                    }
                 }
 
                 item {
@@ -358,6 +338,8 @@ fun MainScreen(
                         300000 to pluralStringResource(R.plurals.minute, 5, 5),
                         600000 to pluralStringResource(R.plurals.minute, 10, 10),
                         1800000 to pluralStringResource(R.plurals.minute, 30, 30),
+                        3600000 to pluralStringResource(R.plurals.hour, 1, 1),
+                        7200000 to pluralStringResource(R.plurals.hour, 2, 2),
                         Int.MAX_VALUE to stringResource(R.string.always_on)
                     )
 
@@ -435,6 +417,29 @@ fun MainScreen(
                 item {
                     Spacer(modifier = Modifier.size(80.dp))
                 }
+            }
+
+            if (state.value.addTileDialogOpen) {
+                AlertDialog(
+                    title = {
+                        Text(stringResource(R.string.add_qs_tile))
+                    },
+                    text = {
+                        Text(stringResource(R.string.add_qs_tile_instructions))
+                    },
+                    onDismissRequest = {
+                        viewModel.onAddTileDialogClose()
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                viewModel.onAddTileDialogClose()
+                            }
+                        ) {
+                            Text(stringResource(R.string.ok))
+                        }
+                    }
+                )
             }
 
             val density = LocalDensity.current

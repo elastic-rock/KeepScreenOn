@@ -111,7 +111,7 @@ class QSTileService : TileService() {
                     uiUpdateJob = launch(Dispatchers.Main) {
                         inactiveState(keepScreenOnState.previousTimeout)
                     }
-                    keepScreenOnRepository.disableKeepScreenOn(this@QSTileService)
+                    keepScreenOnRepository.disableKeepScreenOn()
                 }
 
                is KeepScreenOnState.Disabled -> {
@@ -119,7 +119,7 @@ class QSTileService : TileService() {
                     uiUpdateJob = launch(Dispatchers.Main) {
                         activeState(keepScreenOnState.maximumTimeout)
                     }
-                    keepScreenOnRepository.enableKeepScreenOn(this@QSTileService)
+                    keepScreenOnRepository.enableKeepScreenOn()
                 }
             }
         }

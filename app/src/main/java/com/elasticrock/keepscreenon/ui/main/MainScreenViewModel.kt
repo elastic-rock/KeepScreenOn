@@ -1,6 +1,9 @@
 package com.elasticrock.keepscreenon.ui.main
 
 import android.content.Context
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elasticrock.keepscreenon.data.model.KeepScreenOnState
@@ -8,7 +11,10 @@ import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PermissionsRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
 import com.elasticrock.keepscreenon.data.repository.ScreenTimeoutRepository
+import com.elasticrock.keepscreenon.ui.glance.Widget
+import com.elasticrock.keepscreenon.ui.glance.WidgetReceiver
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -21,7 +27,8 @@ class MainScreenViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
     private val permissionsRepository: PermissionsRepository,
     screenTimeoutRepository: ScreenTimeoutRepository,
-    private val keepScreenOnRepository: KeepScreenOnRepository
+    private val keepScreenOnRepository: KeepScreenOnRepository,
+    @ApplicationContext private val context: Context
 ): ViewModel() {
     private val _isRestoreWhenBatteryLowEnabled = preferencesRepository.listenForBatteryLow
     private val _isRestoreWhenScreenOffEnabled = preferencesRepository.listenForScreenOff
@@ -35,6 +42,7 @@ class MainScreenViewModel @Inject constructor(
     private val _isIgnoringBatteryOptimizations = permissionsRepository.isIgnoringBatteryOptimizations
     private val _isNotificationPermissionGranted = permissionsRepository.isNotificationPermissionGranted
     private val _currentScreenTimeout = screenTimeoutRepository.currentScreenTimeout
+    private val _addTileDialogOpen = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
@@ -60,7 +68,8 @@ class MainScreenViewModel @Inject constructor(
         _canWriteSystemSettings,
         _isIgnoringBatteryOptimizations,
         _isNotificationPermissionGranted,
-        _currentScreenTimeout
+        _currentScreenTimeout,
+        _addTileDialogOpen
     ) { flowArray ->
         val state = flowArray[0] as MainScreenState
         val isRestoreWhenBatteryLowEnabled = flowArray[1] as Boolean
@@ -74,6 +83,7 @@ class MainScreenViewModel @Inject constructor(
         val isIgnoringBatteryOptimizations = flowArray[9] as Boolean
         val isNotificationPermissionGranted = flowArray[10] as Boolean
         val currentScreenTimeout = flowArray[11] as Int
+        val addTileDialogOpen = flowArray[12] as Boolean
         state.copy(
             isRestoreWhenBatteryLowEnabled = isRestoreWhenBatteryLowEnabled,
             isRestoreWhenScreenOffEnabled = isRestoreWhenScreenOffEnabled,
@@ -85,7 +95,8 @@ class MainScreenViewModel @Inject constructor(
             canWriteSystemSettings = canWriteSystemSettings,
             isIgnoringBatteryOptimizations = isIgnoringBatteryOptimizations,
             isNotificationPermissionGranted = isNotificationPermissionGranted,
-            currentScreenTimeout = currentScreenTimeout
+            currentScreenTimeout = currentScreenTimeout,
+            addTileDialogOpen = addTileDialogOpen
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainScreenState())
 
@@ -113,15 +124,33 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun onKeepScreenOnDisabled(context: Context) {
+    fun onKeepScreenOnDisabled() {
         viewModelScope.launch {
-            keepScreenOnRepository.disableKeepScreenOn(context)
+            keepScreenOnRepository.disableKeepScreenOn()
         }
     }
 
-    fun onKeepScreenOnEnabled(context: Context) {
+    fun onKeepScreenOnEnabled() {
         viewModelScope.launch {
-            keepScreenOnRepository.enableKeepScreenOn(context)
+            keepScreenOnRepository.enableKeepScreenOn()
+        }
+    }
+
+    fun onAddTileDialogOpen() {
+        _addTileDialogOpen.value = true
+    }
+
+    fun onAddTileDialogClose() {
+        _addTileDialogOpen.value = false
+    }
+
+    fun onAddWidget() {
+        viewModelScope.launch {
+            GlanceAppWidgetManager(context).requestPinGlanceAppWidget(
+                receiver = WidgetReceiver::class.java,
+                preview = Widget(),
+                previewState = DpSize(245.dp, 115.dp)
+            )
         }
     }
 }

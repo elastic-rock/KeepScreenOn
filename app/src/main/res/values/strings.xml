@@ -66,7 +66,10 @@
     <string name="support_the_app">Support the app</string>
     <string name="support_the_app_description">Help keep Keep Screen On free and open source for everyone!</string>
     <string name="disable">Disable</string>
-    <string name="keep_screen_on_already_enabled">Keep Screen On already enabled</string>
-    <string name="keep_screen_on_already_disabled">Keep Screen On already disabled</string>
     <string name="widget">Widget</string>
+    <string name="widget_description">Enable and disable Keep Screen On</string>
+    <string name="add_widget_to_home_screen">Add widget to home screen</string>
+    <string name="enable">Enable</string>
+    <string name="enables_keep_screen_on">Enables Keep Screen On</string>
+    <string name="disables_keep_screen_on">Disables Keep Screen On</string>
 </resources>

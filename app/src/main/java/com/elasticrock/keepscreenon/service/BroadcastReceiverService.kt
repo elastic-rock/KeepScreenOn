@@ -126,7 +126,7 @@ class BroadcastReceiverService : LifecycleService() {
 
     private fun restoreScreenTimeout() {
         runBlocking {
-            keepScreenOnRepository.disableKeepScreenOn(this@BroadcastReceiverService)
+            keepScreenOnRepository.disableKeepScreenOn()
         }
     }
 

@@ -65,4 +65,10 @@
     <string name="donate">Přispět</string>
     <string name="credit_card">Platební karta</string>
     <string name="through_github_sponsors">Prostřednictvím GitHub Sponsors</string>
+    <string name="widget">Widget</string>
+    <string name="widget_description">Zapnout a vypnout funkci nevypínat obrazovku</string>
+    <string name="add_widget_to_home_screen">Přidat widget na domovskou obrazovku</string>
+    <string name="enable">Zapnout</string>
+    <string name="enables_keep_screen_on">Zapína funkci nevypínat obrazovku</string>
+    <string name="disables_keep_screen_on">Vypíná funkci nevypínat obrazovku</string>
 </resources>

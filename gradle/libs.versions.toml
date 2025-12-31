@@ -9,6 +9,7 @@ glance = "1.1.1"
 kotlin = "2.2.21"
 lifecycleRuntimeKtx = "2.10.0"
 material3 = "1.4.0"
+androidMaterial3 = "1.13.0"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.6"
 playReview = "2.0.2"
@@ -44,6 +45,7 @@ play-review = { module = "com.google.android.play:review", version.ref = "playRe
 play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "playReview" }
 taskerplugin = { module = "com.joaomgcd:taskerpluginlibrary", version.ref = "taskerplugin" }
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
+material3 = { module = "com.google.android.material:material", version.ref = "androidMaterial3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
