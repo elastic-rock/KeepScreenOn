@@ -1,0 +1,4 @@
+ - New home screen widget
+ - Major behind the scenes code restructuring
+ - Better QS tile performance
+ - Two additional timeout options to choose from
