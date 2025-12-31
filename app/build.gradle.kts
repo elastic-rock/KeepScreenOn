@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.aboutlibs)
+    alias(libs.plugins.aboutlibs.android)
 }
 
 android {
@@ -17,8 +18,8 @@ android {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
         targetSdk = 36
-        versionCode = 56
-        versionName = "1.27.0"
+        versionCode = 59
+        versionName = "1.28.0-alpha.2"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -50,7 +51,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.7"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -91,9 +92,9 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
+    implementation(libs.androidx.glance.appwidget)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.dagger.hilt)
@@ -101,6 +102,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.aboutlibs)
     implementation(libs.taskerplugin)
+    implementation(libs.androidx.glance.material3)
+    implementation(libs.material3)
     "playImplementation"(libs.play.review)
     "playImplementation"(libs.play.review.ktx)
 }

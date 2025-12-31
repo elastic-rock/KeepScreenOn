@@ -1,11 +1,7 @@
-package com.elasticrock.keepscreenon
+package com.elasticrock.keepscreenon.ui
 
-import android.content.Context
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,27 +15,25 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.elasticrock.keepscreenon.data.repository.PermissionsRepository
+import com.elasticrock.keepscreenon.data.repository.ScreenTimeoutRepository
 import com.elasticrock.keepscreenon.ui.donate.DonateScreen
 import com.elasticrock.keepscreenon.ui.info.InfoScreen
 import com.elasticrock.keepscreenon.ui.licenses.LicensesScreen
 import com.elasticrock.keepscreenon.ui.main.MainScreen
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
-import com.elasticrock.keepscreenon.util.CommonUtils
-import com.elasticrock.keepscreenon.util.notificationPermission
 import dagger.hilt.android.AndroidEntryPoint
-
-val canWriteSettingsState = MutableLiveData(false)
-val isIgnoringBatteryOptimizationState = MutableLiveData(false)
-val screenTimeoutState = MutableLiveData(0)
-val isNotificationPermissionGranted = MutableLiveData(false)
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity: ComponentActivity() {
+
+    @Inject lateinit var permissionsRepository: PermissionsRepository
+    @Inject lateinit var screenTimeoutRepository: ScreenTimeoutRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,15 +45,6 @@ class MainActivity : ComponentActivity() {
                 App()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
-        canWriteSettingsState.value = Settings.System.canWrite(applicationContext)
-        isIgnoringBatteryOptimizationState.value = pm.isIgnoringBatteryOptimizations(applicationContext.packageName)
-        screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
-        isNotificationPermissionGranted.value = ContextCompat.checkSelfPermission(this, notificationPermission) == PERMISSION_GRANTED
     }
 }
 

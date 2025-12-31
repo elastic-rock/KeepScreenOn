@@ -61,4 +61,10 @@
     <string name="donate">Faire un don</string>
     <string name="credit_card">Carte de paiement</string>
     <string name="through_github_sponsors">Via GitHub Sponsors</string>
+    <string name="widget">Widget</string>
+    <string name="widget_description">Activer et désactiver « Maintenir l\'écran allumé »</string>
+    <string name="add_widget_to_home_screen">Ajouter le widget à l\'écran d\'accueil</string>
+    <string name="enable">Activer</string>
+    <string name="enables_keep_screen_on">Active le maintien de l\'écran allumé</string>
+    <string name="disables_keep_screen_on">Désactive le maintien de l\'écran allumé</string>
 </resources>

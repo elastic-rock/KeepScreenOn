@@ -1,4 +1,4 @@
-package com.elasticrock.keepscreenon
+package com.elasticrock.keepscreenon.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -15,16 +15,20 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
-import com.elasticrock.keepscreenon.data.preferences.PreferencesRepository
-import com.elasticrock.keepscreenon.di.dataStore
-import com.elasticrock.keepscreenon.util.CommonUtils
+import com.elasticrock.keepscreenon.R
+import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
+import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import com.elasticrock.keepscreenon.util.stopMonitorAcion
-import kotlinx.coroutines.flow.first
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class BroadcastReceiverService : LifecycleService() {
+    @Inject lateinit var preferencesRepository: PreferencesRepository
+    @Inject lateinit var keepScreenOnRepository: KeepScreenOnRepository
 
     private val batteryLowReceiver = BatteryLowReceiver()
     private val screenOffReceiver = ScreenOffReceiver()
@@ -42,7 +46,6 @@ class BroadcastReceiverService : LifecycleService() {
         }
         if (intent?.action == stopMonitorAcion) {
             restoreScreenTimeout()
-            stopForegroundService()
         }
 
         val importance = NotificationManager.IMPORTANCE_LOW
@@ -59,7 +62,8 @@ class BroadcastReceiverService : LifecycleService() {
         val stopPendingIntent = Intent(this, BroadcastReceiverService::class.java)
             .apply { action = stopMonitorAcion }
             .let { PendingIntent.getService(this, 1, it, FLAG_IMMUTABLE) }
-        val action = Notification.Action.Builder(Icon.createWithResource(this, R.drawable.outline_close_24), getString(R.string.stop), stopPendingIntent)
+        val action = Notification.Action.Builder(Icon.createWithResource(this, R.drawable.outline_close_24), getString(
+            R.string.stop), stopPendingIntent)
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -98,7 +102,6 @@ class BroadcastReceiverService : LifecycleService() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_BATTERY_LOW) {
                 restoreScreenTimeout()
-                stopForegroundService()
             }
         }
     }
@@ -107,7 +110,6 @@ class BroadcastReceiverService : LifecycleService() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_SCREEN_OFF) {
                 restoreScreenTimeout()
-                stopForegroundService()
             }
         }
     }
@@ -124,15 +126,8 @@ class BroadcastReceiverService : LifecycleService() {
 
     private fun restoreScreenTimeout() {
         runBlocking {
-            val previousScreenTimeout = PreferencesRepository(dataStore).previousScreenTimeout.first()
-            CommonUtils().setScreenTimeout(contentResolver, previousScreenTimeout)
-            screenTimeoutState.value = CommonUtils().readScreenTimeout(contentResolver)
+            keepScreenOnRepository.disableKeepScreenOn()
         }
-    }
-
-    private fun stopForegroundService() {
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        stopSelf()
     }
 
     override fun onDestroy() {

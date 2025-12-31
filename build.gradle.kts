@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dagger.hilt) apply false
     alias(libs.plugins.aboutlibs) apply false
+    alias(libs.plugins.aboutlibs.android) apply false
 }

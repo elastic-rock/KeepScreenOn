@@ -1,9 +1,20 @@
 package com.elasticrock.keepscreenon.ui.main
 
+import android.content.Context
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elasticrock.keepscreenon.data.preferences.PreferencesRepository
+import com.elasticrock.keepscreenon.data.model.KeepScreenOnState
+import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
+import com.elasticrock.keepscreenon.data.repository.PermissionsRepository
+import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
+import com.elasticrock.keepscreenon.data.repository.ScreenTimeoutRepository
+import com.elasticrock.keepscreenon.ui.glance.Widget
+import com.elasticrock.keepscreenon.ui.glance.WidgetReceiver
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -11,19 +22,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class MainScreenState(
-    val isRestoreWhenBatteryLowEnabled: Boolean = false,
-    val isRestoreWhenScreenOffEnabled: Boolean = false,
-    val maxTimeout: Int = 600000,
-    val isTileAdded: Boolean = false,
-    val displayReviewPrompt: Boolean = false,
-    val isNotificationPermissionDeniedPermanently: Boolean = false,
-    val previousScreenTimeout: Int = 0
-)
-
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val permissionsRepository: PermissionsRepository,
+    screenTimeoutRepository: ScreenTimeoutRepository,
+    private val keepScreenOnRepository: KeepScreenOnRepository,
+    @ApplicationContext private val context: Context
 ): ViewModel() {
     private val _isRestoreWhenBatteryLowEnabled = preferencesRepository.listenForBatteryLow
     private val _isRestoreWhenScreenOffEnabled = preferencesRepository.listenForScreenOff
@@ -31,8 +36,13 @@ class MainScreenViewModel @Inject constructor(
     private val _isTileAdded = preferencesRepository.isTileAdded
     private val _openCount = preferencesRepository.openCount
     private val _displayReviewPrompt = MutableStateFlow(false)
-    private val _isNotificationPermissionDeniedPermanently = preferencesRepository.isNotificationPermissionDeniedPermanently
-    private val _previousScreenTimeout = preferencesRepository.previousScreenTimeout
+    private val _isNotificationPermissionDeniedPermanently = permissionsRepository.isNotificationPermissionDeniedPermanently
+    private val _keepScreenOnState = keepScreenOnRepository.keepScreenOnState
+    private val _canWriteSystemSettings = permissionsRepository.canWriteSystemSettings
+    private val _isIgnoringBatteryOptimizations = permissionsRepository.isIgnoringBatteryOptimizations
+    private val _isNotificationPermissionGranted = permissionsRepository.isNotificationPermissionGranted
+    private val _currentScreenTimeout = screenTimeoutRepository.currentScreenTimeout
+    private val _addTileDialogOpen = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
@@ -46,7 +56,21 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private val _state = MutableStateFlow(MainScreenState())
-    val state = combine(_state, _isRestoreWhenBatteryLowEnabled, _isRestoreWhenScreenOffEnabled, _maxTimeout, _isTileAdded, _displayReviewPrompt, _isNotificationPermissionDeniedPermanently, _previousScreenTimeout) { flowArray ->
+    val state = combine(
+        _state,
+        _isRestoreWhenBatteryLowEnabled,
+        _isRestoreWhenScreenOffEnabled,
+        _maxTimeout,
+        _isTileAdded,
+        _displayReviewPrompt,
+        _isNotificationPermissionDeniedPermanently,
+        _keepScreenOnState,
+        _canWriteSystemSettings,
+        _isIgnoringBatteryOptimizations,
+        _isNotificationPermissionGranted,
+        _currentScreenTimeout,
+        _addTileDialogOpen
+    ) { flowArray ->
         val state = flowArray[0] as MainScreenState
         val isRestoreWhenBatteryLowEnabled = flowArray[1] as Boolean
         val isRestoreWhenScreenOffEnabled = flowArray[2] as Boolean
@@ -54,7 +78,12 @@ class MainScreenViewModel @Inject constructor(
         val isTileAdded = flowArray[4] as Boolean
         val displayReviewPrompt = flowArray[5] as Boolean
         val isNotificationPermissionDeniedPermanently = flowArray[6] as Boolean
-        val previousScreenTimeout = flowArray[7] as Int
+        val keepScreenOnState = flowArray[7] as KeepScreenOnState
+        val canWriteSystemSettings = flowArray[8] as Boolean
+        val isIgnoringBatteryOptimizations = flowArray[9] as Boolean
+        val isNotificationPermissionGranted = flowArray[10] as Boolean
+        val currentScreenTimeout = flowArray[11] as Int
+        val addTileDialogOpen = flowArray[12] as Boolean
         state.copy(
             isRestoreWhenBatteryLowEnabled = isRestoreWhenBatteryLowEnabled,
             isRestoreWhenScreenOffEnabled = isRestoreWhenScreenOffEnabled,
@@ -62,7 +91,12 @@ class MainScreenViewModel @Inject constructor(
             isTileAdded = isTileAdded,
             displayReviewPrompt = displayReviewPrompt,
             isNotificationPermissionDeniedPermanently = isNotificationPermissionDeniedPermanently,
-            previousScreenTimeout = previousScreenTimeout
+            keepScreenOnState = keepScreenOnState,
+            canWriteSystemSettings = canWriteSystemSettings,
+            isIgnoringBatteryOptimizations = isIgnoringBatteryOptimizations,
+            isNotificationPermissionGranted = isNotificationPermissionGranted,
+            currentScreenTimeout = currentScreenTimeout,
+            addTileDialogOpen = addTileDialogOpen
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainScreenState())
 
@@ -86,13 +120,37 @@ class MainScreenViewModel @Inject constructor(
 
     fun onNotificationDeniedPermanentlyChange(value: Boolean) {
         viewModelScope.launch {
-            preferencesRepository.saveIsNotificationPermissionDeniedPermanently(value)
+            permissionsRepository.saveIsNotificationPermissionDeniedPermanently(value)
         }
     }
 
-    fun onPreviousScreenTimeoutChange(value: Int) {
+    fun onKeepScreenOnDisabled() {
         viewModelScope.launch {
-            preferencesRepository.savePreviousScreenTimeout(value)
+            keepScreenOnRepository.disableKeepScreenOn()
+        }
+    }
+
+    fun onKeepScreenOnEnabled() {
+        viewModelScope.launch {
+            keepScreenOnRepository.enableKeepScreenOn()
+        }
+    }
+
+    fun onAddTileDialogOpen() {
+        _addTileDialogOpen.value = true
+    }
+
+    fun onAddTileDialogClose() {
+        _addTileDialogOpen.value = false
+    }
+
+    fun onAddWidget() {
+        viewModelScope.launch {
+            GlanceAppWidgetManager(context).requestPinGlanceAppWidget(
+                receiver = WidgetReceiver::class.java,
+                preview = Widget(),
+                previewState = DpSize(245.dp, 115.dp)
+            )
         }
     }
 }
