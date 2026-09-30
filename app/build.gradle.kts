@@ -1,8 +1,7 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.android.build.api.dsl.ApplicationExtension
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger.hilt)
@@ -10,63 +9,45 @@ plugins {
     alias(libs.plugins.aboutlibs.android)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
     namespace = "com.elasticrock.keepscreenon"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 60
         versionName = "1.28.0"
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
+
     androidResources {
         localeFilters += listOf("cs", "en-rUS", "en-rGB","el-rGR", "fr-rFR", "zh-rCN", "ar", "ja", "tr")
     }
+
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-            )
-            ndk {
-                debugSymbolLevel = "FULL"
+            optimization {
+                enable = true
             }
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin.compilerOptions.jvmTarget = JvmTarget.JVM_11
+
     buildFeatures {
         compose = true
-        buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    aboutLibraries {
-        export {
-            excludeFields.addAll("generated")
-        }
-    }
-    dependenciesInfo {
-        includeInApk = false
-        includeInBundle = false
-    }
+
     flavorDimensions += listOf("target")
     productFlavors {
         create("play") {
@@ -80,7 +61,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

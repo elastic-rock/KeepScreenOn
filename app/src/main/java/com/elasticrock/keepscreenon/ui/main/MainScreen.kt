@@ -72,7 +72,6 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.elasticrock.keepscreenon.BuildConfig
 import com.elasticrock.keepscreenon.service.QSTileService
 import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.ui.components.PreferenceItem
@@ -99,8 +98,7 @@ fun MainScreen(
     val endPadding = displayCutout.calculateEndPadding(layoutDirection)
 
     LaunchedEffect(state.value.displayReviewPrompt) {
-        @Suppress("KotlinConstantConditions", "SimplifyBooleanWithConstants")
-        if (BuildConfig.FLAVOR == "play" && state.value.displayReviewPrompt) {
+        if (context.applicationContext.packageName == "eu.davidweis.keepscreenon") {
             reviewPrompt(context, activity!!)
         }
     }

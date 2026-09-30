@@ -1,23 +1,23 @@
 [versions]
-aboutlibs = "13.2.1"
-activityCompose = "1.12.2"
-agp = "8.13.2"
-composeBom = "2025.12.01"
-coreKtx = "1.17.0"
-datastorePreferences = "1.2.0"
-glance = "1.1.1"
-kotlin = "2.2.21"
-lifecycleRuntimeKtx = "2.10.0"
+aboutlibs = "15.2.0"
+activityCompose = "1.13.0"
+agp = "9.4.1"
+composeBom = "2026.09.00"
+coreKtx = "1.19.1"
+datastorePreferences = "1.2.1"
+glance = "1.2.0"
+kotlin = "2.4.20"
+lifecycleRuntimeKtx = "2.11.0"
 material3 = "1.4.0"
-androidMaterial3 = "1.13.0"
+androidMaterial3 = "1.14.0"
 materialIconsExtended = "1.7.8"
-navigationCompose = "2.9.6"
+navigationCompose = "2.10.2"
 playReview = "2.0.2"
-uiTestManifest = "1.10.0"
-hilt = "2.57.2"
-androidxHilt = "1.3.0"
-ksp = "2.3.4"
-lifecycleRuntimeComposeAndroid = "2.10.0"
+uiTestManifest = "1.12.1"
+hilt = "2.60.1"
+androidxHilt = "1.4.0"
+ksp = "2.3.12"
+lifecycleRuntimeComposeAndroid = "2.11.0"
 taskerplugin = "0.4.10"
 
 [libraries]
@@ -49,7 +49,6 @@ material3 = { module = "com.google.android.material:material", version.ref = "an
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
