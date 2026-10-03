@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_BATTERY_LOW
 import android.content.Intent.ACTION_SCREEN_OFF
+import android.content.Intent.ACTION_SHUTDOWN
 import android.content.IntentFilter
 import android.graphics.drawable.Icon
 import android.os.Build
@@ -20,6 +21,7 @@ import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
+import com.elasticrock.keepscreenon.util.monitorShutdownAction
 import com.elasticrock.keepscreenon.util.stopMonitorAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
@@ -32,9 +34,11 @@ class BroadcastReceiverService : LifecycleService() {
 
     private val batteryLowReceiver = BatteryLowReceiver()
     private val screenOffReceiver = ScreenOffReceiver()
+    private val shutdownReceiver = ShutdownReceiver()
 
     private var monitorBatteryLow = false
     private var monitorScreenOff = false
+    private var monitorShutdown = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
@@ -44,21 +48,15 @@ class BroadcastReceiverService : LifecycleService() {
         if (intent?.action == monitorScreenOffAction) {
             registerScreenOffReceiver()
         }
+        if (intent?.action == monitorShutdownAction) {
+            registerShutdownReceiver()
+        }
         if (intent?.action == stopMonitorAction) {
             restoreScreenTimeout()
         }
 
         val importance = NotificationManager.IMPORTANCE_LOW
-        val name = if (monitorBatteryLow && monitorScreenOff)
-        {
-            getString(R.string.listening_for_battery_low_and_screen_off_actions)
-        } else if (monitorBatteryLow)
-        {
-            getString(R.string.listening_for_battery_low_action)
-        } else
-        {
-            getString(R.string.listening_for_screen_off_action)
-        }
+        val name = getString(R.string.monitoring_device_state)
         val stopPendingIntent = Intent(this, BroadcastReceiverService::class.java)
             .apply { action = stopMonitorAction }
             .let { PendingIntent.getService(this, 1, it, FLAG_IMMUTABLE) }
@@ -114,14 +112,27 @@ class BroadcastReceiverService : LifecycleService() {
         }
     }
 
+    private inner class ShutdownReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ACTION_SHUTDOWN) {
+                restoreScreenTimeout()
+            }
+        }
+    }
+
     private fun registerBatteryLowReceiver() {
-        ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(this, batteryLowReceiver, IntentFilter(ACTION_BATTERY_LOW), ContextCompat.RECEIVER_NOT_EXPORTED)
         monitorBatteryLow = true
     }
 
     private fun registerScreenOffReceiver() {
-        ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(this, screenOffReceiver, IntentFilter(ACTION_SCREEN_OFF), ContextCompat.RECEIVER_NOT_EXPORTED)
         monitorScreenOff = true
+    }
+
+    private fun registerShutdownReceiver() {
+        ContextCompat.registerReceiver(this, shutdownReceiver, IntentFilter(ACTION_SHUTDOWN), ContextCompat.RECEIVER_NOT_EXPORTED)
+        monitorShutdown = true
     }
 
     private fun restoreScreenTimeout() {
@@ -137,6 +148,9 @@ class BroadcastReceiverService : LifecycleService() {
         }
         if (monitorScreenOff) {
             unregisterReceiver(screenOffReceiver)
+        }
+        if (monitorShutdown) {
+            unregisterReceiver(shutdownReceiver)
         }
     }
 }

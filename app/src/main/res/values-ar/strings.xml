@@ -14,8 +14,7 @@
     <string name="grant_permission">منح الإذن</string>
     <string name="ignore_battery_optimizations">تجاهل تحسينات البطارية</string>
     <string name="keep_screen_on">Keep Screen On</string>
-    <string name="listening_for_battery_low_action">الاستماع إلى الحركة المنخفضة للبطارية</string>
-    <string name="listening_for_screen_off_action">الاستماع إلى حركة إيقاف الشاشة</string>
+
     <string name="modify_system_settings">تعديل إعدادات النظام</string>
     <string name="notifications">الإشعارات</string>
     <string name="options">خيارات</string>

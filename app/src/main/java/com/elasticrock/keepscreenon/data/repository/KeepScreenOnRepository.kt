@@ -9,6 +9,7 @@ import com.elasticrock.keepscreenon.service.BroadcastReceiverService
 import com.elasticrock.keepscreenon.ui.glance.Widget
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
+import com.elasticrock.keepscreenon.util.monitorShutdownAction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -75,6 +76,12 @@ class KeepScreenOnRepository @Inject constructor(
             val intent = Intent()
                 .setClass(context, BroadcastReceiverService::class.java)
                 .setAction(monitorScreenOffAction)
+            startService(intent)
+        }
+        if (preferencesRepository.listenForShutdown.first()) {
+            val intent = Intent()
+                .setClass(context, BroadcastReceiverService::class.java)
+                .setAction(monitorShutdownAction)
             startService(intent)
         }
     }

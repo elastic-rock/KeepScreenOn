@@ -34,6 +34,7 @@ class MainScreenViewModel @Inject constructor(
 ): ViewModel() {
     private val _isRestoreWhenBatteryLowEnabled = preferencesRepository.listenForBatteryLow
     private val _isRestoreWhenScreenOffEnabled = preferencesRepository.listenForScreenOff
+    private val _isRestoreOnShutdown = preferencesRepository.listenForShutdown
     private val _maxTimeout = preferencesRepository.maximumTimeout
     private val _isTileAdded = preferencesRepository.isTileAdded
     private val _openCount = preferencesRepository.openCount
@@ -71,7 +72,8 @@ class MainScreenViewModel @Inject constructor(
         _isIgnoringBatteryOptimizations,
         _isNotificationPermissionGranted,
         _currentScreenTimeout,
-        _addTileDialogOpen
+        _addTileDialogOpen,
+        _isRestoreOnShutdown
     ) { flowArray ->
         val state = flowArray[0] as MainScreenState
         val isRestoreWhenBatteryLowEnabled = flowArray[1] as Boolean
@@ -86,9 +88,11 @@ class MainScreenViewModel @Inject constructor(
         val isNotificationPermissionGranted = flowArray[10] as Boolean
         val currentScreenTimeout = flowArray[11] as Int
         val addTileDialogOpen = flowArray[12] as Boolean
+        val isRestoreOnShutdown = flowArray[13] as Boolean
         state.copy(
             isRestoreWhenBatteryLowEnabled = isRestoreWhenBatteryLowEnabled,
             isRestoreWhenScreenOffEnabled = isRestoreWhenScreenOffEnabled,
+            isRestoreOnShutdown = isRestoreOnShutdown,
             maxTimeout = maxTimeout,
             isTileAdded = isTileAdded,
             displayReviewPrompt = displayReviewPrompt,
@@ -113,6 +117,12 @@ class MainScreenViewModel @Inject constructor(
     fun onRestoreWhenScreenOffChange(value: Boolean) {
         viewModelScope.launch {
             preferencesRepository.saveListenForScreenOff(value)
+        }
+    }
+
+    fun onRestoreOnShutdownChange(value: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.saveListenForShutdown(value)
         }
     }
 

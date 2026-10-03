@@ -5,6 +5,7 @@ import com.elasticrock.keepscreenon.data.model.KeepScreenOnState
 data class MainScreenState(
     val isRestoreWhenBatteryLowEnabled: Boolean = false,
     val isRestoreWhenScreenOffEnabled: Boolean = false,
+    val isRestoreOnShutdown: Boolean = false,
     val maxTimeout: Int = 600000,
     val isTileAdded: Boolean = false,
     val displayReviewPrompt: Boolean = false,

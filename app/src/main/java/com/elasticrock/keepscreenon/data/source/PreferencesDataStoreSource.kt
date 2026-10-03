@@ -14,6 +14,7 @@ import javax.inject.Inject
 class PreferencesDataStoreSource @Inject constructor(private val dataStore: DataStore<Preferences>) {
     val batteryLowKey = booleanPreferencesKey("listen_for_battery_low")
     val screenOffKey = booleanPreferencesKey("listen_for_screen_off")
+    val shutdownKey = booleanPreferencesKey("listen_for_shutdown")
     val previousScreenTimeoutKey = intPreferencesKey("previous_screen_timeout")
     val maximumTimeoutKey = intPreferencesKey("maximum_timeout")
     val isTileAddedKey = booleanPreferencesKey("is_tile_added")
@@ -23,6 +24,7 @@ class PreferencesDataStoreSource @Inject constructor(private val dataStore: Data
     private val preferencesKeys: Array<Preferences.Key<*>> = arrayOf(
         batteryLowKey,
         screenOffKey,
+        shutdownKey,
         previousScreenTimeoutKey,
         maximumTimeoutKey,
         isTileAddedKey,

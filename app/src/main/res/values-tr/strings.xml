@@ -19,9 +19,8 @@
     <item quantity="one">%d gün</item>
     <item quantity="other">%d gün</item>
   </plurals>
-  <string name="listening_for_battery_low_action">Düşük pil hareketini önemseme</string>
-  <string name="listening_for_screen_off_action">Ekran kapatma eylemini önemseme</string>
-  <string name="listening_for_battery_low_and_screen_off_actions">Düşük pil ve ekran kapatma eylemlerini önemseme</string>
+
+
   <string name="tile_already_added">Kısayol zaten eklendi</string>
   <string name="restore_timeout_when_battery_low">Pil düşük olduğunda zaman aşımını geri yükle</string>
   <string name="restore_timeout_when_screen_is_turned_off">Ekran kapatıldığında zaman aşımını geri yükle</string>

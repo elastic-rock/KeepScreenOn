@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.NoEncryption
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -311,6 +312,20 @@ fun MainScreen(
                         enabled = state.value.isIgnoringBatteryOptimizations,
                         onClick = {
                             viewModel.onRestoreWhenScreenOffChange(!checked)
+                        }
+                    )
+                }
+
+                item {
+                    val checked = state.value.isRestoreOnShutdown && state.value.isIgnoringBatteryOptimizations
+                    PreferenceSwitch(
+                        title = stringResource(id = (R.string.restore_timeout_when_device_is_powered_off)),
+                        description = if (!state.value.isIgnoringBatteryOptimizations) stringResource(R.string.the_app_must_be_exempt_from_battery_optimizations) else null,
+                        icon = Icons.Filled.PowerSettingsNew,
+                        isChecked = checked,
+                        enabled = state.value.isIgnoringBatteryOptimizations,
+                        onClick = {
+                            viewModel.onRestoreOnShutdownChange(!checked)
                         }
                     )
                 }

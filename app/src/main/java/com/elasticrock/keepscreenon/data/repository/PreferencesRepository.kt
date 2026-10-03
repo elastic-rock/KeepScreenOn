@@ -23,6 +23,14 @@ class PreferencesRepository @Inject constructor(private val preferencesDataStore
         value ?: false
     }
 
+    suspend fun saveListenForShutdown(value: Boolean) {
+        preferencesDataStoreSource.save(preferencesDataStoreSource.shutdownKey, value)
+    }
+
+    val listenForShutdown = preferencesDataStoreSource.getFlow(preferencesDataStoreSource.shutdownKey).map { value ->
+        value ?: false
+    }
+
     suspend fun saveIsTileAdded(value: Boolean) {
         preferencesDataStoreSource.save(preferencesDataStoreSource.isTileAddedKey, value)
     }
