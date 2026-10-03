@@ -20,7 +20,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.elasticrock.keepscreenon.data.repository.PermissionsRepository
 import com.elasticrock.keepscreenon.data.repository.ScreenTimeoutRepository
-import com.elasticrock.keepscreenon.ui.donate.DonateScreen
 import com.elasticrock.keepscreenon.ui.info.InfoScreen
 import com.elasticrock.keepscreenon.ui.licenses.LicensesScreen
 import com.elasticrock.keepscreenon.ui.main.MainScreen
@@ -86,9 +85,6 @@ fun App() {
                 onInfoButtonClick = {
                     navController.navigate("info")
                 },
-                onDonateButtonClick = {
-                    navController.navigate("donate")
-                }
             )
         }
         composable("info") {
@@ -103,13 +99,6 @@ fun App() {
         }
         composable("licenses") {
             LicensesScreen(
-                onBackArrowClick = {
-                    navController.navigateUp()
-                }
-            )
-        }
-        composable("donate") {
-            DonateScreen(
                 onBackArrowClick = {
                     navController.navigateUp()
                 }

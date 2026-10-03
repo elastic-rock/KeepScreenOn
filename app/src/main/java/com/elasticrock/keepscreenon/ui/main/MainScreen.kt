@@ -85,7 +85,6 @@ import com.elasticrock.keepscreenon.util.reviewPrompt
 @Composable
 fun MainScreen(
     onInfoButtonClick: () -> Unit,
-    onDonateButtonClick: () -> Unit,
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
@@ -161,15 +160,6 @@ fun MainScreen(
                 contentPadding = innerPadding,
                 modifier = Modifier.padding(start = startPadding, end = endPadding)
             ) {
-
-                item {
-                    PreferencesHintCard(
-                        title = stringResource(R.string.support_the_app),
-                        description = stringResource(R.string.support_the_app_description),
-                        icon = Icons.Filled.VolunteerActivism,
-                        onClick = onDonateButtonClick
-                    )
-                }
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.permissions))
