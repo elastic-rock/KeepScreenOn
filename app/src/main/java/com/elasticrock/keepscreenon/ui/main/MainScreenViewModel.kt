@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @HiltViewModel
@@ -100,6 +102,8 @@ class MainScreenViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainScreenState())
 
+    private val _addWidgetMutex = Mutex()
+
     fun onRestoreWhenBatteryLowChange(value: Boolean) {
         viewModelScope.launch {
             preferencesRepository.saveListenForBatteryLow(value)
@@ -146,11 +150,13 @@ class MainScreenViewModel @Inject constructor(
 
     fun onAddWidget() {
         viewModelScope.launch {
-            GlanceAppWidgetManager(context).requestPinGlanceAppWidget(
-                receiver = WidgetReceiver::class.java,
-                preview = Widget(),
-                previewState = DpSize(245.dp, 115.dp)
-            )
+            _addWidgetMutex.withLock {
+                GlanceAppWidgetManager(context).requestPinGlanceAppWidget(
+                    receiver = WidgetReceiver::class.java,
+                    preview = Widget(),
+                    previewState = DpSize(245.dp, 115.dp)
+                )
+            }
         }
     }
 }
