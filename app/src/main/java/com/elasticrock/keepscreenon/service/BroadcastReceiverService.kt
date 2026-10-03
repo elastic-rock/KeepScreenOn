@@ -20,7 +20,7 @@ import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
-import com.elasticrock.keepscreenon.util.stopMonitorAcion
+import com.elasticrock.keepscreenon.util.stopMonitorAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -44,7 +44,7 @@ class BroadcastReceiverService : LifecycleService() {
         if (intent?.action == monitorScreenOffAction) {
             registerScreenOffReceiver()
         }
-        if (intent?.action == stopMonitorAcion) {
+        if (intent?.action == stopMonitorAction) {
             restoreScreenTimeout()
         }
 
@@ -60,7 +60,7 @@ class BroadcastReceiverService : LifecycleService() {
             getString(R.string.listening_for_screen_off_action)
         }
         val stopPendingIntent = Intent(this, BroadcastReceiverService::class.java)
-            .apply { action = stopMonitorAcion }
+            .apply { action = stopMonitorAction }
             .let { PendingIntent.getService(this, 1, it, FLAG_IMMUTABLE) }
         val action = Notification.Action.Builder(Icon.createWithResource(this, R.drawable.outline_close_24), getString(
             R.string.stop), stopPendingIntent)

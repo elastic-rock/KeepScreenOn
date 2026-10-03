@@ -38,7 +38,6 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.NoEncryption
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
@@ -77,7 +76,6 @@ import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.ui.components.PreferenceItem
 import com.elasticrock.keepscreenon.ui.components.PreferenceSubtitle
 import com.elasticrock.keepscreenon.ui.components.PreferenceSwitch
-import com.elasticrock.keepscreenon.ui.components.PreferencesHintCard
 import com.elasticrock.keepscreenon.util.notificationPermission
 import com.elasticrock.keepscreenon.util.reviewPrompt
 

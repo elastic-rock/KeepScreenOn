@@ -55,16 +55,8 @@
     <string name="needed_to_restore_timeout_automatically">Vyžadováno k automatickému obnovení intervalu vypnutí</string>
     <string name="the_app_must_be_exempt_from_battery_optimizations">Aplikace musí být vyloučena z optimalizace baterie</string>
     <string name="screen_timeout_warning">Tento interval nemusí fungovat na všech zařízeních</string>
-    <string name="donation_text_1">Zdravím vás! Jmenuji se David Weis a jsem vývojářem této aplikace.</string>
-    <string name="donation_text_2">Strávil jsem hodiny nad touto aplikací a zveřejnil jsem veškerý zdrojový kód online. Aby aplikace mohla zůstat zdarma a udržovaná, zvažte, prosím, projekt finančně podpořit. Děkuji.</string>
-    <string name="logo">Logo</string>
     <string name="ok">OK</string>
-    <string name="support_the_app">Podpořte aplikaci</string>
-    <string name="support_the_app_description">Pomozte udržet Nevypínat obrazovku zdarma a open source pro všechny!</string>
     <string name="disable">Vypnout</string>
-    <string name="donate">Přispět</string>
-    <string name="credit_card">Platební karta</string>
-    <string name="through_github_sponsors">Prostřednictvím GitHub Sponsors</string>
     <string name="widget">Widget</string>
     <string name="widget_description">Zapnout a vypnout funkci nevypínat obrazovku</string>
     <string name="add_widget_to_home_screen">Přidat widget na domovskou obrazovku</string>
