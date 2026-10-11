@@ -19,6 +19,7 @@ import androidx.lifecycle.LifecycleService
 import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
+import com.elasticrock.keepscreenon.util.NotificationHelper
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import com.elasticrock.keepscreenon.util.monitorShutdownAction
@@ -55,43 +56,8 @@ class BroadcastReceiverService : LifecycleService() {
             restoreScreenTimeout()
         }
 
-        val importance = NotificationManager.IMPORTANCE_LOW
-        val name = getString(R.string.monitoring_device_state)
-        val stopPendingIntent = Intent(this, BroadcastReceiverService::class.java)
-            .apply { action = stopMonitorAction }
-            .let { PendingIntent.getService(this, 1, it, FLAG_IMMUTABLE) }
-        val action = Notification.Action.Builder(Icon.createWithResource(this, R.drawable.outline_close_24), getString(
-            R.string.stop), stopPendingIntent)
-            .build()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-            //Delete old notification channels
-            notificationManager.deleteNotificationChannel("battery_low_and_screen_off_monitor")
-            notificationManager.deleteNotificationChannel("battery_low_monitor")
-            notificationManager.deleteNotificationChannel("screen_off_monitor")
-            notificationManager.deleteNotificationChannelGroup("background_service")
-
-            val channelId = "background_service"
-            val channelName = getString(R.string.background_service)
-            val mChannel = NotificationChannel(channelId, channelName, importance)
-
-            notificationManager.createNotificationChannel(mChannel)
-            val notification: Notification = Notification.Builder(this, channelId)
-                .setContentTitle(name)
-                .setSmallIcon(R.drawable.outline_lock_clock_qs)
-                .addAction(action)
-                .build()
-            startForeground(1, notification)
-        } else {
-            @Suppress("DEPRECATION") val notification: Notification = Notification.Builder(this)
-                .setContentTitle(name)
-                .setSmallIcon(R.drawable.outline_lock_clock_qs)
-                .addAction(action)
-                .build()
-            startForeground(1, notification)
-        }
+        val notification = NotificationHelper().buildKeepScreenOnEnabledNotification(this)
+        startForeground(1, notification)
 
         return super.onStartCommand(intent, flags, startId)
     }

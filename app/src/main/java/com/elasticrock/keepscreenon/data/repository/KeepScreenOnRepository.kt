@@ -1,12 +1,18 @@
 package com.elasticrock.keepscreenon.data.repository
 
+import android.Manifest
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.glance.appwidget.updateAll
 import com.elasticrock.keepscreenon.data.model.KeepScreenOnState
 import com.elasticrock.keepscreenon.service.BroadcastReceiverService
 import com.elasticrock.keepscreenon.ui.glance.Widget
+import com.elasticrock.keepscreenon.util.NotificationHelper
 import com.elasticrock.keepscreenon.util.monitorBatteryLowAction
 import com.elasticrock.keepscreenon.util.monitorScreenOffAction
 import com.elasticrock.keepscreenon.util.monitorShutdownAction
@@ -23,6 +29,7 @@ class KeepScreenOnRepository @Inject constructor(
     permissionsRepository: PermissionsRepository,
     @ApplicationContext private val context: Context
 ) {
+    private val notificationId = 1
     val keepScreenOnState = combine(
         permissionsRepository.canWriteSystemSettings,
         screenTimeoutRepository.currentScreenTimeout,
@@ -54,6 +61,7 @@ class KeepScreenOnRepository @Inject constructor(
             screenTimeoutRepository.setScreenTimeout(screenTimeoutRepository.previousScreenTimeout.first())
             Widget().updateAll(context)
             context.stopService(Intent(context, BroadcastReceiverService::class.java))
+            NotificationManagerCompat.from(context).cancel(notificationId)
         }
     }
 
@@ -66,19 +74,36 @@ class KeepScreenOnRepository @Inject constructor(
             }
         }
 
-        if (preferencesRepository.listenForBatteryLow.first()) {
+        val listenForBatteryLow = preferencesRepository.listenForBatteryLow.first()
+        val listenForScreenOff = preferencesRepository.listenForScreenOff.first()
+        val listenForShutdown = preferencesRepository.listenForShutdown.first()
+
+        if (!listenForBatteryLow && !listenForScreenOff && !listenForShutdown) {
+            val notification = NotificationHelper().buildKeepScreenOnEnabledNotification(context)
+
+            with(NotificationManagerCompat.from(context)) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    notify(notificationId, notification)
+                }
+            }
+        }
+        if (listenForBatteryLow) {
             val intent = Intent()
                 .setClass(context, BroadcastReceiverService::class.java)
                 .setAction(monitorBatteryLowAction)
             startService(intent)
         }
-        if (preferencesRepository.listenForScreenOff.first()) {
+        if (listenForScreenOff) {
             val intent = Intent()
                 .setClass(context, BroadcastReceiverService::class.java)
                 .setAction(monitorScreenOffAction)
             startService(intent)
         }
-        if (preferencesRepository.listenForShutdown.first()) {
+        if (listenForShutdown) {
             val intent = Intent()
                 .setClass(context, BroadcastReceiverService::class.java)
                 .setAction(monitorShutdownAction)

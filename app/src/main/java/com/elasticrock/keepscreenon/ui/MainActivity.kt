@@ -24,6 +24,7 @@ import com.elasticrock.keepscreenon.ui.info.InfoScreen
 import com.elasticrock.keepscreenon.ui.licenses.LicensesScreen
 import com.elasticrock.keepscreenon.ui.main.MainScreen
 import com.elasticrock.keepscreenon.ui.theme.KeepScreenOnTheme
+import com.elasticrock.keepscreenon.util.NotificationHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -44,6 +45,8 @@ class MainActivity: ComponentActivity() {
                 App()
             }
         }
+
+        NotificationHelper().deleteOldNotificationChannels(this)
     }
 }
 
