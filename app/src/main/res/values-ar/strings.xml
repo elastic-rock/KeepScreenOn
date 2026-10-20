@@ -10,7 +10,6 @@
     </plurals>
     <string name="add_qs_tile">إضافة زر الإعدادات السريعة</string>
     <string name="add_qs_tile_instructions">اضغط على زر التحرير في لوحة الإعدادات السريعة وأضف زر \"Keep Screen On\"</string>
-    <string name="background_service">خدمة الخلفية</string>
     <string name="grant_permission">منح الإذن</string>
     <string name="ignore_battery_optimizations">تجاهل تحسينات البطارية</string>
     <string name="keep_screen_on">Keep Screen On</string>

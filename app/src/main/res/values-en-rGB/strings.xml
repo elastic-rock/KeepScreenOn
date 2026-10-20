@@ -33,9 +33,7 @@
     <string name="notifications">Notifications</string>
     <string name="posted_when_keep_screen_on_is_active">Posted when Keep Screen On is active</string>
     <string name="ignore_battery_optimizations">Ignore battery optimisations</string>
-    <string name="background_service">Background service</string>
     <string name="current_screen_timeout">"Current screen timeout: "</string>
-    <string name="stop">Stop</string>
     <string name="about">About</string>
     <string name="author">Author</string>
     <string name="source_code">Source code</string>
@@ -58,6 +56,5 @@
     <string name="enables_keep_screen_on">Enables Keep Screen On</string>
     <string name="disables_keep_screen_on">Disables Keep Screen On</string>
     <string name="restore_timeout_when_device_is_powered_off">Restore timeout when device is powered off</string>
-    <string name="monitoring_device_state">Monitoring device state</string>
     <string name="keep_screen_on_enabled">Keep Screen On Enabled</string>
 </resources>

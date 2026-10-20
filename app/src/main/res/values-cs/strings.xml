@@ -38,9 +38,7 @@
     <string name="notifications">Notifikace</string>
     <string name="posted_when_keep_screen_on_is_active">Zobrazeny když je Nevypínat obrazovku aktivní</string>
     <string name="ignore_battery_optimizations">Vyloučit z optimalizace baterie</string>
-    <string name="background_service">Služba na pozadí</string>
     <string name="current_screen_timeout">"Aktuální interval vypnutí obrazovky: "</string>
-    <string name="stop">Zastavit</string>
     <string name="about">O Aplikaci</string>
     <string name="author">Autor</string>
     <string name="source_code">Zdrojový kód</string>
@@ -63,6 +61,5 @@
     <string name="enables_keep_screen_on">Zapína funkci nevypínat obrazovku</string>
     <string name="disables_keep_screen_on">Vypíná funkci nevypínat obrazovku</string>
     <string name="restore_timeout_when_device_is_powered_off">Obnovit interval při vypnutí zařízení</string>
-    <string name="monitoring_device_state">Sledování stavu zařízení</string>
     <string name="keep_screen_on_enabled">Funkce nevypínat obrazovku zapnutá</string>
 </resources>

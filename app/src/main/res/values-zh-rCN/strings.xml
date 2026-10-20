@@ -17,5 +17,4 @@
     <string name="notifications">通知</string>
     <string name="posted_when_keep_screen_on_is_active">在通知栏显示一条“屏幕常亮”已激活的通知</string>
     <string name="ignore_battery_optimizations">忽略电池优化（MIUI \"应用智能省电\"）</string>
-    <string name="background_service">后台服务</string>
 </resources>

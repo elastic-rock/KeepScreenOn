@@ -1,10 +1,5 @@
 package com.elasticrock.keepscreenon.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,11 +7,8 @@ import android.content.Intent.ACTION_BATTERY_LOW
 import android.content.Intent.ACTION_SCREEN_OFF
 import android.content.Intent.ACTION_SHUTDOWN
 import android.content.IntentFilter
-import android.graphics.drawable.Icon
-import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
-import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.data.repository.KeepScreenOnRepository
 import com.elasticrock.keepscreenon.data.repository.PreferencesRepository
 import com.elasticrock.keepscreenon.util.NotificationHelper

@@ -28,5 +28,4 @@
     <string name="notifications">通知</string>
     <string name="posted_when_keep_screen_on_is_active">Keep Screen Onが動作しているとき、通知が表示されます</string>
     <string name="ignore_battery_optimizations">バッテリー最適化を無効化</string>
-    <string name="background_service">バックグラウンドサービス</string>
 </resources>

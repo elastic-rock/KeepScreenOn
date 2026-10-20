@@ -13,9 +13,8 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import com.elasticrock.keepscreenon.R
 import com.elasticrock.keepscreenon.service.BroadcastReceiverService
-import com.elasticrock.keepscreenon.ui.MainActivity
 
-class NotificationHelper() {
+class NotificationHelper {
 
     fun buildKeepScreenOnEnabledNotification(context: Context): Notification {
         val importance = NotificationManager.IMPORTANCE_LOW
