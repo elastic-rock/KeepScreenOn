@@ -64,4 +64,5 @@
     <string name="disables_keep_screen_on">Vypíná funkci nevypínat obrazovku</string>
     <string name="restore_timeout_when_device_is_powered_off">Obnovit interval při vypnutí zařízení</string>
     <string name="monitoring_device_state">Sledování stavu zařízení</string>
+    <string name="keep_screen_on_enabled">Funkce nevypínat obrazovku zapnutá</string>
 </resources>

@@ -60,4 +60,5 @@
     <string name="disables_keep_screen_on">Désactive le maintien de l\'écran allumé</string>
     <string name="restore_timeout_when_device_is_powered_off">Renouveler le délai lorsque l\'appareil est éteint</string>
     <string name="monitoring_device_state">Surveillance de l\'état de l\'appareil</string>
+    <string name="keep_screen_on_enabled">« Maintenir l\'écran allumé » activé</string>
 </resources>

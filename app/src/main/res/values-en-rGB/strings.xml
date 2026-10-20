@@ -59,4 +59,5 @@
     <string name="disables_keep_screen_on">Disables Keep Screen On</string>
     <string name="restore_timeout_when_device_is_powered_off">Restore timeout when device is powered off</string>
     <string name="monitoring_device_state">Monitoring device state</string>
+    <string name="keep_screen_on_enabled">Keep Screen On Enabled</string>
 </resources>
