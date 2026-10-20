@@ -10,3 +10,11 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keep class * extends androidx.room.RoomDatabase {
+    <init>();
+}
+
+-keep class * extends androidx.work.InputMerger {
+    <init>();
+}
