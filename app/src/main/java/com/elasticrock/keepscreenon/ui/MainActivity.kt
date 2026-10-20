@@ -81,6 +81,19 @@ fun App() {
                 animationSpec = tween(150, easing = EaseOut),
                 towards = AnimatedContentTransitionScope.SlideDirection.End
             )
+        },
+        predictivePopEnterTransition = {
+            EnterTransition.None
+        },
+        predictivePopExitTransition = {
+            fadeOut(
+                animationSpec = tween(
+                    150, easing = LinearEasing
+                )
+            ) + slideOutOfContainer(
+                animationSpec = tween(150, easing = EaseOut),
+                towards = AnimatedContentTransitionScope.SlideDirection.End
+            )
         }
         ) {
         composable("main") {
