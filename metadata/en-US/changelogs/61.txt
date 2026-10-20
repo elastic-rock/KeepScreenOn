@@ -1,0 +1,7 @@
+ - Added functionality to restore timeout on shutdown
+ - Changed default timeout to Always On
+ - Streamlined notification behavior for consistency
+ - Fixed occasionally occurring crash when adding widget from app
+ - Updated to target API 37
+ - Updated dependencies
+ - Removed donation option (I am no longer going to be accepting donations as I believe other projects deserve it more)
