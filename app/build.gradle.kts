@@ -58,6 +58,13 @@ extensions.configure<ApplicationExtension> {
             dimension = "target"
         }
     }
+
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = true
+    }
 }
 
 dependencies {
