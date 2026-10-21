@@ -17,8 +17,8 @@ extensions.configure<ApplicationExtension> {
         applicationId = "com.elasticrock.keepscreenon"
         minSdk = 24
         targetSdk = 37
-        versionCode = 62
-        versionName = "1.29.0"
+        versionCode = 63
+        versionName = "1.29.1"
     }
 
     androidResources {
